@@ -38,6 +38,7 @@ const edges: Ref<Edges> = ref({
   "edge13-12": { source: "node13", target: "node12" },
   "edge14-12": { source: "node14", target: "node12" },
   "edge15-12": { source: "node15", target: "node12" },
+  // "edge0-1": { source: "node0", target: "node1" },
 });
 
 export default { nodes, edges };

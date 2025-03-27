@@ -1,30 +1,3 @@
-<!-- <script setup lang="ts">
-const nodes = {
-  node1: { name: "Node 1" },
-  node2: { name: "Node 2" },
-  node3: { name: "Node 3" },
-  node4: { name: "Node 4" },
-};
-
-const edges = {
-  edge1: { source: "node1", target: "node2" },
-  edge2: { source: "node2", target: "node3" },
-  edge3: { source: "node3", target: "node4" },
-};
-</script>
-
-<template>
-  <v-network-graph class="graph" :nodes="nodes" :edges="edges" />
-</template>
-
-<style>
-.graph {
-  width: 800px;
-  height: 600px;
-  border: 1px solid #000;
-}
-</style> -->
-
 <script setup lang="ts">
 import * as vNG from "v-network-graph";
 import {
@@ -33,35 +6,49 @@ import {
   ForceEdgeDatum,
 } from "v-network-graph/lib/force-layout";
 import { useNodeStore } from "../store/NodeStore";
-// import type { Node, Edge } from "v-network-graph";
+import type { Nodes, Edges } from "v-network-graph";
+
+import * as yaml from "js-yaml";
+import { ref, type Ref } from "vue";
+import { idText, isTemplateExpression } from "typescript";
+
+function yamlToJson(yamlText: string): string | null {
+  try {
+    const jsonData = yaml.load(yamlText);
+    return JSON.stringify(jsonData, null, 2); // Преобразуем в строку JSON с отступами
+  } catch (e) {
+    console.error("Ошибка при преобразовании YAML в JSON:", e);
+    return null;
+  }
+}
+
+function jsonToObject(jsonString: string): object | null {
+  try {
+    return JSON.parse(jsonString); // Преобразуем строку JSON в объект
+  } catch (e) {
+    console.error("Ошибка при преобразовании JSON в объект:", e);
+    return null;
+  }
+}
 
 const nodeStore = useNodeStore();
 
-// interface File {
-//   node16: Node;
-//   "edge16-15": Edge;
-// }
-// const file: File = {
-//   node16: { name: "Node 17", face: "Comm.png" },
-//   "edge16-15": {
-//     source: "node16",
-//     target: "node15",
-//   },
-// };
-
-// const addNode = (file: File): void => {
-//   nodeStore.data.nodes[Object.keys(file)[0]] = file.node16;
-//   nodeStore.data.edges[Object.keys(file)[1]] = file["edge16-15"];
-//   // console.log(nodeStore.data.edges);
-//   // console.log(Object.keys(file)[0]);
-// };
-
-// console.log(JSON.parse(JSON.stringify(nodeStore.yaml)));
-
-// console.log(JSON.parse(nodeStore.yaml));
-
-// console.log(new Object(nodeStore.yaml.split("\n").join("").trim()));
-// import data from "../data/data.ts";
+const json: Ref<object | null> = ref({});
+if (typeof yamlToJson(nodeStore.yaml) === "string") {
+  json.value = jsonToObject(yamlToJson(nodeStore.yaml));
+}
+// nodeStore.yaml = jsonToObject(yamlToJson(yaml));
+console.log(json.value);
+const obj1: Nodes = {};
+const obj2: Edges = {};
+Object.keys(json.value).forEach((elem) => {
+  obj1[elem] = { name: `${json.value[elem].name}`, face: "Comm.png" };
+  for (let item of json.value[elem].target) {
+    obj2[`${elem}-${item}`] = { source: `${elem}`, target: `node${item}` };
+  }
+});
+console.log(obj1);
+console.log(obj2);
 
 const configs = vNG.defineConfigs({
   view: {
@@ -103,11 +90,10 @@ const configs = vNG.defineConfigs({
   <!-- <div class="variant">
     <button @click="addNode(file)">Click</button>
   </div> -->
-  <v-network-graph
-    :nodes="nodeStore.data.nodes"
-    :edges="nodeStore.data.edges"
-    :configs="configs"
-  >
+
+  <!--     :nodes="nodeStore.data.nodes"
+    :edges="nodeStore.data.edges" -->
+  <v-network-graph :nodes="obj1" :edges="obj2" :configs="configs">
     <defs>
       <!--
         Define the path for clipping the face image.
@@ -139,7 +125,7 @@ const configs = vNG.defineConfigs({
         :y="-config.radius * scale"
         :width="config.radius * scale * 2"
         :height="config.radius * scale * 2"
-        :xlink:href="`/${nodeStore.data.nodes[nodeId].face}`"
+        :xlink:href="`/${obj1[nodeId].face}`"
         clip-path="url(#faceCircle)"
       />
       <!-- circle for drawing stroke -->

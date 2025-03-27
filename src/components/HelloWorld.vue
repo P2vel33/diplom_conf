@@ -10,7 +10,6 @@ import type { Nodes, Edges } from "v-network-graph";
 
 import * as yaml from "js-yaml";
 import { ref, type Ref } from "vue";
-import { idText, isTemplateExpression } from "typescript";
 
 function yamlToJson(yamlText: string): string | null {
   try {
@@ -37,18 +36,24 @@ const json: Ref<object | null> = ref({});
 if (typeof yamlToJson(nodeStore.yaml) === "string") {
   json.value = jsonToObject(yamlToJson(nodeStore.yaml));
 }
-// nodeStore.yaml = jsonToObject(yamlToJson(yaml));
-console.log(json.value);
+// console.log(json.value);
 const obj1: Nodes = {};
 const obj2: Edges = {};
-Object.keys(json.value).forEach((elem) => {
-  obj1[elem] = { name: `${json.value[elem].name}`, face: "Comm.png" };
-  for (let item of json.value[elem].target) {
-    obj2[`${elem}-${item}`] = { source: `${elem}`, target: `node${item}` };
+
+Object.keys(json.value).forEach((elem: string) => {
+  for (let item of Object.keys(json.value[elem])) {
+    if (elem === "nodes") {
+      obj1[item] = { name: json.value[elem][item].name, face: "Comm.png" };
+    } else if (elem === "links") {
+      json.value[elem][item].forEach((element: number) => {
+        obj2[`${item}-${element}`] = {
+          source: `${item}`,
+          target: `node${element}`,
+        };
+      });
+    }
   }
 });
-console.log(obj1);
-console.log(obj2);
 
 const configs = vNG.defineConfigs({
   view: {
@@ -84,6 +89,12 @@ const configs = vNG.defineConfigs({
     },
   },
 });
+
+const eventHandlers: vNG.EventHandlers = {
+  "node:click": ({ node }) => {
+    console.log(json.value.nodes[node]);
+  },
+};
 </script>
 
 <template>
@@ -93,7 +104,12 @@ const configs = vNG.defineConfigs({
 
   <!--     :nodes="nodeStore.data.nodes"
     :edges="nodeStore.data.edges" -->
-  <v-network-graph :nodes="obj1" :edges="obj2" :configs="configs">
+  <v-network-graph
+    :nodes="obj1"
+    :edges="obj2"
+    :configs="configs"
+    :event-handlers="eventHandlers"
+  >
     <defs>
       <!--
         Define the path for clipping the face image.

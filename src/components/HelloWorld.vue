@@ -10,6 +10,7 @@ import type { Nodes, Edges } from "v-network-graph";
 
 import * as yaml from "js-yaml";
 import { ref, type Ref } from "vue";
+import MyModal from "./UI/MyModal.vue";
 
 function yamlToJson(yamlText: string): string | null {
   try {
@@ -32,7 +33,7 @@ function jsonToObject(jsonString: string): object | null {
 
 const nodeStore = useNodeStore();
 
-const json: Ref<object | null> = ref({});
+const json: Ref<Object | null> = ref({});
 if (typeof yamlToJson(nodeStore.yaml) === "string") {
   json.value = jsonToObject(yamlToJson(nodeStore.yaml));
 }
@@ -91,19 +92,29 @@ const configs = vNG.defineConfigs({
 });
 
 const eventHandlers: vNG.EventHandlers = {
-  "node:click": ({ node }) => {
-    console.log(json.value.nodes[node]);
+  "node:pointerover": ({ node, event }) => {
+    // console.log(json.value.nodes[node]);
+    const nodes: Object = json.value.nodes;
+    console.log("WORK");
+    nodeStore.coordinateX = event.clientX;
+    nodeStore.coordinateY = event.clientY;
+
+    console.log(nodeStore.coordinateX, nodeStore.coordinateY);
+    nodeStore.isVisiable = true;
+    // console.log(nodes[node]);
+    for (const [key, value] of Object.entries(nodes[node])) {
+      console.log(key, value);
+    }
+  },
+  "node:pointerout": ({ node }) => {
+    nodeStore.isVisiable = false;
   },
 };
 </script>
 
 <template>
-  <!-- <div class="variant">
-    <button @click="addNode(file)">Click</button>
-  </div> -->
+  <MyModal v-show="nodeStore.isVisiable" />
 
-  <!--     :nodes="nodeStore.data.nodes"
-    :edges="nodeStore.data.edges" -->
   <v-network-graph
     :nodes="obj1"
     :edges="obj2"

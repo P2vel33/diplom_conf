@@ -7,11 +7,6 @@ const nodeStore = useNodeStore();
 </script>
 
 <template>
-  <!-- <div class="content">
-    <textarea class="textarea"></textarea>
-    <HelloWorld />
-  </div> -->
-
   <div class="container">
     <div class="left">
       <textarea
@@ -49,13 +44,11 @@ const nodeStore = useNodeStore();
 .container {
   width: 100%;
   display: flex;
-  /* outline: 2px solid orange; */
 }
 
 .left {
   margin: 5px;
   width: 50%;
-  /* outline: 2px solid red; */
 }
 
 .right {
@@ -63,6 +56,5 @@ const nodeStore = useNodeStore();
   flex-direction: column;
   margin: 5px;
   width: 50%;
-  /* outline: 2px solid green; */
 }
 </style>

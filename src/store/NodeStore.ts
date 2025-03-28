@@ -4,6 +4,9 @@ import type { Ref } from "vue";
 import data from "../data/data";
 
 export const useNodeStore = defineStore("nodeStore", () => {
+  const isVisiable: Ref<Boolean> = ref(false);
+  const coordinateX: Ref<Number> = ref(0);
+  const coordinateY: Ref<Number> = ref(0);
   const yaml: Ref<string> = ref(`nodes:
   node0:
     name: Cisco1928R
@@ -86,5 +89,8 @@ links:
   return {
     yaml,
     data,
+    isVisiable,
+    coordinateX,
+    coordinateY,
   };
 });

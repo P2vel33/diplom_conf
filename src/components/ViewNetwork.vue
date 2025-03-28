@@ -6,11 +6,18 @@ import {
   ForceEdgeDatum,
 } from "v-network-graph/lib/force-layout";
 import { useNodeStore } from "../store/NodeStore";
-import type { Nodes, Edges } from "v-network-graph";
+import type { Nodes, Edges, Position, Node } from "v-network-graph";
+// import { type Position } from "v-network-graph";
 
 import * as yaml from "js-yaml";
-import { ref, type Ref } from "vue";
-import MyModal from "./UI/MyModal.vue";
+import { ref, watch, type Ref } from "vue";
+import ModalNode from "./UI/ModalNode.vue";
+
+const coordinateModal: Ref<Position> = ref({
+  x: 0,
+  y: 0,
+});
+const nodeModal: Ref<Node> = ref({});
 
 function yamlToJson(yamlText: string): string | null {
   try {
@@ -34,20 +41,26 @@ function jsonToObject(jsonString: string): object | null {
 const nodeStore = useNodeStore();
 
 const json: Ref<Object | null> = ref({});
-if (typeof yamlToJson(nodeStore.yaml) === "string") {
-  json.value = jsonToObject(yamlToJson(nodeStore.yaml));
+if (typeof yamlToJson(nodeStore.text) === null) {
+  json.value = "";
+} else if (typeof yamlToJson(nodeStore.text) === "string") {
+  json.value = jsonToObject(yamlToJson(nodeStore.text));
 }
+// console.log(nodeStore.text);
 // console.log(json.value);
-const obj1: Nodes = {};
-const obj2: Edges = {};
+const objectNodes: Nodes = {};
+const objectEdges: Edges = {};
 
 Object.keys(json.value).forEach((elem: string) => {
   for (let item of Object.keys(json.value[elem])) {
     if (elem === "nodes") {
-      obj1[item] = { name: json.value[elem][item].name, face: "Comm.png" };
+      objectNodes[item] = {
+        name: json.value[elem][item].name,
+        face: "Comm.png",
+      };
     } else if (elem === "links") {
       json.value[elem][item].forEach((element: number) => {
-        obj2[`${item}-${element}`] = {
+        objectEdges[`${item}-${element}`] = {
           source: `${item}`,
           target: `node${element}`,
         };
@@ -92,32 +105,35 @@ const configs = vNG.defineConfigs({
 });
 
 const eventHandlers: vNG.EventHandlers = {
-  "node:pointerover": ({ node, event }) => {
-    // console.log(json.value.nodes[node]);
+  "node:pointerover": ({ node, event }): void => {
     const nodes: Object = json.value.nodes;
-    console.log("WORK");
-    nodeStore.coordinateX = event.clientX;
-    nodeStore.coordinateY = event.clientY;
-
-    console.log(nodeStore.coordinateX, nodeStore.coordinateY);
+    coordinateModal.value = { x: event.clientX, y: event.clientY };
+    console.log(coordinateModal.value);
     nodeStore.isVisiable = true;
-    // console.log(nodes[node]);
     for (const [key, value] of Object.entries(nodes[node])) {
       console.log(key, value);
     }
+
+    // console.log(Object.entries(nodes[node]));
+    nodeModal.value = nodes[node];
+    // console.log(nodeModal.value);
   },
-  "node:pointerout": ({ node }) => {
+  "node:pointerout": (): void => {
     nodeStore.isVisiable = false;
   },
 };
+
+watch(coordinateModal, (e) => {
+  // console.log("WORK", e);
+});
 </script>
 
 <template>
-  <MyModal v-show="nodeStore.isVisiable" />
+  <ModalNode v-show="nodeStore.isVisiable" :coordinateModal :nodeModal />
 
   <v-network-graph
-    :nodes="obj1"
-    :edges="obj2"
+    :nodes="objectNodes"
+    :edges="objectEdges"
     :configs="configs"
     :event-handlers="eventHandlers"
   >
@@ -152,7 +168,7 @@ const eventHandlers: vNG.EventHandlers = {
         :y="-config.radius * scale"
         :width="config.radius * scale * 2"
         :height="config.radius * scale * 2"
-        :xlink:href="`/${obj1[nodeId].face}`"
+        :xlink:href="`/${objectNodes[nodeId].face}`"
         clip-path="url(#faceCircle)"
       />
       <!-- circle for drawing stroke -->

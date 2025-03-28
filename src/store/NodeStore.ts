@@ -7,41 +7,41 @@ export const useNodeStore = defineStore("nodeStore", () => {
   const isVisiable: Ref<Boolean> = ref(false);
   const coordinateX: Ref<Number> = ref(0);
   const coordinateY: Ref<Number> = ref(0);
-  const yaml: Ref<string> = ref(`nodes:
+  const text: Ref<string> = ref(`nodes:
   node0:
     name: Cisco1928R
     ip_address: 192.168.1.1
-    type: Switch
+    typeOfNetworkHardware: Switch
     vlan: 802
   node1:
     name: Cisco1928R
     ip_address: 192.168.1.2
-    type: Switch
+    typeOfNetworkHardware: Switch
     vlan: 802
   node2:
     name: Cisco1928R
     ip_address: 192.168.1.3
-    type: Switch
+    typeOfNetworkHardware: Switch
     vlan: 802
   node3:
     name: Cisco1928R
     ip_address: 192.168.1.4
-    type: Switch
+    typeOfNetworkHardware: Switch
     vlan: 802
   node4:
     name: Cisco1928R
     ip_address: 192.168.1.5
-    type: Switch
+    typeOfNetworkHardware: Switch
     vlan: 802
   node5:
     name: Cisco1928R
     ip_address: 192.168.1.6
-    type: Switch
+    typeOfNetworkHardware: Switch
     vlan: 802
   node6:
     name: Cisco1928R
     ip_address: 192.168.1.7
-    type: Switch
+    typeOfNetworkHardware: Switch
     vlan: 802
 links:
  node0:
@@ -87,7 +87,7 @@ links:
   //   type: Switch
   //   vlan: 802
   return {
-    yaml,
+    text,
     data,
     isVisiable,
     coordinateX,

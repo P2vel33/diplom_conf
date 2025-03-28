@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
+import ViewNetwork from "./components/ViewNetwork.vue";
 import str from "./data/textareaPlaceholder.ts";
 import { useNodeStore } from "./store/NodeStore.ts";
 
@@ -9,14 +9,23 @@ const nodeStore = useNodeStore();
 <template>
   <div class="container">
     <div class="left">
+      <!-- <div
+        class="textarea"
+        contenteditable="true"
+        :textContent="nodeStore.text"
+        :placeholder="str"
+      >
+        {{ nodeStore.text }}
+      </div> -->
+
       <textarea
-        v-model="nodeStore.yaml"
+        v-model="nodeStore.text"
         class="textarea"
         :placeholder="str"
       ></textarea>
     </div>
     <div class="right">
-      <HelloWorld />
+      <ViewNetwork />
     </div>
   </div>
 </template>

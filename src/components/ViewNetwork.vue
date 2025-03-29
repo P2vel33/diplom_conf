@@ -29,6 +29,9 @@ const nodeModal: Ref<Node> = ref({});
 const objectNodes: Ref<Nodes> = ref({});
 const objectEdges: Ref<Edges> = ref({});
 
+// const eventHandlers: vNG.EventHandlers =ref({}) ;
+const configs = ref(vNG.defineConfigs({}));
+
 let timer: number | null = null;
 if (timer !== null) clearTimeout(timer);
 timer = setTimeout(() => {}, 1000);
@@ -38,47 +41,46 @@ watch(jsonFromTextArea, (newjsonFromTextArea) => {
   timer = setTimeout(() => {
     objectEdges.value = useNodesAndEdges(newjsonFromTextArea).objectEdges.value;
     objectNodes.value = useNodesAndEdges(newjsonFromTextArea).objectNodes.value;
-  }, 1000);
-});
+    configs.value = vNG.defineConfigs({
+      view: {
+        autoPanAndZoomOnLoad: "fit-content",
+        layoutHandler: new ForceLayout({
+          positionFixedByDrag: false,
+          positionFixedByClickWithAltKey: false,
 
-const configs = vNG.defineConfigs({
-  view: {
-    autoPanAndZoomOnLoad: "fit-content",
-    layoutHandler: new ForceLayout({
-      positionFixedByDrag: false,
-      positionFixedByClickWithAltKey: false,
+          noAutoRestartSimulation: true, // If the line is deleted or set to false,
+          // d3-force recalculation will be performed when nodes are dragged or
+          // the network changes.
 
-      noAutoRestartSimulation: true, // If the line is deleted or set to false,
-      // d3-force recalculation will be performed when nodes are dragged or
-      // the network changes.
-
-      createSimulation: (d3, nodes, edges) => {
-        const forceLink = d3
-          .forceLink<ForceNodeDatum, ForceEdgeDatum>(edges)
-          .id((d: ForceNodeDatum) => d.id);
-        // Specify your own d3-force parameters
-        return d3
-          .forceSimulation(nodes)
-          .force("edge", forceLink.distance(10).strength(1))
-          .force("charge", d3.forceManyBody().strength(-2000))
-          .force("x", d3.forceX())
-          .force("y", d3.forceY())
-          .stop() // tick manually
-          .tick(100);
+          createSimulation: (d3, nodes, edges) => {
+            const forceLink = d3
+              .forceLink<ForceNodeDatum, ForceEdgeDatum>(edges)
+              .id((d: ForceNodeDatum) => d.id);
+            // Specify your own d3-force parameters
+            return d3
+              .forceSimulation(nodes)
+              .force("edge", forceLink.distance(300).strength(1))
+              .force("charge", d3.forceManyBody().strength(-2000))
+              .force("x", d3.forceX())
+              .force("y", d3.forceY())
+              .stop() // tick manually
+              .tick(100);
+          },
+        }),
+        // layoutHandler: new vNG.GridLayout({ grid: 15 }),
       },
-    }),
-    // layoutHandler: new vNG.GridLayout({ grid: 15 }),
-  },
-  node: {
-    label: {
-      visible: true,
-    },
-  },
+      node: {
+        label: {
+          visible: true,
+        },
+      },
+    });
+  }, 500);
 });
 
 const eventHandlers: vNG.EventHandlers = {
   "node:pointerover": ({ node, event }): void => {
-    const nodes: Object = objectNodes.value.nodes;
+    const nodes: Object = objectNodes.value;
     coordinateModal.value = { x: event.clientX, y: event.clientY };
     nodeStore.isVisiable = true;
     nodeModal.value = nodes[node];

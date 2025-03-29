@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { ref, type Ref } from "vue";
 import ViewNetwork from "./components/ViewNetwork.vue";
 import str from "./data/textareaPlaceholder.ts";
-import { useNodeStore } from "./store/NodeStore.ts";
+// import { useNodeStore } from "./store/NodeStore.ts";
 
-const nodeStore = useNodeStore();
+// const nodeStore = useNodeStore();
+const textFromTextArea: Ref<string> = ref("");
 </script>
 
 <template>
+  <h1>Model Network</h1>
+  <!-- <input type="text" v-model="inputValue" /> -->
   <div class="container">
     <div class="left">
       <!-- <div
@@ -19,13 +23,13 @@ const nodeStore = useNodeStore();
       </div> -->
 
       <textarea
-        v-model="nodeStore.text"
+        v-model="textFromTextArea"
         class="textarea"
         :placeholder="str"
       ></textarea>
     </div>
     <div class="right">
-      <ViewNetwork />
+      <ViewNetwork :textFromTextArea />
     </div>
   </div>
 </template>
@@ -34,6 +38,14 @@ const nodeStore = useNodeStore();
 * {
   padding: 0%;
   margin: 0%;
+}
+
+h1 {
+  width: 100%;
+  padding: 0px 10px;
+  background-color: teal;
+  color: white;
+  text-align: center;
 }
 
 .content {

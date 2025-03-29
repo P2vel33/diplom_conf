@@ -7,66 +7,38 @@ import {
 } from "v-network-graph/lib/force-layout";
 import { useNodeStore } from "../store/NodeStore";
 import type { Nodes, Edges, Position, Node } from "v-network-graph";
-// import { type Position } from "v-network-graph";
-
-import * as yaml from "js-yaml";
-import { ref, watch, type Ref } from "vue";
+import { computed, ref, watch, type Ref } from "vue";
 import ModalNode from "./UI/ModalNode.vue";
+import useYamlToJson from "../hooks/useYamlToJson";
+import useNodesAndEdges from "../hooks/useNodesAndEdges";
 
-const coordinateModal: Ref<Position> = ref({
-  x: 0,
-  y: 0,
+const { textFromTextArea } = defineProps({
+  textFromTextArea: {
+    type: String,
+    required: true,
+  },
 });
-const nodeModal: Ref<Node> = ref({});
 
-function yamlToJson(yamlText: string): string | null {
-  try {
-    const jsonData = yaml.load(yamlText);
-    return JSON.stringify(jsonData, null, 2); // Преобразуем в строку JSON с отступами
-  } catch (e) {
-    console.error("Ошибка при преобразовании YAML в JSON:", e);
-    return null;
-  }
-}
-
-function jsonToObject(jsonString: string): object | null {
-  try {
-    return JSON.parse(jsonString); // Преобразуем строку JSON в объект
-  } catch (e) {
-    console.error("Ошибка при преобразовании JSON в объект:", e);
-    return null;
-  }
-}
+const jsonFromTextArea = computed(() => {
+  return useYamlToJson(textFromTextArea).yamlTransfomToJson.value;
+});
 
 const nodeStore = useNodeStore();
+const coordinateModal: Ref<Position> = ref({ x: 0, y: 0 });
+const nodeModal: Ref<Node> = ref({});
+const objectNodes: Ref<Nodes> = ref({});
+const objectEdges: Ref<Edges> = ref({});
 
-const json: Ref<Object | null> = ref({});
-if (typeof yamlToJson(nodeStore.text) === null) {
-  json.value = "";
-} else if (typeof yamlToJson(nodeStore.text) === "string") {
-  json.value = jsonToObject(yamlToJson(nodeStore.text));
-}
-// console.log(nodeStore.text);
-// console.log(json.value);
-const objectNodes: Nodes = {};
-const objectEdges: Edges = {};
+let timer: number | null = null;
+if (timer !== null) clearTimeout(timer);
+timer = setTimeout(() => {}, 1000);
 
-Object.keys(json.value).forEach((elem: string) => {
-  for (let item of Object.keys(json.value[elem])) {
-    if (elem === "nodes") {
-      objectNodes[item] = {
-        name: json.value[elem][item].name,
-        face: "Comm.png",
-      };
-    } else if (elem === "links") {
-      json.value[elem][item].forEach((element: number) => {
-        objectEdges[`${item}-${element}`] = {
-          source: `${item}`,
-          target: `node${element}`,
-        };
-      });
-    }
-  }
+watch(jsonFromTextArea, (newjsonFromTextArea) => {
+  if (timer !== null) clearTimeout(timer);
+  timer = setTimeout(() => {
+    objectEdges.value = useNodesAndEdges(newjsonFromTextArea).objectEdges.value;
+    objectNodes.value = useNodesAndEdges(newjsonFromTextArea).objectNodes.value;
+  }, 1000);
 });
 
 const configs = vNG.defineConfigs({
@@ -106,26 +78,15 @@ const configs = vNG.defineConfigs({
 
 const eventHandlers: vNG.EventHandlers = {
   "node:pointerover": ({ node, event }): void => {
-    const nodes: Object = json.value.nodes;
+    const nodes: Object = objectNodes.value.nodes;
     coordinateModal.value = { x: event.clientX, y: event.clientY };
-    console.log(coordinateModal.value);
     nodeStore.isVisiable = true;
-    for (const [key, value] of Object.entries(nodes[node])) {
-      console.log(key, value);
-    }
-
-    // console.log(Object.entries(nodes[node]));
     nodeModal.value = nodes[node];
-    // console.log(nodeModal.value);
   },
   "node:pointerout": (): void => {
     nodeStore.isVisiable = false;
   },
 };
-
-watch(coordinateModal, (e) => {
-  // console.log("WORK", e);
-});
 </script>
 
 <template>

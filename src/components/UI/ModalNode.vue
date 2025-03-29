@@ -28,24 +28,16 @@ const { coordinateModal, nodeModal } = defineProps({
       type: String,
       required: true,
     },
+    model: {
+      type: String,
+      required: true,
+    },
     vlan: {
       type: Number,
       required: false,
     },
   },
 });
-
-// const arr: Array<String | Number> = [];
-// for (const [key, value] of Object.entries(nodeModal)) {
-//   arr.push(key);
-//   arr.push(value);
-// }
-
-// node0:
-//     name: Cisco1928R
-//     ip_address: 192.168.1.1
-//     type: Switch
-//     vlan: 802
 </script>
 
 <template>
@@ -56,6 +48,7 @@ const { coordinateModal, nodeModal } = defineProps({
     <h3>Name: {{ nodeModal.name }}</h3>
     <p>IP-address: {{ nodeModal.ip_address }}</p>
     <p>Type: {{ nodeModal.typeOfNetworkHardware }}</p>
+    <p>Model: {{ nodeModal.model }}</p>
     <p>Vlan: {{ nodeModal.vlan }}</p>
   </div>
 </template>

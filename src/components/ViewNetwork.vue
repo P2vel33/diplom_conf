@@ -75,7 +75,7 @@ watch(jsonFromTextArea, (newjsonFromTextArea) => {
         },
       },
     });
-  }, 500);
+  }, 5000);
 });
 
 const eventHandlers: vNG.EventHandlers = {

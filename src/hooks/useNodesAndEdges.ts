@@ -12,6 +12,11 @@ export default function useNodesAndEdges(newjsonFromTextArea) {
         if (elem === "nodes") {
           obj1.value[item] = {
             name: newjsonFromTextArea[elem][item].name,
+            ip_address: newjsonFromTextArea[elem][item].ip_address,
+            typeOfNetworkHardware:
+              newjsonFromTextArea[elem][item].typeOfNetworkHardware,
+            model: newjsonFromTextArea[elem][item].model,
+            vlan: newjsonFromTextArea[elem][item].vlan,
             face: "Comm.png",
           };
         } else if (elem === "links") {

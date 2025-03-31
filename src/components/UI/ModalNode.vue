@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import {
+  computed,
+  ref,
+  useTemplateRef,
+  watch,
+  type ComputedRef,
+  type Ref,
+} from "vue";
+
 const { coordinateModal, nodeModal } = defineProps({
   coordinateModal: {
     type: Object,
@@ -38,12 +47,32 @@ const { coordinateModal, nodeModal } = defineProps({
     },
   },
 });
+
+const isModalMoreWindow: ComputedRef<Object> = computed(() => {
+  return {
+    x: window.innerWidth > coordinateModal.x + 150 ? "left" : "right",
+    y: window.innerHeight > coordinateModal.y + 250 ? "top" : "bottom",
+  };
+});
+const positionModal: ComputedRef<Object> = computed(() => {
+  return {
+    x:
+      window.innerWidth > coordinateModal.x + 150
+        ? coordinateModal.x
+        : window.innerWidth - coordinateModal.x,
+    y:
+      window.innerHeight > coordinateModal.y + 250
+        ? coordinateModal.y
+        : window.innerHeight - coordinateModal.y,
+  };
+});
 </script>
 
 <template>
   <div
+    ref="mypopup"
     id="mypopup"
-    :style="`left:${coordinateModal.x}px;top:${coordinateModal.y}px`"
+    :style="`${isModalMoreWindow.x}:${positionModal.x}px;${isModalMoreWindow.y}:${positionModal.y}px;`"
   >
     <h3>Name: {{ nodeModal.name }}</h3>
     <p>IP-address: {{ nodeModal.ip_address }}</p>

@@ -4,37 +4,45 @@ import { ref, type Ref } from "vue";
 export default function useNodesAndEdges(newjsonFromTextArea) {
   const objectNodes: Ref<Nodes> = ref({});
   const objectEdges: Ref<Edges> = ref({});
-  const writeText = () => {
-    const obj1: Ref<Nodes> = ref({});
-    const obj2: Ref<Edges> = ref({});
-    Object.keys(newjsonFromTextArea).forEach((elem: string) => {
-      for (let item of Object.keys(newjsonFromTextArea[elem])) {
-        if (elem === "nodes") {
-          obj1.value[item] = {
-            name: newjsonFromTextArea[elem][item].name,
-            ip_address: newjsonFromTextArea[elem][item].ip_address,
-            typeOfNetworkHardware:
-              newjsonFromTextArea[elem][item].typeOfNetworkHardware,
-            model: newjsonFromTextArea[elem][item].model,
-            vlan: newjsonFromTextArea[elem][item].vlan,
-            face: "Comm.png",
-          };
-        } else if (elem === "links") {
-          newjsonFromTextArea[elem][item].forEach((element: number) => {
-            obj2.value[`${item}-${element}`] = {
-              source: `${item}`,
-              target: `node${element}`,
-            };
-          });
-        }
+  const obj1: Ref<Nodes> = ref({});
+  const obj2: Ref<Edges> = ref({});
+
+  function processNodes(nodes, obj1) {
+    for (let itemOfElement of Object.keys(nodes)) {
+      const node = nodes[itemOfElement];
+      obj1.value[itemOfElement] = {
+        ...node,
+        face:
+          node.typeOfNetworkHardware === "Switch" ? "Comm.png" : "Router.png",
+      };
+    }
+  }
+
+  function processLinks(links, obj2) {
+    for (let itemOfElement of Object.keys(links)) {
+      links[itemOfElement].forEach((elementsOfJsonent) => {
+        obj2.value[`${itemOfElement}-${elementsOfJsonent}`] = {
+          source: `${itemOfElement}`,
+          target: `node${elementsOfJsonent}`,
+        };
+      });
+    }
+  }
+
+  function processJson(newjsonFromTextArea, obj1, obj2) {
+    Object.keys(newjsonFromTextArea).forEach((elementsOfJson) => {
+      if (elementsOfJson === "nodes") {
+        processNodes(newjsonFromTextArea[elementsOfJson], obj1);
+      } else if (elementsOfJson === "links") {
+        processLinks(newjsonFromTextArea[elementsOfJson], obj2);
       }
     });
-    objectNodes.value = obj1.value;
-    objectEdges.value = obj2.value;
-    //   console.log(objectEdges.value);
-    //   console.log(objectNodes.value);
-  };
-  writeText();
+  }
+
+  processJson(newjsonFromTextArea, obj1, obj2);
+
+  objectNodes.value = obj1.value;
+  objectEdges.value = obj2.value;
 
   return { objectNodes, objectEdges };
 }

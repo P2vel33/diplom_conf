@@ -2,26 +2,18 @@
 import { ref, type Ref } from "vue";
 import ViewNetwork from "./components/ViewNetwork.vue";
 import str from "./data/textareaPlaceholder.ts";
-// import { useNodeStore } from "./store/NodeStore.ts";
-
-// const nodeStore = useNodeStore();
+import MyButton from "./components/UI/MyButton.vue";
+import { useNodeStore } from "./store/NodeStore.ts";
+import ModalNodeAdded from "./components/UI/ModalNodeAdded.vue";
 const textFromTextArea: Ref<string> = ref("");
+const nodeStore = useNodeStore();
 </script>
 
 <template>
   <h1>Model Network</h1>
-  <!-- <input type="text" v-model="inputValue" /> -->
+  <ModalNodeAdded />
   <div class="container">
     <div class="left">
-      <!-- <div
-        class="textarea"
-        contenteditable="true"
-        :textContent="nodeStore.text"
-        :placeholder="str"
-      >
-        {{ nodeStore.text }}
-      </div> -->
-
       <textarea
         v-model="textFromTextArea"
         class="textarea"
@@ -29,6 +21,18 @@ const textFromTextArea: Ref<string> = ref("");
       ></textarea>
     </div>
     <div class="right">
+      <div class="btns">
+        <MyButton
+          @click="
+            () => {
+              nodeStore.isVisiableModalNodeAdded = true;
+              console.log(nodeStore.isVisiableModalNodeAdded);
+            }
+          "
+          >Add Node</MyButton
+        >
+        <MyButton>Delete Node</MyButton>
+      </div>
       <ViewNetwork :textFromTextArea />
     </div>
   </div>
@@ -43,11 +47,18 @@ const textFromTextArea: Ref<string> = ref("");
 h1 {
   width: 100%;
   padding: 0px 10px;
-  background-color: teal;
-  color: white;
+  background-color: white;
+  color: teal;
   text-align: center;
+  border: 3px solid teal;
+  border-radius: 10px;
 }
 
+.btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
 .content {
   max-width: 100%;
   display: flex;

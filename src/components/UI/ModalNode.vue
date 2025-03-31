@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  computed,
-  ref,
-  useTemplateRef,
-  watch,
-  type ComputedRef,
-  type Ref,
-} from "vue";
+import { computed, type ComputedRef } from "vue";
 
 const { coordinateModal, nodeModal } = defineProps({
   coordinateModal: {

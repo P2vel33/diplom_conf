@@ -2,10 +2,9 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import type { Ref } from "vue";
 import data from "../data/data";
-// import useYamlToJson from "../hooks/useYamlToJson";
 
 export const useNodeStore = defineStore("nodeStore", () => {
-  // let timer: number | null = null;
+  const isVisiableModalNodeAdded: Ref<Boolean> = ref(false);
   const isVisiable: Ref<Boolean> = ref(false);
   const coordinateX: Ref<Number> = ref(0);
   const coordinateY: Ref<Number> = ref(0);
@@ -65,21 +64,13 @@ links:
  - 5
  - 6
 `);
-  // const trans: Ref<Object | null> = ref({});
-  // const yamlTransfomToJson = computed(() => {
-  //   if (timer !== null) clearTimeout(timer);
-  //   timer = setTimeout(() => {
-  //     console.log(useYamlToJson(text.value).yamlTransfomToJson);
-  //     return useYamlToJson(text.value).yamlTransfomToJson;
-  //   }, 500);
-  // });
 
   return {
-    // yamlTransfomToJson,
     text,
     data,
     isVisiable,
     coordinateX,
     coordinateY,
+    isVisiableModalNodeAdded,
   };
 });

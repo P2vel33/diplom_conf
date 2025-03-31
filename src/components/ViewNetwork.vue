@@ -74,7 +74,7 @@ watch(jsonFromTextArea, (newjsonFromTextArea) => {
         },
       });
     },
-    3000,
+    500,
     { leading: false, maxWait: 3500, trailing: true }
   )();
 });
@@ -91,6 +91,10 @@ const eventHandlers: vNG.EventHandlers = {
   },
   "node:pointerout": (): void => {
     nodeStore.isVisiable = false;
+  },
+  "node:click": ({ node }): void => {
+    const nodes: Object = objectNodes.value;
+    console.log(nodes[node]);
   },
 };
 </script>

@@ -10,6 +10,7 @@ export default function useNodesAndEdges(newjsonFromTextArea) {
       const node = nodes[itemOfElement];
       obj1.value[itemOfElement] = {
         ...node,
+        name: itemOfElement,
         face:
           node.typeOfNetworkHardware === "Switch" ? "Comm.png" : "Router.png",
       };
@@ -18,10 +19,10 @@ export default function useNodesAndEdges(newjsonFromTextArea) {
 
   function processLinks(links, obj2) {
     for (let itemOfElement of Object.keys(links)) {
-      links[itemOfElement].forEach((elementsOfJsonent) => {
-        obj2.value[`${itemOfElement}-${elementsOfJsonent}`] = {
+      links[itemOfElement].forEach((elementsOfJson) => {
+        obj2.value[`${itemOfElement}-${elementsOfJson}`] = {
           source: `${itemOfElement}`,
-          target: `node${elementsOfJsonent}`,
+          target: `${elementsOfJson}`,
         };
       });
     }

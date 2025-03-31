@@ -15,6 +15,7 @@ const nodeStore = useNodeStore();
   <div class="container">
     <div class="left">
       <textarea
+        v-focus
         v-model="textFromTextArea"
         class="textarea"
         :placeholder="str"
@@ -46,7 +47,8 @@ const nodeStore = useNodeStore();
 
 h1 {
   width: 100%;
-  padding: 0px 10px;
+  padding: 10px;
+  margin: 10px 5px;
   background-color: white;
   color: teal;
   text-align: center;

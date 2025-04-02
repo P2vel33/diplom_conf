@@ -78,6 +78,7 @@ watch(jsonFromTextArea, (newjsonFromTextArea) => {
           selectable: true,
         },
         edge: {
+          label: {},
           normal: {
             width: 2,
             color: "#888888",
@@ -92,6 +93,7 @@ watch(jsonFromTextArea, (newjsonFromTextArea) => {
           },
           hover: {
             color: "#222222",
+            // color: "#00ee7b",
           },
           margin: 2,
           marker: {
@@ -139,6 +141,14 @@ const eventHandlers: vNG.EventHandlers = {
     const nodes: Object = objectNodes.value;
     nodes[node].active = !nodes[node].active;
     console.log(nodes[node]);
+  },
+  "edge:click": ({ edge, event }): void => {
+    const arr: string[] | undefined = edge?.split("-");
+    arr?.forEach((elem) =>
+      console.log(objectNodes.value[elem].external_ip_address)
+    );
+    console.log(objectEdges.value[edge]);
+    // console.log(objectNodes.value[]);
   },
 };
 const addObjectNodes = (object) => {

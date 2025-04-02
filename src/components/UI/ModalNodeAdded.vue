@@ -1,23 +1,47 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { inject, ref } from "vue";
 import { useNodeStore } from "../../store/NodeStore";
 import MyButton from "./MyButton.vue";
 import MyInput from "./MyInput.vue";
+import MySelect from "./MySelect.vue";
 
 const nodeStore = useNodeStore();
+const addObjectNodes = inject("objectNodes");
 
 const hideModal = (): void => {
   nodeStore.isVisiableModalNodeAdded = false;
-  console.log(nodeStore.isVisiableModalNodeAdded);
 };
+
+const selectedType = ref("");
 
 const newNode = ref({
   name: "",
-  ip_address: "",
   typeOfNetworkHardware: "",
+  local_ip_address: "",
+  external_ip_address: "",
   model: "",
+  face: "",
   vlan: null,
 });
+
+const options: string[] = ["Switch", "Router"];
+const clearObject = () => {
+  for (const [key, value] of Object.entries(newNode.value)) {
+    newNode.value[key] = typeof value === "string" ? "" : null;
+  }
+};
+
+const aasd = () => {
+  // console.log(newNode.value);
+  newNode.value = {
+    ...Object.fromEntries(
+      Object.entries(newNode.value).filter((elem) => elem[1])
+    ),
+    typeOfNetworkHardware: selectedType.value,
+    face: selectedType.value === "Switch" ? "Comm.png" : "Router.png",
+  };
+  console.log(newNode.value);
+};
 </script>
 
 <template>
@@ -28,28 +52,16 @@ const newNode = ref({
   >
     <div @click.stop class="dialog__content">
       <div class="divContent">
+        <p>Type:</p>
+        <MySelect :options v-model="selectedType" />
+      </div>
+      <div class="divContent">
         <p>Name:</p>
         <MyInput
           v-focus
           type="text"
           placeholder="Node 0"
           v-model="newNode.name"
-        />
-      </div>
-      <div class="divContent">
-        <p>IP address:</p>
-        <MyInput
-          type="text"
-          placeholder="192.0.0.0"
-          v-model="newNode.ip_address"
-        />
-      </div>
-      <div class="divContent">
-        <p>Type:</p>
-        <MyInput
-          type="text"
-          placeholder="Switch"
-          v-model="newNode.typeOfNetworkHardware"
         />
       </div>
       <div class="divContent">
@@ -60,11 +72,47 @@ const newNode = ref({
           v-model="newNode.model"
         />
       </div>
-      <div class="divContent">
-        <p>Vlan:</p>
-        <MyInput type="number" placeholder="802" v-model="newNode.vlan" />
+      <div
+        style="display: flex; flex-direction: column; gap: 10px"
+        v-if="selectedType === 'Switch'"
+      >
+        <div class="divContent">
+          <p>Vlan:</p>
+          <MyInput type="number" placeholder="802" v-model="newNode.vlan" />
+        </div>
       </div>
-      <MyButton style="margin-left: auto" @click="hideModal">Add</MyButton>
+      <div
+        style="display: flex; flex-direction: column; gap: 10px"
+        v-if="selectedType === 'Router'"
+      >
+        <div class="divContent">
+          <p>Local IP address:</p>
+          <MyInput
+            type="text"
+            placeholder="192.0.0.0"
+            v-model="newNode.local_ip_address"
+          />
+        </div>
+        <div class="divContent">
+          <p>External IP address:</p>
+          <MyInput
+            type="text"
+            placeholder="192.0.0.0"
+            v-model="newNode.external_ip_address"
+          />
+        </div>
+      </div>
+
+      <MyButton
+        style="margin-left: auto"
+        @click="
+          hideModal();
+          aasd();
+          addObjectNodes(newNode);
+          clearObject();
+        "
+        >Add</MyButton
+      >
     </div>
   </div>
 </template>

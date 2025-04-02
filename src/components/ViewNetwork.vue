@@ -8,10 +8,12 @@ import {
 } from "v-network-graph/lib/force-layout";
 import { useNodeStore } from "../store/NodeStore";
 import type { Nodes, Edges, Position, Node } from "v-network-graph";
-import { computed, ref, watch, type Ref } from "vue";
+import { computed, provide, ref, watch, type Ref } from "vue";
 import ModalNode from "./UI/ModalNode.vue";
 import useYamlToJson from "../hooks/useYamlToJson";
 import useNodesAndEdges from "../hooks/useNodesAndEdges";
+import MyButton from "./UI/MyButton.vue";
+import ModalNodeAdded from "./UI/ModalNodeAdded.vue";
 
 const { textFromTextArea } = defineProps({
   textFromTextArea: {
@@ -29,6 +31,10 @@ const coordinateModal: Ref<Position> = ref({ x: 0, y: 0 });
 const nodeModal: Ref<Node> = ref({});
 const objectNodes: Ref<Nodes> = ref({});
 const objectEdges: Ref<Edges> = ref({});
+const addObjectNodes = (object) => {
+  objectNodes.value[object.name] = object;
+  console.log(objectNodes.value);
+};
 
 const configs = ref(vNG.defineConfigs({}));
 
@@ -79,6 +85,8 @@ watch(jsonFromTextArea, (newjsonFromTextArea) => {
   )();
 });
 
+const message = ref("hello");
+
 const eventHandlers: vNG.EventHandlers = {
   "node:pointerover": ({ node, event }): void => {
     const nodes: Object = objectNodes.value;
@@ -97,11 +105,26 @@ const eventHandlers: vNG.EventHandlers = {
     console.log(nodes[node]);
   },
 };
+
+provide("objectNodes", addObjectNodes);
+provide("message", message);
 </script>
 
 <template>
   <ModalNode v-show="nodeStore.isVisiable" :coordinateModal :nodeModal />
-
+  <div class="btns">
+    <MyButton
+      @click="
+        () => {
+          nodeStore.isVisiableModalNodeAdded = true;
+          // console.log(nodeStore.isVisiableModalNodeAdded);
+        }
+      "
+      >Add Node</MyButton
+    >
+    <MyButton>Delete Node</MyButton>
+  </div>
+  <ModalNodeAdded />
   <v-network-graph
     :nodes="objectNodes"
     :edges="objectEdges"
@@ -156,6 +179,11 @@ const eventHandlers: vNG.EventHandlers = {
 </template>
 
 <style scoped>
+.btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
 /* // transitions when scaling on mouseover. */
 
 .face-circle,

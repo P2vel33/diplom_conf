@@ -11,7 +11,7 @@ const nodeStore = useNodeStore();
 
 <template>
   <h1>Network`s Model</h1>
-  <ModalNodeAdded />
+
   <div class="container">
     <div class="left">
       <textarea
@@ -22,18 +22,6 @@ const nodeStore = useNodeStore();
       ></textarea>
     </div>
     <div class="right">
-      <div class="btns">
-        <MyButton
-          @click="
-            () => {
-              nodeStore.isVisiableModalNodeAdded = true;
-              console.log(nodeStore.isVisiableModalNodeAdded);
-            }
-          "
-          >Add Node</MyButton
-        >
-        <MyButton>Delete Node</MyButton>
-      </div>
       <ViewNetwork :textFromTextArea />
     </div>
   </div>
@@ -56,11 +44,6 @@ h1 {
   border-radius: 10px;
 }
 
-.btns {
-  display: flex;
-  flex-direction: row;
-  justify-content: end;
-}
 .content {
   max-width: 100%;
   display: flex;

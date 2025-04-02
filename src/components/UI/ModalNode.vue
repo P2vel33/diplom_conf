@@ -55,7 +55,7 @@ const positionModal: ComputedRef<Object> = computed(() => {
         (elem) => elem[0] !== 'face' && elem[0] !== 'name'
       )"
     >
-      {{ key }}:
+      {{ key.charAt(0).toUpperCase() + key.slice(1) }}:
       <strong class="str">{{ value }}</strong>
     </p>
   </div>

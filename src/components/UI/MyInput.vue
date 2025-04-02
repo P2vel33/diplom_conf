@@ -1,7 +1,18 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const { modelValue } = defineProps({
+  modelValue: {
+    type: String || Number || null,
+    required: true,
+  },
+});
+const emit = defineEmits(["update:modelValue"]);
+const updateInput = (event) => {
+  emit("update:modelValue", event?.target.value);
+};
+</script>
 
 <template>
-  <input class="input" />
+  <input class="input" :value="modelValue" @input="updateInput" />
 </template>
 
 <style scoped>
@@ -10,7 +21,7 @@
   background: none;
   border: 3px solid teal;
   border-radius: 5px;
-  width: 80%;
+  width: 70%;
   padding: 5px;
 }
 </style>

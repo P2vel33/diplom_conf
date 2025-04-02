@@ -10,7 +10,7 @@ const nodeStore = useNodeStore();
 </script>
 
 <template>
-  <h1>Model Network</h1>
+  <h1>Network`s Model</h1>
   <ModalNodeAdded />
   <div class="container">
     <div class="left">

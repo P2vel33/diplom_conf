@@ -17,44 +17,23 @@ const { coordinateModal, nodeModal } = defineProps({
   nodeModal: {
     type: Object,
     required: true,
-    name: {
-      type: String,
-      required: true,
-    },
-    ip_address: {
-      type: String,
-      required: false,
-      default: "192.0.0.0",
-    },
-    typeOfNetworkHardware: {
-      type: String,
-      required: true,
-    },
-    model: {
-      type: String,
-      required: true,
-    },
-    vlan: {
-      type: Number,
-      required: false,
-    },
   },
 });
 
 const isModalMoreWindow: ComputedRef<Object> = computed(() => {
   return {
-    x: window.innerWidth > coordinateModal.x + 150 ? "left" : "right",
-    y: window.innerHeight > coordinateModal.y + 250 ? "top" : "bottom",
+    x: window.innerWidth > coordinateModal.x + 200 ? "left" : "right",
+    y: window.innerHeight > coordinateModal.y + 150 ? "top" : "bottom",
   };
 });
 const positionModal: ComputedRef<Object> = computed(() => {
   return {
     x:
-      window.innerWidth > coordinateModal.x + 150
+      window.innerWidth > coordinateModal.x + 200
         ? coordinateModal.x
         : window.innerWidth - coordinateModal.x,
     y:
-      window.innerHeight > coordinateModal.y + 250
+      window.innerHeight > coordinateModal.y + 150
         ? coordinateModal.y
         : window.innerHeight - coordinateModal.y,
   };
@@ -67,17 +46,24 @@ const positionModal: ComputedRef<Object> = computed(() => {
     id="mypopup"
     :style="`${isModalMoreWindow.x}:${positionModal.x}px;${isModalMoreWindow.y}:${positionModal.y}px;`"
   >
-    <h3>Name: {{ nodeModal.name }}</h3>
-    <p>IP-address: {{ nodeModal.ip_address }}</p>
-    <p>Type: {{ nodeModal.typeOfNetworkHardware }}</p>
-    <p>Model: {{ nodeModal.model }}</p>
-    <p>Vlan: {{ nodeModal.vlan }}</p>
+    <h3>
+      Name:
+      <strong class="str">{{ nodeModal.name }}</strong>
+    </h3>
+    <p
+      v-for="[key, value] in Object.entries(nodeModal).filter(
+        (elem) => elem[0] !== 'face' && elem[0] !== 'name'
+      )"
+    >
+      {{ key }}:
+      <strong class="str">{{ value }}</strong>
+    </p>
   </div>
 </template>
 
 <style scoped>
 #mypopup {
-  width: 150px;
+  width: 200px;
   padding: 20px;
   font-family: Arial, sans-serif;
   font-size: 10pt;
@@ -98,4 +84,8 @@ const positionModal: ComputedRef<Object> = computed(() => {
   left: -6px;
   top: 10px;
 } */
+
+.str {
+  color: white;
+}
 </style>

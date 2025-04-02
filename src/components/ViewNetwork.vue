@@ -57,7 +57,7 @@ watch(jsonFromTextArea, (newjsonFromTextArea) => {
               // Specify your own d3-force parameters
               return d3
                 .forceSimulation(nodes)
-                .force("edge", forceLink.distance(300).strength(1))
+                .force("edge", forceLink.distance(100).strength(1))
                 .force("charge", d3.forceManyBody().strength(-2000))
                 .force("x", d3.forceX())
                 .force("y", d3.forceY())

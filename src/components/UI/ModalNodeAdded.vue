@@ -14,7 +14,7 @@ const hideModal = (): void => {
 
 const selectedType = ref("");
 
-const newNode = ref({
+const newNode = {
   name: "",
   typeOfNetworkHardware: "",
   local_ip_address: "",
@@ -22,25 +22,23 @@ const newNode = ref({
   model: "",
   face: "",
   vlan: null,
-});
+};
 
 const options: string[] = ["Switch", "Router"];
 const clearObject = () => {
-  for (const [key, value] of Object.entries(newNode.value)) {
-    newNode.value[key] = typeof value === "string" ? "" : null;
+  const newNewNode = {
+    ...Object.fromEntries(Object.entries(newNode).filter((elem) => elem[1])),
+    typeOfNetworkHardware: selectedType.value,
+    // face: selectedType.value === "Switch" ? "Comm.png" : "Router.png",
+  };
+  for (const [key, value] of Object.entries(newNode)) {
+    newNode[key] = typeof value === "string" ? "" : null;
   }
 };
 
 const aasd = () => {
   // console.log(newNode.value);
-  newNode.value = {
-    ...Object.fromEntries(
-      Object.entries(newNode.value).filter((elem) => elem[1])
-    ),
-    typeOfNetworkHardware: selectedType.value,
-    face: selectedType.value === "Switch" ? "Comm.png" : "Router.png",
-  };
-  console.log(newNode.value);
+  // console.log(newNode.value);
 };
 </script>
 
@@ -107,8 +105,13 @@ const aasd = () => {
         style="margin-left: auto"
         @click="
           hideModal();
-          aasd();
-          addObjectNodes(newNode);
+          // aasd();
+          addObjectNodes({
+            ...Object.fromEntries(
+              Object.entries(newNode).filter((elem) => elem[1])
+            ),
+            typeOfNetworkHardware: selectedType,
+          });
           clearObject();
         "
         >Add</MyButton

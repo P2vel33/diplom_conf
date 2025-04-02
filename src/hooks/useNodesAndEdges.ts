@@ -11,6 +11,7 @@ export default function useNodesAndEdges(newjsonFromTextArea) {
       obj1.value[itemOfElement] = {
         ...node,
         name: itemOfElement,
+        active: true,
         face:
           node.typeOfNetworkHardware === "Switch" ? "Comm.png" : "Router.png",
       };

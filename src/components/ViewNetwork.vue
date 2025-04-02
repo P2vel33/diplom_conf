@@ -15,6 +15,8 @@ import useNodesAndEdges from "../hooks/useNodesAndEdges";
 import MyButton from "./UI/MyButton.vue";
 import ModalNodeAdded from "./UI/ModalNodeAdded.vue";
 
+const ACTIVE = "#00ee00";
+const INACTIVE = "#ff0000";
 const { textFromTextArea } = defineProps({
   textFromTextArea: {
     type: String,
@@ -31,10 +33,6 @@ const coordinateModal: Ref<Position> = ref({ x: 0, y: 0 });
 const nodeModal: Ref<Node> = ref({});
 const objectNodes: Ref<Nodes> = ref({});
 const objectEdges: Ref<Edges> = ref({});
-const addObjectNodes = (object) => {
-  objectNodes.value[object.name] = object;
-  console.log(objectNodes.value);
-};
 
 const configs = ref(vNG.defineConfigs({}));
 
@@ -77,6 +75,43 @@ watch(jsonFromTextArea, (newjsonFromTextArea) => {
           label: {
             visible: true,
           },
+          selectable: true,
+        },
+        edge: {
+          normal: {
+            width: 2,
+            color: "#888888",
+            dasharray: (edge) =>
+              objectNodes.value[edge.source].active &&
+              objectNodes.value[edge.target].active
+                ? 4
+                : 0,
+            animate: (edge) =>
+              objectNodes.value[edge.source].active &&
+              objectNodes.value[edge.target].active,
+          },
+          hover: {
+            color: "#222222",
+          },
+          margin: 2,
+          marker: {
+            source: {
+              type: "circle",
+              width: 5,
+              height: 5,
+              margin: 1,
+              color: ([edge, _stroke]) =>
+                objectNodes.value[edge.source].active ? ACTIVE : INACTIVE,
+            },
+            target: {
+              type: "circle",
+              width: 5,
+              height: 5,
+              margin: 1,
+              color: ([edge, _stroke]) =>
+                objectNodes.value[edge.target].active ? ACTIVE : INACTIVE,
+            },
+          },
         },
       });
     },
@@ -102,10 +137,17 @@ const eventHandlers: vNG.EventHandlers = {
   },
   "node:click": ({ node }): void => {
     const nodes: Object = objectNodes.value;
+    nodes[node].active = !nodes[node].active;
     console.log(nodes[node]);
   },
 };
-
+const addObjectNodes = (object) => {
+  objectNodes.value[object.name] = {
+    ...object,
+    face: object.typeOfNetworkHardware === "Switch" ? "Comm.png" : "Router.png",
+  };
+  console.log(objectNodes.value);
+};
 provide("objectNodes", addObjectNodes);
 provide("message", message);
 </script>

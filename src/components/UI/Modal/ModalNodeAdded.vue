@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { inject, ref } from "vue";
-import { useNodeStore } from "../../store/NodeStore";
-import MyButton from "./MyButton.vue";
-import MyInput from "./MyInput.vue";
-import MySelect from "./MySelect.vue";
+// import { useNodeStore } from "../../../store/NodeStore";
+import MyButton from "../MyButton.vue";
+import MyInput from "../MyInput.vue";
+import MySelect from "../MySelect.vue";
+import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
 
-const nodeStore = useNodeStore();
-const addObjectNodes = inject("objectNodes");
+// const nodeStore = useNodeStore();
+const interactiveVisiable = useInteractiveVisiable();
+const { addObjectNodes } = inject("objectNodes");
 
 const hideModal = (): void => {
-  nodeStore.isVisiableModalNodeAdded = false;
+  interactiveVisiable.isVisiableModalNodeAdded = false;
 };
 
 const selectedType = ref("");
@@ -40,10 +42,11 @@ const clearObject = () => {
 <template>
   <div
     class="dialog"
-    v-if="nodeStore.isVisiableModalNodeAdded"
+    v-if="interactiveVisiable.isVisiableModalNodeAdded"
     @click="hideModal"
   >
     <div @click.stop class="dialog__content">
+      <h1>Add node</h1>
       <div class="divContent">
         <p>Type:</p>
         <MySelect :options v-model="selectedType" />

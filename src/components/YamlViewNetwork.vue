@@ -9,7 +9,7 @@ import {
 import { useNodeStore } from "../store/NodeStore";
 import type { Nodes, Edges, Position, Node } from "v-network-graph";
 import { computed, ref, watch, type Ref } from "vue";
-import ModalNode from "./UI/ModalNode.vue";
+import ModalNode from "./UI/Modal/ModalNode.vue";
 import useYamlToJson from "../hooks/useYamlToJson";
 import useNodesAndEdges from "../hooks/useNodesAndEdges";
 

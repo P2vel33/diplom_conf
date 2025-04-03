@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { inject, ref } from "vue";
-import { useNodeStore } from "../../store/NodeStore";
-import MyButton from "./MyButton.vue";
-import MyInput from "./MyInput.vue";
+import { inject } from "vue";
+import { useNodeStore } from "../../../store/NodeStore";
+import MyButton from "../MyButton.vue";
+import MyInput from "../MyInput.vue";
+import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
 
-const nodeStore = useNodeStore();
-const addObjectEdges = inject("objectEdges");
+const interactiveVisiable = useInteractiveVisiable();
+const { deleteObjectEdges } = inject("objectEdges");
 
 const newLink = {
   target: "",
@@ -13,7 +14,7 @@ const newLink = {
 };
 
 const hideModal = (): void => {
-  nodeStore.isVisiableModalLinkAdded = false;
+  interactiveVisiable.isVisiableModalLinkDeleted = false;
 };
 
 const clearObject = () => {
@@ -26,10 +27,11 @@ const clearObject = () => {
 <template>
   <div
     class="dialog"
-    v-if="nodeStore.isVisiableModalLinkAdded"
+    v-if="interactiveVisiable.isVisiableModalLinkDeleted"
     @click="hideModal"
   >
     <div @click.stop class="dialog__content">
+      <h1>Delete link</h1>
       <div class="divContent">
         <p>Source:</p>
         <MyInput
@@ -48,7 +50,7 @@ const clearObject = () => {
         style="margin-left: auto"
         @click="
           hideModal();
-          addObjectEdges(newLink);
+          deleteObjectEdges(newLink);
           clearObject();
         "
         >Add</MyButton

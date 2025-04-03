@@ -24,6 +24,10 @@ const routes: RouteRecordRaw[] = [
     path: "/:catchAll(.*)", // Обработка несуществующих маршрутов
     redirect: "/", // Перенаправление на главную страницу
   },
+  {
+    path: "/auth",
+    component: InteractiveNetworkCreationPage,
+  },
 ];
 
 const router = createRouter({ routes, history: createWebHistory() });

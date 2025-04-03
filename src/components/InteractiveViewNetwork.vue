@@ -9,15 +9,19 @@ import {
 import { useNodeStore } from "../store/NodeStore";
 import type { Nodes, Edges, Position, Node } from "v-network-graph";
 import { provide, ref, watch, type Ref } from "vue";
-import ModalNode from "./UI/ModalNode.vue";
+import ModalNode from "./UI/Modal/ModalNode.vue";
 import MyButton from "./UI/MyButton.vue";
-import ModalNodeAdded from "./UI/ModalNodeAdded.vue";
-import ModalLinkAdded from "./UI/ModalLinkAdded.vue";
+import ModalNodeAdded from "./UI/Modal/ModalNodeAdded.vue";
+import ModalLinkAdded from "./UI/Modal/ModalLinkAdded.vue";
+import ModalLinkDeleted from "./UI/Modal/ModalLinkDeleted.vue";
+import { useInteractiveVisiable } from "../store/InteractiveVisiable";
+import ModalNodeDeleted from "./UI/Modal/ModalNodeDeleted.vue";
 
 const ACTIVE = "#00ee00";
 const INACTIVE = "#ff0000";
 
 const nodeStore = useNodeStore();
+const interactiveVisiable = useInteractiveVisiable();
 const coordinateModal: Ref<Position> = ref({ x: 0, y: 0 });
 const nodeModal: Ref<Node> = ref({});
 const objectNodes: Ref<Nodes> = ref({});
@@ -58,6 +62,9 @@ const addObjectNodes = (object: Node) => {
     face: object.typeOfNetworkHardware === "Switch" ? "Comm.png" : "Router.png",
   };
 };
+const deleteObjectNodes = (object: Node) => {
+  delete objectNodes.value[object.name];
+};
 interface Edge {
   target: string;
   source: string;
@@ -65,6 +72,10 @@ interface Edge {
 const addObjectEdges = (object: Edge) => {
   const { target, source } = object;
   objectEdges.value[`${source}-${target}`] = { target, source };
+};
+const deleteObjectEdges = (object: Edge) => {
+  const { target, source } = object;
+  delete objectEdges.value[`${source}-${target}`];
 };
 
 watch(
@@ -151,8 +162,8 @@ watch(
   },
   { deep: true }
 );
-provide("objectNodes", addObjectNodes);
-provide("objectEdges", addObjectEdges);
+provide("objectNodes", { addObjectNodes, deleteObjectNodes });
+provide("objectEdges", { addObjectEdges, deleteObjectEdges });
 </script>
 
 <template>
@@ -161,8 +172,8 @@ provide("objectEdges", addObjectEdges);
     <MyButton
       @click="
         () => {
-          nodeStore.isVisiableModalNodeAdded = true;
-          nodeStore.count = Date.now();
+          interactiveVisiable.isVisiableModalNodeAdded = true;
+          // nodeStore.count = Date.now();
         }
       "
       >Add Node</MyButton
@@ -170,16 +181,35 @@ provide("objectEdges", addObjectEdges);
     <MyButton
       @click="
         () => {
-          nodeStore.isVisiableModalLinkAdded = true;
-          nodeStore.count = Date.now();
+          interactiveVisiable.isVisiableModalLinkAdded = true;
+          // nodeStore.count = Date.now();
         }
       "
       >Add link</MyButton
     >
-    <MyButton>Delete Node</MyButton>
+    <MyButton
+      @click="
+        () => {
+          interactiveVisiable.isVisiableModalLinkDeleted = true;
+          // nodeStore.count = Date.now();
+        }
+      "
+      >Delete Link</MyButton
+    >
+    <MyButton
+      @click="
+        () => {
+          interactiveVisiable.isVisiableModalNodeDeleted = true;
+          // nodeStore.count = Date.now();
+        }
+      "
+      >Delete Node</MyButton
+    >
   </div>
   <ModalNodeAdded />
   <ModalLinkAdded />
+  <ModalLinkDeleted />
+  <ModalNodeDeleted />
   <v-network-graph
     :nodes="objectNodes"
     :edges="objectEdges"

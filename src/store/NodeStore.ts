@@ -4,7 +4,9 @@ import type { Ref } from "vue";
 import data from "../data/data";
 
 export const useNodeStore = defineStore("nodeStore", () => {
+  const count: Ref<Number> = ref(Date.now());
   const isVisiableModalNodeAdded: Ref<Boolean> = ref(false);
+  const isVisiableModalLinkAdded: Ref<Boolean> = ref(false);
   const isVisiable: Ref<Boolean> = ref(false);
   const coordinateX: Ref<Number> = ref(0);
   const coordinateY: Ref<Number> = ref(0);
@@ -66,11 +68,13 @@ links:
 `);
 
   return {
+    count,
     text,
     data,
     isVisiable,
     coordinateX,
     coordinateY,
     isVisiableModalNodeAdded,
+    isVisiableModalLinkAdded,
   };
 });

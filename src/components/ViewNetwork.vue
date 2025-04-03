@@ -14,6 +14,7 @@ import useYamlToJson from "../hooks/useYamlToJson";
 import useNodesAndEdges from "../hooks/useNodesAndEdges";
 import MyButton from "./UI/MyButton.vue";
 import ModalNodeAdded from "./UI/ModalNodeAdded.vue";
+import ModalLinkAdded from "./UI/ModalLinkAdded.vue";
 
 const ACTIVE = "#00ee00";
 const INACTIVE = "#ff0000";
@@ -126,8 +127,6 @@ watch(jsonFromTextArea, (newjsonFromTextArea) => {
   )();
 });
 
-const message = ref("hello");
-
 const eventHandlers: vNG.EventHandlers = {
   "node:pointerover": ({ node, event }): void => {
     const nodes: Object = objectNodes.value;
@@ -145,6 +144,7 @@ const eventHandlers: vNG.EventHandlers = {
     const nodes: Object = objectNodes.value;
     nodes[node].active = !nodes[node].active;
     console.log(nodes[node]);
+    console.log(objectEdges.value);
   },
   "edge:click": ({ edge, event }): void => {
     const arr: string[] | undefined = edge?.split("-");
@@ -155,7 +155,7 @@ const eventHandlers: vNG.EventHandlers = {
     // console.log(objectNodes.value[]);
   },
 };
-const addObjectNodes = (object) => {
+const addObjectNodes = (object: Node) => {
   console.log(object);
   objectNodes.value[object.name] = {
     ...object,
@@ -163,8 +163,105 @@ const addObjectNodes = (object) => {
   };
   console.log(objectNodes.value);
 };
+interface Edge {
+  target: string;
+  source: string;
+}
+const addObjectEdges = (object: Edge) => {
+  const { target, source } = object;
+  console.log(target, source);
+  objectEdges.value[`${source}-${target}`] = { target, source };
+  console.log(objectEdges.value);
+};
+
+watch(
+  objectEdges,
+  (objectEdgess) => {
+    console.log(objectEdgess);
+    debounce(
+      () => {
+        configs.value = vNG.defineConfigs({
+          view: {
+            autoPanAndZoomOnLoad: "fit-content",
+            layoutHandler: new ForceLayout({
+              positionFixedByDrag: false,
+              positionFixedByClickWithAltKey: false,
+
+              noAutoRestartSimulation: true, // If the line is deleted or set to false,
+              // d3-force recalculation will be performed when nodes are dragged or
+              // the network changes.
+
+              createSimulation: (d3, nodes, edges) => {
+                const forceLink = d3
+                  .forceLink<ForceNodeDatum, ForceEdgeDatum>(edges)
+                  .id((d: ForceNodeDatum) => d.id);
+                // Specify your own d3-force parameters
+                return d3
+                  .forceSimulation(nodes)
+                  .force("edge", forceLink.distance(100).strength(1))
+                  .force("charge", d3.forceManyBody().strength(-2000))
+                  .force("x", d3.forceX())
+                  .force("y", d3.forceY())
+                  .stop() // tick manually
+                  .tick(100);
+              },
+            }),
+            // layoutHandler: new vNG.GridLayout({ grid: 15 }),
+          },
+          node: {
+            label: {
+              visible: true,
+            },
+            selectable: true,
+          },
+          edge: {
+            label: {},
+            normal: {
+              width: 2,
+              color: "#888888",
+              dasharray: (edge) =>
+                objectNodes.value[edge.source].active &&
+                objectNodes.value[edge.target].active
+                  ? 4
+                  : 0,
+              animate: (edge) =>
+                objectNodes.value[edge.source].active &&
+                objectNodes.value[edge.target].active,
+            },
+            hover: {
+              color: "#222222",
+              // color: "#00ee7b",
+            },
+            margin: 2,
+            marker: {
+              source: {
+                type: "circle",
+                width: 5,
+                height: 5,
+                margin: 1,
+                color: ([edge, _stroke]) =>
+                  objectNodes.value[edge.source].active ? ACTIVE : INACTIVE,
+              },
+              target: {
+                type: "circle",
+                width: 5,
+                height: 5,
+                margin: 1,
+                color: ([edge, _stroke]) =>
+                  objectNodes.value[edge.target].active ? ACTIVE : INACTIVE,
+              },
+            },
+          },
+        });
+      },
+      500,
+      { leading: false, maxWait: 3500, trailing: true }
+    )();
+  },
+  { deep: true }
+);
 provide("objectNodes", addObjectNodes);
-provide("message", message);
+provide("objectEdges", addObjectEdges);
 </script>
 
 <template>
@@ -174,14 +271,24 @@ provide("message", message);
       @click="
         () => {
           nodeStore.isVisiableModalNodeAdded = true;
-          // console.log(nodeStore.isVisiableModalNodeAdded);
+          nodeStore.count = Date.now();
         }
       "
       >Add Node</MyButton
     >
+    <MyButton
+      @click="
+        () => {
+          nodeStore.isVisiableModalLinkAdded = true;
+          nodeStore.count = Date.now();
+        }
+      "
+      >Add link</MyButton
+    >
     <MyButton>Delete Node</MyButton>
   </div>
   <ModalNodeAdded />
+  <ModalLinkAdded />
   <v-network-graph
     :nodes="objectNodes"
     :edges="objectEdges"

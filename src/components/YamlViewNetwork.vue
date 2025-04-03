@@ -8,23 +8,16 @@ import {
 } from "v-network-graph/lib/force-layout";
 import { useNodeStore } from "../store/NodeStore";
 import type { Nodes, Edges, Position, Node } from "v-network-graph";
-import { computed, provide, ref, watch, type Ref } from "vue";
+import { computed, ref, watch, type Ref } from "vue";
 import ModalNode from "./UI/ModalNode.vue";
 import useYamlToJson from "../hooks/useYamlToJson";
 import useNodesAndEdges from "../hooks/useNodesAndEdges";
-import MyButton from "./UI/MyButton.vue";
-import ModalNodeAdded from "./UI/ModalNodeAdded.vue";
-import ModalLinkAdded from "./UI/ModalLinkAdded.vue";
 
 const ACTIVE = "#00ee00";
 const INACTIVE = "#ff0000";
-const { textFromTextArea, selectInteractive } = defineProps({
+const { textFromTextArea } = defineProps({
   textFromTextArea: {
     type: String,
-    required: false,
-  },
-  selectInteractive: {
-    type: Boolean,
     required: false,
   },
 });
@@ -98,7 +91,6 @@ watch(jsonFromTextArea, (newjsonFromTextArea) => {
           },
           hover: {
             color: "#222222",
-            // color: "#00ee7b",
           },
           margin: 2,
           marker: {
@@ -155,140 +147,10 @@ const eventHandlers: vNG.EventHandlers = {
     // console.log(objectNodes.value[]);
   },
 };
-const addObjectNodes = (object: Node) => {
-  console.log(object);
-  objectNodes.value[object.name] = {
-    ...object,
-    face: object.typeOfNetworkHardware === "Switch" ? "Comm.png" : "Router.png",
-  };
-  console.log(objectNodes.value);
-};
-interface Edge {
-  target: string;
-  source: string;
-}
-const addObjectEdges = (object: Edge) => {
-  const { target, source } = object;
-  console.log(target, source);
-  objectEdges.value[`${source}-${target}`] = { target, source };
-  console.log(objectEdges.value);
-};
-
-watch(
-  objectEdges,
-  (objectEdgess) => {
-    console.log(objectEdgess);
-    debounce(
-      () => {
-        configs.value = vNG.defineConfigs({
-          view: {
-            autoPanAndZoomOnLoad: "fit-content",
-            layoutHandler: new ForceLayout({
-              positionFixedByDrag: false,
-              positionFixedByClickWithAltKey: false,
-
-              noAutoRestartSimulation: true, // If the line is deleted or set to false,
-              // d3-force recalculation will be performed when nodes are dragged or
-              // the network changes.
-
-              createSimulation: (d3, nodes, edges) => {
-                const forceLink = d3
-                  .forceLink<ForceNodeDatum, ForceEdgeDatum>(edges)
-                  .id((d: ForceNodeDatum) => d.id);
-                // Specify your own d3-force parameters
-                return d3
-                  .forceSimulation(nodes)
-                  .force("edge", forceLink.distance(100).strength(1))
-                  .force("charge", d3.forceManyBody().strength(-2000))
-                  .force("x", d3.forceX())
-                  .force("y", d3.forceY())
-                  .stop() // tick manually
-                  .tick(100);
-              },
-            }),
-            // layoutHandler: new vNG.GridLayout({ grid: 15 }),
-          },
-          node: {
-            label: {
-              visible: true,
-            },
-            selectable: true,
-          },
-          edge: {
-            label: {},
-            normal: {
-              width: 2,
-              color: "#888888",
-              dasharray: (edge) =>
-                objectNodes.value[edge.source].active &&
-                objectNodes.value[edge.target].active
-                  ? 4
-                  : 0,
-              animate: (edge) =>
-                objectNodes.value[edge.source].active &&
-                objectNodes.value[edge.target].active,
-            },
-            hover: {
-              color: "#222222",
-              // color: "#00ee7b",
-            },
-            margin: 2,
-            marker: {
-              source: {
-                type: "circle",
-                width: 5,
-                height: 5,
-                margin: 1,
-                color: ([edge, _stroke]) =>
-                  objectNodes.value[edge.source].active ? ACTIVE : INACTIVE,
-              },
-              target: {
-                type: "circle",
-                width: 5,
-                height: 5,
-                margin: 1,
-                color: ([edge, _stroke]) =>
-                  objectNodes.value[edge.target].active ? ACTIVE : INACTIVE,
-              },
-            },
-          },
-        });
-      },
-      500,
-      { leading: false, maxWait: 3500, trailing: true }
-    )();
-  },
-  { deep: true }
-);
-provide("objectNodes", addObjectNodes);
-provide("objectEdges", addObjectEdges);
 </script>
 
 <template>
   <ModalNode v-show="nodeStore.isVisiable" :coordinateModal :nodeModal />
-  <div class="btns" v-if="selectInteractive">
-    <MyButton
-      @click="
-        () => {
-          nodeStore.isVisiableModalNodeAdded = true;
-          nodeStore.count = Date.now();
-        }
-      "
-      >Add Node</MyButton
-    >
-    <MyButton
-      @click="
-        () => {
-          nodeStore.isVisiableModalLinkAdded = true;
-          nodeStore.count = Date.now();
-        }
-      "
-      >Add link</MyButton
-    >
-    <MyButton>Delete Node</MyButton>
-  </div>
-  <ModalNodeAdded />
-  <ModalLinkAdded />
   <v-network-graph
     :nodes="objectNodes"
     :edges="objectEdges"

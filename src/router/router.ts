@@ -20,6 +20,10 @@ const routes: RouteRecordRaw[] = [
     path: "/interactive",
     component: InteractiveNetworkCreationPage,
   },
+  {
+    path: "/:catchAll(.*)", // Обработка несуществующих маршрутов
+    redirect: "/", // Перенаправление на главную страницу
+  },
 ];
 
 const router = createRouter({ routes, history: createWebHistory() });

@@ -17,10 +17,14 @@ import ModalNodeAdded from "./UI/ModalNodeAdded.vue";
 
 const ACTIVE = "#00ee00";
 const INACTIVE = "#ff0000";
-const { textFromTextArea } = defineProps({
+const { textFromTextArea, selectInteractive } = defineProps({
   textFromTextArea: {
     type: String,
-    required: true,
+    required: false,
+  },
+  selectInteractive: {
+    type: Boolean,
+    required: false,
   },
 });
 
@@ -152,6 +156,7 @@ const eventHandlers: vNG.EventHandlers = {
   },
 };
 const addObjectNodes = (object) => {
+  console.log(object);
   objectNodes.value[object.name] = {
     ...object,
     face: object.typeOfNetworkHardware === "Switch" ? "Comm.png" : "Router.png",
@@ -164,7 +169,7 @@ provide("message", message);
 
 <template>
   <ModalNode v-show="nodeStore.isVisiable" :coordinateModal :nodeModal />
-  <div class="btns">
+  <div class="btns" v-if="selectInteractive">
     <MyButton
       @click="
         () => {
@@ -232,6 +237,7 @@ provide("message", message);
 
 <style scoped>
 .btns {
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: end;

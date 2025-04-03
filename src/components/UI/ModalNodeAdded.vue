@@ -26,19 +26,14 @@ const newNode = {
 
 const options: string[] = ["Switch", "Router"];
 const clearObject = () => {
-  const newNewNode = {
-    ...Object.fromEntries(Object.entries(newNode).filter((elem) => elem[1])),
-    typeOfNetworkHardware: selectedType.value,
-    // face: selectedType.value === "Switch" ? "Comm.png" : "Router.png",
-  };
+  // const newNewNode = {
+  //   ...Object.fromEntries(Object.entries(newNode).filter((elem) => elem[1])),
+  //   typeOfNetworkHardware: selectedType.value,
+  //   // face: selectedType.value === "Switch" ? "Comm.png" : "Router.png",
+  // };
   for (const [key, value] of Object.entries(newNode)) {
     newNode[key] = typeof value === "string" ? "" : null;
   }
-};
-
-const aasd = () => {
-  // console.log(newNode.value);
-  // console.log(newNode.value);
 };
 </script>
 
@@ -111,6 +106,7 @@ const aasd = () => {
               Object.entries(newNode).filter((elem) => elem[1])
             ),
             typeOfNetworkHardware: selectedType,
+            active: true,
           });
           clearObject();
         "

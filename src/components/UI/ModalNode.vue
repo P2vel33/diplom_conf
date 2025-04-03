@@ -52,7 +52,8 @@ const positionModal: ComputedRef<Object> = computed(() => {
     </h3>
     <p
       v-for="[key, value] in Object.entries(nodeModal).filter(
-        (elem) => elem[0] !== 'face' && elem[0] !== 'name'
+        (elem) =>
+          elem[0] !== 'face' && elem[0] !== 'name' && elem[0] !== 'active'
       )"
     >
       {{ key.charAt(0).toUpperCase() + key.slice(1) }}:

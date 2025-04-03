@@ -53,7 +53,7 @@ const clearObject = () => {
           deleteObjectEdges(newLink);
           clearObject();
         "
-        >Add</MyButton
+        >Delete</MyButton
       >
     </div>
   </div>

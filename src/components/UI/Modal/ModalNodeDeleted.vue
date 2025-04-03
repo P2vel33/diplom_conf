@@ -50,7 +50,7 @@ const clearObject = () => {
           deleteObjectNodes(newNode);
           clearObject();
         "
-        >Add</MyButton
+        >Delete</MyButton
       >
     </div>
   </div>

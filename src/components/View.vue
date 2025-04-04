@@ -113,6 +113,7 @@ watch(
       () => {
         viewNetwork();
       },
+      0,
       { leading: false, maxWait: 3500, trailing: true }
     )();
   },
@@ -125,7 +126,6 @@ const eventHandlers: vNG.EventHandlers = {
     coordinateModal.value = { x: event.clientX, y: event.clientY };
     nodeStore.isVisiable = true;
     nodeModal.value = nodes[node];
-    // console.log(objectNodes[node]);
   },
   "node:pointermove": (): void => {
     nodeStore.isVisiable = false;
@@ -136,14 +136,10 @@ const eventHandlers: vNG.EventHandlers = {
   "node:click": ({ node }): void => {
     const nodes: Nodes = objectNodes;
     nodes[node].active = !nodes[node].active;
-    // console.log(nodes[node]);
-    // console.log(objectEdges.value);
   },
   "edge:click": ({ edge }): void => {
     const arr: string[] | undefined = edge?.split("-");
     arr?.forEach((elem) => console.log(objectNodes[elem]));
-    // console.log(objectEdges.value[edge]);
-    // console.log(objectNodes.value[]);
   },
 };
 </script>

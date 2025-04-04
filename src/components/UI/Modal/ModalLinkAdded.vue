@@ -1,27 +1,17 @@
 <script setup lang="ts">
-import { inject, ref } from "vue";
-import { useNodeStore } from "../../../store/NodeStore";
+import { inject } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
+import type { Edge } from "v-network-graph";
+import useClearObject from "../../../hooks/useClearObject";
 
-const nodeStore = useNodeStore();
 const interactiveVisiable = useInteractiveVisiable();
 const { addObjectEdges } = inject("objectEdges");
 
-const newLink = {
+const newLink: Edge = {
   target: "",
   source: "",
-};
-
-const hideModal = (): void => {
-  interactiveVisiable.isVisiableModalLinkAdded = false;
-};
-
-const clearObject = () => {
-  for (const [key, value] of Object.entries(newLink)) {
-    newLink[key] = typeof value === "string" ? "" : null;
-  }
 };
 </script>
 
@@ -29,7 +19,7 @@ const clearObject = () => {
   <div
     class="dialog"
     v-if="interactiveVisiable.isVisiableModalLinkAdded"
-    @click="hideModal"
+    @click="interactiveVisiable.toggleIsVisiableModalLinkAdded()"
   >
     <div @click.stop class="dialog__content">
       <h1>Add Link</h1>
@@ -50,9 +40,9 @@ const clearObject = () => {
       <MyButton
         style="margin-left: auto"
         @click="
-          hideModal();
+          interactiveVisiable.toggleIsVisiableModalLinkAdded();
           addObjectEdges(newLink);
-          clearObject();
+          useClearObject(newLink);
         "
         >Add</MyButton
       >
@@ -78,7 +68,6 @@ const clearObject = () => {
   display: flex;
   gap: 10px;
   z-index: 1;
-  /* padding: 20px; */
 }
 
 .dialog__content {

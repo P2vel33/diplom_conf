@@ -1,22 +1,18 @@
 <script setup lang="ts">
 import { inject, ref } from "vue";
-// import { useNodeStore } from "../../../store/NodeStore";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import MySelect from "../MySelect.vue";
 import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
+import type { Node } from "v-network-graph";
+import useClearObject from "../../../hooks/useClearObject";
 
-// const nodeStore = useNodeStore();
 const interactiveVisiable = useInteractiveVisiable();
 const { addObjectNodes } = inject("objectNodes");
 
-const hideModal = (): void => {
-  interactiveVisiable.isVisiableModalNodeAdded = false;
-};
-
 const selectedType = ref("");
 
-const newNode = {
+const newNode: Node = {
   name: "",
   typeOfNetworkHardware: "",
   local_ip_address: "",
@@ -27,23 +23,13 @@ const newNode = {
 };
 
 const options: string[] = ["Switch", "Router"];
-const clearObject = () => {
-  // const newNewNode = {
-  //   ...Object.fromEntries(Object.entries(newNode).filter((elem) => elem[1])),
-  //   typeOfNetworkHardware: selectedType.value,
-  //   // face: selectedType.value === "Switch" ? "Comm.png" : "Router.png",
-  // };
-  for (const [key, value] of Object.entries(newNode)) {
-    newNode[key] = typeof value === "string" ? "" : null;
-  }
-};
 </script>
 
 <template>
   <div
     class="dialog"
     v-if="interactiveVisiable.isVisiableModalNodeAdded"
-    @click="hideModal"
+    @click="interactiveVisiable.toggleIsVisiableModalNodeAdded"
   >
     <div @click.stop class="dialog__content">
       <h1>Add node</h1>
@@ -57,7 +43,7 @@ const clearObject = () => {
           v-focus
           type="text"
           placeholder="Node 0"
-          v-model="newNode.name"
+          v-model="newNode.name as string"
         />
       </div>
       <div class="divContent">
@@ -102,8 +88,7 @@ const clearObject = () => {
       <MyButton
         style="margin-left: auto"
         @click="
-          hideModal();
-          // aasd();
+          interactiveVisiable.toggleIsVisiableModalNodeAdded;
           addObjectNodes({
             ...Object.fromEntries(
               Object.entries(newNode).filter((elem) => elem[1])
@@ -111,7 +96,7 @@ const clearObject = () => {
             typeOfNetworkHardware: selectedType,
             active: true,
           });
-          clearObject();
+          useClearObject(newNode);
         "
         >Add</MyButton
       >
@@ -137,7 +122,6 @@ const clearObject = () => {
   display: flex;
   gap: 10px;
   z-index: 1;
-  /* padding: 20px; */
 }
 
 .dialog__content {

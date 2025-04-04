@@ -1,27 +1,16 @@
 <script setup lang="ts">
-import { inject, ref } from "vue";
-// import { useNodeStore } from "../../../store/NodeStore";
+import { inject } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
-import MySelect from "../MySelect.vue";
 import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
+import type { Node } from "v-network-graph";
+import useClearObject from "../../../hooks/useClearObject";
 
-// const nodeStore = useNodeStore();
 const interactiveVisiable = useInteractiveVisiable();
 const { deleteObjectNodes } = inject("objectNodes");
 
-const hideModal = (): void => {
-  interactiveVisiable.isVisiableModalNodeDeleted = false;
-};
-
-const newNode = {
+const deletedNode: Node = {
   name: "",
-};
-
-const clearObject = () => {
-  for (const [key, value] of Object.entries(newNode)) {
-    newNode[key] = typeof value === "string" ? "" : null;
-  }
 };
 </script>
 
@@ -29,7 +18,7 @@ const clearObject = () => {
   <div
     class="dialog"
     v-if="interactiveVisiable.isVisiableModalNodeDeleted"
-    @click="hideModal"
+    @click="interactiveVisiable.toggleIsVisiableModalNodeDeleted"
   >
     <div @click.stop class="dialog__content">
       <h1>Delete node</h1>
@@ -39,16 +28,16 @@ const clearObject = () => {
           v-focus
           type="text"
           placeholder="Node 0"
-          v-model="newNode.name"
+          v-model="deletedNode.name as string"
         />
       </div>
 
       <MyButton
         style="margin-left: auto"
         @click="
-          hideModal();
-          deleteObjectNodes(newNode);
-          clearObject();
+          interactiveVisiable.toggleIsVisiableModalNodeDeleted;
+          deleteObjectNodes(deletedNode);
+          useClearObject(deletedNode);
         "
         >Delete</MyButton
       >

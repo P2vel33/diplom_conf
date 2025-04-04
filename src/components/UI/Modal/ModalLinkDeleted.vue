@@ -1,26 +1,17 @@
 <script setup lang="ts">
 import { inject } from "vue";
-import { useNodeStore } from "../../../store/NodeStore";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
+import type { Edge } from "v-network-graph";
+import useClearObject from "../../../hooks/useClearObject";
 
 const interactiveVisiable = useInteractiveVisiable();
 const { deleteObjectEdges } = inject("objectEdges");
 
-const newLink = {
+const deletedLink: Edge = {
   target: "",
   source: "",
-};
-
-const hideModal = (): void => {
-  interactiveVisiable.isVisiableModalLinkDeleted = false;
-};
-
-const clearObject = () => {
-  for (const [key, value] of Object.entries(newLink)) {
-    newLink[key] = typeof value === "string" ? "" : null;
-  }
 };
 </script>
 
@@ -28,7 +19,7 @@ const clearObject = () => {
   <div
     class="dialog"
     v-if="interactiveVisiable.isVisiableModalLinkDeleted"
-    @click="hideModal"
+    @click="interactiveVisiable.toggleIsVisiableModalLinkDeleted"
   >
     <div @click.stop class="dialog__content">
       <h1>Delete link</h1>
@@ -38,20 +29,24 @@ const clearObject = () => {
           v-focus
           type="text"
           placeholder="Node 1"
-          v-model="newLink.source"
+          v-model="deletedLink.source"
         />
       </div>
       <div class="divContent">
         <p>Target:</p>
-        <MyInput type="text" placeholder="Node 2" v-model="newLink.target" />
+        <MyInput
+          type="text"
+          placeholder="Node 2"
+          v-model="deletedLink.target"
+        />
       </div>
 
       <MyButton
         style="margin-left: auto"
         @click="
-          hideModal();
-          deleteObjectEdges(newLink);
-          clearObject();
+          interactiveVisiable.toggleIsVisiableModalLinkDeleted;
+          deleteObjectEdges(deletedLink);
+          useClearObject(deletedLink);
         "
         >Delete</MyButton
       >

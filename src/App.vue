@@ -19,7 +19,6 @@ import Navbar from "./components/Navbar.vue";
 }
 
 h1 {
-  /* width: 100%; */
   padding: 10px;
   margin: 10px 5px;
   background-color: white;

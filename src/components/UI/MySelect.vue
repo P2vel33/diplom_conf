@@ -7,9 +7,8 @@ const { options } = defineProps({
 });
 
 const emit = defineEmits(["update:modelValue"]);
-const changeType = (event) => {
+const changeType = (event: Event): void => {
   emit("update:modelValue", event.target.value);
-  console.log(event.target.value);
 };
 </script>
 

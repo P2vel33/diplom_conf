@@ -44,7 +44,7 @@ const deletedLink: Edge = {
       <MyButton
         style="margin-left: auto"
         @click="
-          interactiveVisiable.toggleIsVisiableModalLinkDeleted;
+          interactiveVisiable.toggleIsVisiableModalLinkDeleted();
           deleteObjectEdges(deletedLink);
           useClearObject(deletedLink);
         "

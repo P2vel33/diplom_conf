@@ -35,7 +35,7 @@ const deletedNode: Node = {
       <MyButton
         style="margin-left: auto"
         @click="
-          interactiveVisiable.toggleIsVisiableModalNodeDeleted;
+          interactiveVisiable.toggleIsVisiableModalNodeDeleted();
           deleteObjectNodes(deletedNode);
           useClearObject(deletedNode);
         "

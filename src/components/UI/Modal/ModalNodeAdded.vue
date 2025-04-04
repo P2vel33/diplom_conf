@@ -88,7 +88,7 @@ const options: string[] = ["Switch", "Router"];
       <MyButton
         style="margin-left: auto"
         @click="
-          interactiveVisiable.toggleIsVisiableModalNodeAdded;
+          interactiveVisiable.toggleIsVisiableModalNodeAdded();
           addObjectNodes({
             ...Object.fromEntries(
               Object.entries(newNode).filter((elem) => elem[1])

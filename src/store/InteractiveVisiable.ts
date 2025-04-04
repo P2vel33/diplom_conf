@@ -7,16 +7,16 @@ export const useInteractiveVisiable = defineStore("interactiveVisiable", () => {
   const isVisiableModalNodeAdded: Ref<Boolean> = ref(false);
   const isVisiableModalLinkAdded: Ref<Boolean> = ref(false);
   const toggleIsVisiableModalNodeDeleted = () => {
-    isVisiableModalNodeDeleted.value = !isVisiableModalNodeDeleted.value;
+    isVisiableModalNodeDeleted.value = false;
   };
   const toggleIsVisiableModalLinkDeleted = () => {
-    isVisiableModalLinkDeleted.value = !isVisiableModalLinkDeleted.value;
+    isVisiableModalLinkDeleted.value = false;
   };
   const toggleIsVisiableModalNodeAdded = () => {
-    isVisiableModalNodeAdded.value = !isVisiableModalNodeAdded.value;
+    isVisiableModalNodeAdded.value = false;
   };
   const toggleIsVisiableModalLinkAdded = () => {
-    isVisiableModalLinkAdded.value = !isVisiableModalLinkAdded.value;
+    isVisiableModalLinkAdded.value = false;
   };
 
   return {

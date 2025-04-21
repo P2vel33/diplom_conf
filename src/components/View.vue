@@ -10,6 +10,7 @@ import { useNodeStore } from "../store/NodeStore";
 import type { Nodes, Position, Node } from "v-network-graph";
 import { ref, watch, type Ref } from "vue";
 import ModalNode from "./UI/Modal/ModalNode.vue";
+// import useEventHadlers from "../hooks/useEventHadlers";
 
 const ACTIVE = "#00ee00";
 const INACTIVE = "#ff0000";
@@ -17,7 +18,7 @@ const INACTIVE = "#ff0000";
 const nodeStore = useNodeStore();
 const coordinateModal: Ref<Position> = ref({ x: 0, y: 0 });
 const nodeModal: Ref<Node> = ref({});
-const { objectEdges, objectNodes, watchObject } = defineProps({
+const { objectEdges, objectNodes, watchObject, timeDebounce } = defineProps({
   objectNodes: {
     type: Object,
     required: true,
@@ -29,6 +30,11 @@ const { objectEdges, objectNodes, watchObject } = defineProps({
   watchObject: {
     type: Object,
     required: true,
+  },
+  timeDebounce: {
+    type: Number,
+    required: false,
+    default: 0,
   },
 });
 
@@ -105,6 +111,11 @@ const viewNetwork = () => {
     },
   });
 };
+// const { eventHandlers, coordinateModal } = useEventHadlers(
+//   objectNodes,
+//   nodeStore
+// );
+// const nodeModal: Ref<Node> = ref({});
 
 watch(
   () => watchObject,
@@ -112,8 +123,15 @@ watch(
     debounce(
       () => {
         viewNetwork();
+        // console.log(objectNodes);
+        // const { nodeModal1 } = useEventHadlers(
+        //   objectNodes,
+        //   nodeStore,
+        //   nodeModal
+        // );
+        // console.log(nodeModal1);
       },
-      0,
+      timeDebounce,
       { leading: false, maxWait: 3500, trailing: true }
     )();
   },

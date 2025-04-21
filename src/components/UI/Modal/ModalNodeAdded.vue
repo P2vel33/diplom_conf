@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, ref } from "vue";
+import { computed, inject, ref, watch, type Ref } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import MySelect from "../MySelect.vue";
@@ -7,12 +7,28 @@ import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
 import type { Node } from "v-network-graph";
 import useClearObject from "../../../hooks/useClearObject";
 
+function validateIPv4(ip: string) {
+  const ipv4Pattern =
+    /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(0|255|([1-9][0-9]?)|(1[0-9]{2}|2[0-4][0-9]|25[0-4]))$/;
+  return ipv4Pattern.test(ip);
+}
+
 const interactiveVisiable = useInteractiveVisiable();
 const { addObjectNodes } = inject("objectNodes");
 
 const selectedType = ref("");
 
-const newNode: Node = {
+interface NewNode {
+  name: string;
+  typeOfNetworkHardware: string;
+  local_ip_address: string;
+  external_ip_address: string;
+  model: string;
+  face: string;
+  vlan: Number | null;
+}
+
+const newNode: Ref<NewNode> = ref({
   name: "",
   typeOfNetworkHardware: "",
   local_ip_address: "",
@@ -20,7 +36,17 @@ const newNode: Node = {
   model: "",
   face: "",
   vlan: null,
-};
+});
+
+// watch(
+//   newNode,
+//   () => {
+//     console.log("WORK");
+//     console.log(newNode.value.external_ip_address);
+//     console.log(validateIPv4(newNode.value.external_ip_address));
+//   },
+//   { deep: true }
+// );
 
 const options: string[] = ["Switch", "Router"];
 </script>
@@ -87,6 +113,7 @@ const options: string[] = ["Switch", "Router"];
 
       <MyButton
         style="margin-left: auto"
+        :disabled="!validateIPv4(newNode.external_ip_address)"
         @click="
           interactiveVisiable.toggleIsVisiableModalNodeAdded();
           addObjectNodes({

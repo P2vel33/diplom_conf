@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineOptions({
+  inheritAttrs: true,
+});
+</script>
 
 <template>
   <button class="btn">

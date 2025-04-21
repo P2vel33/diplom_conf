@@ -1,11 +1,11 @@
 import type { Edges, Nodes } from "v-network-graph";
 import { ref, type Ref } from "vue";
 
-export default function useNodesAndEdges(newjsonFromTextArea) {
+export default function useNodesAndEdges(newjsonFromTextArea: Object) {
   const objectNodes: Ref<Nodes> = ref({});
   const objectEdges: Ref<Edges> = ref({});
 
-  function processNodes(nodes, obj1) {
+  function processNodes(nodes: Nodes, obj1) {
     for (let itemOfElement of Object.keys(nodes)) {
       const node = nodes[itemOfElement];
       obj1.value[itemOfElement] = {
@@ -18,9 +18,9 @@ export default function useNodesAndEdges(newjsonFromTextArea) {
     }
   }
 
-  function processLinks(links, obj2) {
+  function processLinks(links: Edges, obj2) {
     for (let itemOfElement of Object.keys(links)) {
-      links[itemOfElement].forEach((elementsOfJson) => {
+      links[itemOfElement].forEach((elementsOfJson: string) => {
         obj2.value[`${itemOfElement}-${elementsOfJson}`] = {
           source: `${itemOfElement}`,
           target: `${elementsOfJson}`,
@@ -29,8 +29,8 @@ export default function useNodesAndEdges(newjsonFromTextArea) {
     }
   }
 
-  function processJson(newjsonFromTextArea, obj1, obj2) {
-    Object.keys(newjsonFromTextArea).forEach((elementsOfJson) => {
+  function processJson(newjsonFromTextArea: Object, obj1, obj2) {
+    Object.keys(newjsonFromTextArea).forEach((elementsOfJson: string) => {
       if (elementsOfJson === "nodes") {
         processNodes(newjsonFromTextArea[elementsOfJson], obj1);
       } else if (elementsOfJson === "links") {

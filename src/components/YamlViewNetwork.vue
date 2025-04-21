@@ -13,8 +13,10 @@ const { textFromTextArea } = defineProps({
 });
 
 const jsonFromTextArea = computed(() => {
+  console.log(useYamlToJson(textFromTextArea).yamlTransfomToJson.value);
   return useYamlToJson(textFromTextArea).yamlTransfomToJson.value;
 });
+console.log(jsonFromTextArea.value);
 
 const objectNodes: Ref<Nodes> = ref({});
 const objectEdges: Ref<Edges> = ref({});

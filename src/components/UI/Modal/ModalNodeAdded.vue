@@ -50,7 +50,7 @@ const updatePorts = (portConfiguration: object) => {
     Object.entries(portConfiguration).filter((elem) => elem[1])
   );
   newNode.value.ports[selectedPort.value] = { ...obj };
-  selectedPort.value = 0;
+  selectedPort.value = 1;
 };
 </script>
 

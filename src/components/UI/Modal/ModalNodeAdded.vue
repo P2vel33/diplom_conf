@@ -1,22 +1,47 @@
 <script setup lang="ts">
-import { computed, inject, ref, watch, type Ref } from "vue";
+import { inject, ref, watch, type Ref } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import MySelect from "../MySelect.vue";
 import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
-import type { Node } from "v-network-graph";
 import useClearObject from "../../../hooks/useClearObject";
+import IP from "../../IP.vue";
+import { networkRouters } from "../../../data/NetworkRouters";
 
 function validateIPv4(ip: string) {
-  const ipv4Pattern =
-    /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(0|255|([1-9][0-9]?)|(1[0-9]{2}|2[0-4][0-9]|25[0-4]))$/;
-  return ipv4Pattern.test(ip);
-}
+  // Регулярное выражение для проверки формата IP-адреса
+  const ipPattern =
+    /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$/;
+  // Проверка соответствия формату
+  if (!ipPattern.test(ip)) {
+    return false;
+  }
+  // Разделение IP-адреса на октеты
+  const octets = ip.split(".").map(Number);
+  // Проверка условий для первого и последнего октетов
+  if (
+    octets[0] === 0 ||
+    octets[0] === 255 ||
+    octets[3] === 0 ||
+    octets[3] === 255
+  ) {
+    return false;
+  }
 
+  return true;
+}
+const ports = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+  23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
+];
 const interactiveVisiable = useInteractiveVisiable();
 const { addObjectNodes } = inject("objectNodes");
+const options: string[] = ["Switch", "Router"];
 
 const selectedType = ref("");
+const selectedPort = ref(0);
+const selectedVendor = ref("");
+const selectedEquipment = ref("");
 
 interface NewNode {
   name: string;
@@ -38,6 +63,9 @@ const newNode: Ref<NewNode> = ref({
   vlan: null,
 });
 
+const checkIP = (): Boolean => {
+  return newNode.value.external_ip_address === newNode.value.local_ip_address;
+};
 // watch(
 //   newNode,
 //   () => {
@@ -47,8 +75,6 @@ const newNode: Ref<NewNode> = ref({
 //   },
 //   { deep: true }
 // );
-
-const options: string[] = ["Switch", "Router"];
 </script>
 
 <template>
@@ -61,8 +87,37 @@ const options: string[] = ["Switch", "Router"];
       <h1>Add node</h1>
       <div class="divContent">
         <p>Type:</p>
-        <MySelect :options v-model="selectedType" />
+        <MySelect :options="Object.keys(networkRouters)" v-model="selectedType"
+          >Select the network equipment</MySelect
+        >
       </div>
+      <div class="divContent" v-if="selectedType">
+        <p>Vendor:</p>
+        <MySelect
+          :options="Object.keys(networkRouters[selectedType])"
+          v-model="selectedVendor"
+          >Select the vendor</MySelect
+        >
+      </div>
+      <div class="divContent" v-if="selectedVendor && selectedType">
+        <p>{{ selectedType }}:</p>
+        <MySelect
+          :options="Object.keys(networkRouters[selectedType][selectedVendor])"
+          v-model="selectedEquipment"
+          >Select the equipment</MySelect
+        >
+      </div>
+      <div class="divContent" v-if="selectedEquipment">
+        <p>Ports:</p>
+        <p class="ports">
+          {{ networkRouters[selectedType][selectedVendor][selectedEquipment] }}
+        </p>
+      </div>
+      <div class="divContent">
+        <p>Port:</p>
+        <MyButton>Add port</MyButton>
+      </div>
+
       <div class="divContent">
         <p>Name:</p>
         <MyInput
@@ -80,6 +135,13 @@ const options: string[] = ["Switch", "Router"];
           v-model="newNode.model"
         />
       </div>
+      <div class="divContent">
+        <p>Port:</p>
+        <MySelect :options="ports" v-model="selectedPort"
+          >Select of port</MySelect
+        >
+      </div>
+      <!-- <IP /> -->
       <div
         style="display: flex; flex-direction: column; gap: 10px"
         v-if="selectedType === 'Switch'"
@@ -101,6 +163,12 @@ const options: string[] = ["Switch", "Router"];
             v-model="newNode.local_ip_address"
           />
         </div>
+        <p
+          v-if="!validateIPv4(newNode.local_ip_address) || checkIP()"
+          class="validError"
+        >
+          Enter correct IP address
+        </p>
         <div class="divContent">
           <p>External IP address:</p>
           <MyInput
@@ -109,11 +177,22 @@ const options: string[] = ["Switch", "Router"];
             v-model="newNode.external_ip_address"
           />
         </div>
+        <p
+          v-if="!validateIPv4(newNode.external_ip_address) || checkIP()"
+          class="validError"
+        >
+          Enter correct IP address
+        </p>
       </div>
 
       <MyButton
         style="margin-left: auto"
-        :disabled="!validateIPv4(newNode.external_ip_address)"
+        :disabled="
+          selectedType === 'Router'
+            ? !validateIPv4(newNode.external_ip_address) &&
+              !validateIPv4(newNode.local_ip_address)
+            : false
+        "
         @click="
           interactiveVisiable.toggleIsVisiableModalNodeAdded();
           addObjectNodes({
@@ -135,7 +214,7 @@ const options: string[] = ["Switch", "Router"];
 .divContent {
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  /* gap: 5px; */
   justify-content: space-between;
   align-items: center;
 }
@@ -161,5 +240,18 @@ const options: string[] = ["Switch", "Router"];
   min-width: 500px;
   padding: 20px;
   gap: 10px;
+}
+
+.validIP {
+  display: flex;
+  flex-direction: column;
+}
+.validError {
+  color: red;
+  margin-left: auto;
+}
+
+.ports {
+  color: teal;
 }
 </style>

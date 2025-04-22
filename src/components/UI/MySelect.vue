@@ -14,18 +14,21 @@ const changeType = (event: Event): void => {
 
 <template>
   <select id="my-select" @change="(e) => changeType(e)">
-    <option disabled selected value="">Select the network equipment</option>
+    <option disabled selected value="">
+      <slot></slot>
+    </option>
     <option v-for="option of options" :value="option">
-      {{ option.charAt(0).toUpperCase() + option.slice(1) }}
+      {{ option }}
     </option>
   </select>
 </template>
 
 <style scoped>
 #my-select {
+  width: max-content;
   background: none;
   border-radius: 5px;
-  padding: 10px;
+  padding: 5px;
   border: 3px solid teal;
 }
 </style>

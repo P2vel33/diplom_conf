@@ -1,18 +1,20 @@
 <script setup lang="ts">
-const { modelValue } = defineProps({
-  modelValue: {
-    type: String || Number || null,
-    required: true,
-  },
-});
-const emit = defineEmits(["update:modelValue"]);
-const updateInput = (event: Event) => {
-  emit("update:modelValue", event.target.value);
-};
-</script>
+// const { modelValue } = defineProps({
+//   modelValue: {
+//     type: String || Number || null,
+//     required: true,
+//   },
+// });
 
+const model = defineModel();
+// const emit = defineEmits(["update:modelValue"]);
+// const updateInput = (event: Event) => {
+//   emit("update:modelValue", event.target.value);
+// };
+</script>
+<!-- :value="modelValue" @input="updateInput" -->
 <template>
-  <input class="input" :value="modelValue" @input="updateInput" />
+  <input class="input" v-model="model" />
 </template>
 
 <style scoped>

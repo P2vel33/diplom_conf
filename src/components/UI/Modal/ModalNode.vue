@@ -22,14 +22,14 @@ const { coordinateModal, nodeModal } = defineProps({
 
 const isModalMoreWindow: ComputedRef<Object> = computed(() => {
   return {
-    x: window.innerWidth > coordinateModal.x + 200 ? "left" : "right",
+    x: window.innerWidth > coordinateModal.x + 250 ? "left" : "right",
     y: window.innerHeight > coordinateModal.y + 150 ? "top" : "bottom",
   };
 });
 const positionModal: ComputedRef<Object> = computed(() => {
   return {
     x:
-      window.innerWidth > coordinateModal.x + 200
+      window.innerWidth > coordinateModal.x + 250
         ? coordinateModal.x
         : window.innerWidth - coordinateModal.x,
     y:
@@ -54,6 +54,7 @@ const positionModal: ComputedRef<Object> = computed(() => {
       v-for="[key, value] in Object.entries(nodeModal).filter(
         (elem) =>
           elem[0] !== 'face' && elem[0] !== 'name' && elem[0] !== 'active'
+        // && elem[0] !== 'port'
       )"
     >
       {{ key.charAt(0).toUpperCase() + key.slice(1) }}:
@@ -64,7 +65,7 @@ const positionModal: ComputedRef<Object> = computed(() => {
 
 <style scoped>
 #mypopup {
-  width: 200px;
+  width: 250px;
   padding: 20px;
   font-family: Arial, sans-serif;
   font-size: 10pt;

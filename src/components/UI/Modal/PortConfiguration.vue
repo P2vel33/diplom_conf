@@ -13,7 +13,6 @@ const emit = defineEmits(["updatePorts"]);
 const updatePorts = (object: IPortConfiguration): void => {
   emit("updatePorts", object);
 };
-
 const { selectedType } = defineProps({
   selectedType: {
     type: String,
@@ -26,6 +25,7 @@ const portConfiguration: Ref<IPortConfiguration> = ref({
   local_ip_address: "",
   external_ip_address: "",
 });
+const pickedDynamicRouting: Ref<string> = ref("");
 
 function validateIPv4(ip: string) {
   // Регулярное выражение для проверки формата IP-адреса
@@ -84,6 +84,40 @@ const saveConfigure = () => {
       style="display: flex; flex-direction: column; gap: 10px"
       v-if="selectedType === 'Router'"
     >
+      <div class="divContent">
+        <p>Dynamic routing:</p>
+        <div class="change-dynamic-routing">
+          <input
+            type="radio"
+            id="is-is"
+            value="IS-IS"
+            v-model="pickedDynamicRouting"
+          />
+          <label for="is-is">IS-IS</label>
+          <!-- <input type="radio" id="two" value="Два" v-model="pickedDynamicRouting" />
+          <label for="two">Два</label>
+          <label>IS-IS</label>
+          <input type="radio" /> -->
+        </div>
+        <div class="change-dynamic-routing">
+          <input
+            type="radio"
+            id="ospf"
+            value="OSPF"
+            v-model="pickedDynamicRouting"
+          />
+          <label for="ospf">OSPF</label>
+        </div>
+        <div class="change-dynamic-routing">
+          <input
+            type="radio"
+            id="bgp"
+            value="BGP"
+            v-model="pickedDynamicRouting"
+          />
+          <label for="bgp">BGP</label>
+        </div>
+      </div>
       <div class="divContent">
         <p>Local IP address:</p>
         <MyInput
@@ -150,6 +184,12 @@ const saveConfigure = () => {
 .validError {
   color: red;
   margin-left: auto;
+}
+.change-dynamic-routing {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
 }
 /* .dialog {
   top: 0%;

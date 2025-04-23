@@ -1,14 +1,7 @@
 <script setup lang="ts">
-import { ref, watch, type Ref } from "vue";
+import { ref, type Ref } from "vue";
 import MyInput from "../../MyInput.vue";
-import { validateIPv4 } from "../../../../helpers/IPandMask/validateIPv4";
-import { isValidSubnetMask } from "../../../../helpers/IPandMask/isValidSubnetMask";
-import { calculateNetworkAddress } from "../../../../helpers/IPandMask/calculateNetworkAddress";
-import { calculateWildcardMask } from "../../../../helpers/IPandMask/calculateWildcardMask";
-import { isSameNetwork } from "../../../../helpers/IPandMask/isSameNetwork";
 import MyButton from "../../MyButton.vue";
-import { isValidWildcardMask } from "../../../../helpers/IPandMask/isValidWildcardMask";
-import { convertWildcardToSubnetMask } from "../../../../helpers/IPandMask/convertWildcardToSubnetMask";
 
 interface IOspfNeighbor {
   id: number;

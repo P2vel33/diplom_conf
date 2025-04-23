@@ -3,6 +3,7 @@ import { ref, watch, type Ref } from "vue";
 import OSPF from "./OSPF.vue";
 import ISIS from "./ISIS.vue";
 import BGP from "./BGP.vue";
+import ISISs from "./ISISs.vue";
 
 const pickedDynamicRouting: Ref<string> = ref("");
 watch(pickedDynamicRouting, (e) => console.log(e));
@@ -48,15 +49,15 @@ const getConfigure = (value: object): void => {
       class="port-configure"
       @setOspfConfiguration="(value) => getConfigure(value)"
     />
-    <ISIS
+    <ISISs
       v-if="pickedDynamicRouting === 'IS-IS'"
       class="port-configure"
       @setIsisConfiguration="(value) => getConfigure(value)"
     />
     <BGP
-      v-if="pickedDynamicRouting === 'IS-IS'"
+      v-if="pickedDynamicRouting === 'BGP'"
       class="port-configure"
-      @setIsisConfiguration="(value) => getConfigure(value)"
+      @setBgpConfiguration="(value) => getConfigure(value)"
     />
   </div>
 </template>

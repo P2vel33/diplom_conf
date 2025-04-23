@@ -2,6 +2,7 @@
 import { ref, watch, type Ref } from "vue";
 import OSPF from "./OSPF.vue";
 import ISIS from "./ISIS.vue";
+import BGP from "./BGP.vue";
 
 const pickedDynamicRouting: Ref<string> = ref("");
 watch(pickedDynamicRouting, (e) => console.log(e));
@@ -22,10 +23,6 @@ const getConfigure = (value: object): void => {
           v-model="pickedDynamicRouting"
         />
         <label for="is-is">IS-IS</label>
-        <!-- <input type="radio" id="two" value="Два" v-model="pickedDynamicRouting" />
-          <label for="two">Два</label>
-          <label>IS-IS</label>
-          <input type="radio" /> -->
       </div>
       <div class="change-dynamic-routing">
         <input
@@ -46,13 +43,17 @@ const getConfigure = (value: object): void => {
         <label for="bgp">BGP</label>
       </div>
     </div>
-    <!-- <div class="divContent"></div> -->
     <OSPF
       v-if="pickedDynamicRouting === 'OSPF'"
       class="port-configure"
       @setOspfConfiguration="(value) => getConfigure(value)"
     />
     <ISIS
+      v-if="pickedDynamicRouting === 'IS-IS'"
+      class="port-configure"
+      @setIsisConfiguration="(value) => getConfigure(value)"
+    />
+    <BGP
       v-if="pickedDynamicRouting === 'IS-IS'"
       class="port-configure"
       @setIsisConfiguration="(value) => getConfigure(value)"

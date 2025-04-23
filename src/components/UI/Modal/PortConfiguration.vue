@@ -113,7 +113,7 @@ watch(pickedDynamicRouting, (e) => console.log(e));
       style="display: flex; flex-direction: column; gap: 10px"
       v-if="selectedType === 'Router'"
     >
-      <DynamicRouting />
+      <!-- <DynamicRouting /> -->
       <div class="divContent">
         <p>Local IP address:</p>
         <MyInput

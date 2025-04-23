@@ -7,6 +7,7 @@ import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
 import useClearObject from "../../../hooks/useClearObject";
 import { networkRouters } from "../../../data/NetworkRouters";
 import PortConfiguration from "./PortConfiguration.vue";
+import DynamicRouting from "./DynamicRouting/DynamicRouting.vue";
 
 const interactiveVisiable = useInteractiveVisiable();
 const { addObjectNodes } = inject("objectNodes");
@@ -84,7 +85,7 @@ const updatePorts = (portConfiguration: object) => {
           >Select the equipment</MySelect
         >
       </div>
-      <div class="divContent" v-if="selectedEquipment">
+      <!-- <div class="divContent" v-if="selectedEquipment">
         <p>Ports:</p>
         <p class="ports">
           {{
@@ -93,7 +94,7 @@ const updatePorts = (portConfiguration: object) => {
             )
           }}
         </p>
-      </div>
+      </div> -->
 
       <div class="divContent">
         <p>Name:</p>
@@ -105,6 +106,7 @@ const updatePorts = (portConfiguration: object) => {
         />
       </div>
 
+      <DynamicRouting v-if="selectedType === 'Router'" />
       <div class="divContent" v-if="selectedEquipment">
         <p>Port:</p>
         <MySelect

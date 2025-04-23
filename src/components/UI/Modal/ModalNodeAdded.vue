@@ -50,7 +50,7 @@ const updatePorts = (portConfiguration: object) => {
     Object.entries(portConfiguration).filter((elem) => elem[1])
   );
   newNode.value.ports[selectedPort.value] = { ...obj };
-  selectedPort.value = 1;
+  selectedPort.value = 0;
 };
 </script>
 
@@ -136,7 +136,7 @@ const updatePorts = (portConfiguration: object) => {
 
       <MyButton
         style="margin-left: auto"
-        :disabled="false"
+        :disabled="!newNode.name"
         @click="
           interactiveVisiable.toggleIsVisiableModalNodeAdded();
           addObjectNodes({

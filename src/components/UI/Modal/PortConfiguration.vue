@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { ref, type Ref } from "vue";
+import { ref, watch, type Ref } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
+import DynamicRouting from "./DynamicRouting/DynamicRouting.vue";
 
 interface IPortConfiguration {
   vlan: null | number;
   local_ip_address: string;
+  mask_local_ip: string;
   external_ip_address: string;
+  mask_external_ip: string;
 }
 
 const emit = defineEmits(["updatePorts"]);
@@ -24,6 +27,8 @@ const portConfiguration: Ref<IPortConfiguration> = ref({
   vlan: null,
   local_ip_address: "",
   external_ip_address: "",
+  mask_local_ip: "",
+  mask_external_ip: "",
 });
 const pickedDynamicRouting: Ref<string> = ref("");
 
@@ -50,6 +55,26 @@ function validateIPv4(ip: string) {
   return true;
 }
 
+function isValidSubnetMask(mask: string) {
+  // Регулярное выражение для проверки формата IP-адреса (маски)
+  const maskRegex =
+    /^(25[0-5]|(2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9]))(\.(25[0-5]|(2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9]))){3}$/;
+
+  // Проверить, соответствует ли маска формату IP-адреса
+  if (!maskRegex.test(mask)) {
+    return false; // Неверный формат маски
+  }
+
+  // Преобразование маски в двоичный формат
+  const maskParts = mask.split(".").map(Number);
+  let binary = maskParts
+    .map((num) => num.toString(2).padStart(8, "0"))
+    .join("");
+
+  // Проверка, чтобы после первой '0' не было '1'
+  return !binary.includes("01");
+}
+
 const checkIP = (): Boolean => {
   return (
     portConfiguration.value.external_ip_address ===
@@ -62,11 +87,15 @@ const saveConfigure = () => {
   portConfiguration.value.vlan = null;
   portConfiguration.value.local_ip_address = "";
   portConfiguration.value.external_ip_address = "";
+  portConfiguration.value.mask_external_ip = "";
+  portConfiguration.value.mask_local_ip = "";
 };
+
+watch(pickedDynamicRouting, (e) => console.log(e));
 </script>
 
 <template>
-  <div class="post-configure">
+  <div class="port-configure">
     <div
       style="display: flex; flex-direction: column; gap: 10px"
       v-if="selectedType === 'Switch'"
@@ -84,40 +113,7 @@ const saveConfigure = () => {
       style="display: flex; flex-direction: column; gap: 10px"
       v-if="selectedType === 'Router'"
     >
-      <div class="divContent">
-        <p>Dynamic routing:</p>
-        <div class="change-dynamic-routing">
-          <input
-            type="radio"
-            id="is-is"
-            value="IS-IS"
-            v-model="pickedDynamicRouting"
-          />
-          <label for="is-is">IS-IS</label>
-          <!-- <input type="radio" id="two" value="Два" v-model="pickedDynamicRouting" />
-          <label for="two">Два</label>
-          <label>IS-IS</label>
-          <input type="radio" /> -->
-        </div>
-        <div class="change-dynamic-routing">
-          <input
-            type="radio"
-            id="ospf"
-            value="OSPF"
-            v-model="pickedDynamicRouting"
-          />
-          <label for="ospf">OSPF</label>
-        </div>
-        <div class="change-dynamic-routing">
-          <input
-            type="radio"
-            id="bgp"
-            value="BGP"
-            v-model="pickedDynamicRouting"
-          />
-          <label for="bgp">BGP</label>
-        </div>
-      </div>
+      <DynamicRouting />
       <div class="divContent">
         <p>Local IP address:</p>
         <MyInput
@@ -133,6 +129,20 @@ const saveConfigure = () => {
         Enter correct IP address
       </p>
       <div class="divContent">
+        <p>Mask:</p>
+        <MyInput
+          type="text"
+          placeholder="255.255.0.0"
+          v-model="portConfiguration.mask_local_ip"
+        />
+      </div>
+      <p
+        v-if="!isValidSubnetMask(portConfiguration.mask_local_ip)"
+        class="validError"
+      >
+        Enter correct Mask
+      </p>
+      <div class="divContent">
         <p>External IP address:</p>
         <MyInput
           type="text"
@@ -145,6 +155,20 @@ const saveConfigure = () => {
         class="validError"
       >
         Enter correct IP address
+      </p>
+      <div class="divContent">
+        <p>Mask:</p>
+        <MyInput
+          type="text"
+          placeholder="255.255.0.0"
+          v-model="portConfiguration.mask_external_ip"
+        />
+      </div>
+      <p
+        v-if="!isValidSubnetMask(portConfiguration.mask_external_ip)"
+        class="validError"
+      >
+        Enter correct Mask
       </p>
     </div>
     <MyButton
@@ -174,7 +198,7 @@ const saveConfigure = () => {
   justify-content: space-between;
   align-items: center;
 }
-.post-configure {
+.port-configure {
   display: flex;
   flex-direction: column;
   border-radius: 15px;

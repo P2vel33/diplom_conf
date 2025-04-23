@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref, watch, type Ref } from "vue";
 import OSPF from "./OSPF.vue";
+import ISIS from "./ISIS.vue";
 
 const pickedDynamicRouting: Ref<string> = ref("");
 watch(pickedDynamicRouting, (e) => console.log(e));
+const getConfigure = (value: object): void => {
+  console.log(value);
+};
 </script>
 
 <template>
@@ -43,7 +47,16 @@ watch(pickedDynamicRouting, (e) => console.log(e));
       </div>
     </div>
     <!-- <div class="divContent"></div> -->
-    <OSPF v-if="pickedDynamicRouting === 'OSPF'" class="port-configure" />
+    <OSPF
+      v-if="pickedDynamicRouting === 'OSPF'"
+      class="port-configure"
+      @setOspfConfiguration="(value) => getConfigure(value)"
+    />
+    <ISIS
+      v-if="pickedDynamicRouting === 'IS-IS'"
+      class="port-configure"
+      @setIsisConfiguration="(value) => getConfigure(value)"
+    />
   </div>
 </template>
 

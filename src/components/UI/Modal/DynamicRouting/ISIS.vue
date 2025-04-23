@@ -7,8 +7,10 @@ import { calculateNetworkAddress } from "../../../../helpers/IPandMask/calculate
 import { calculateWildcardMask } from "../../../../helpers/IPandMask/calculateWildcardMask";
 import { isSameNetwork } from "../../../../helpers/IPandMask/isSameNetwork";
 import MyButton from "../../MyButton.vue";
+import { createIsisNetworkAddress } from "../../../../helpers/IPandMask/createIsisNetworkAddress";
 
-interface IOspfConfiguration {
+console.log(createIsisNetworkAddress(49, 1, "192.168.10.1"));
+interface IisisConfiguration {
   number_ospf: number;
   ip_address: string;
   mask_ip_address: string;
@@ -16,7 +18,7 @@ interface IOspfConfiguration {
   mask_network_ip: string;
   area: number;
 }
-const ospfConfiguration: Ref<IOspfConfiguration> = ref({
+const isisConfiguration: Ref<IisisConfiguration> = ref({
   number_ospf: 1,
   ip_address: "",
   network_ip: "",
@@ -25,20 +27,20 @@ const ospfConfiguration: Ref<IOspfConfiguration> = ref({
   area: 0,
 });
 
-const emit = defineEmits(["setOspfConfiguration"]);
-const setOspfConfigurationt = () => {
-  emit("setOspfConfiguration", ospfConfiguration);
+const emit = defineEmits(["setIsisConfiguration"]);
+const setIsisConfigurationt = () => {
+  emit("setIsisConfiguration", isisConfiguration);
 };
 
 watch(
-  ospfConfiguration,
+  isisConfiguration,
   () => {
-    ospfConfiguration.value.network_ip = calculateNetworkAddress(
-      ospfConfiguration.value.ip_address,
-      ospfConfiguration.value.mask_ip_address
+    isisConfiguration.value.network_ip = calculateNetworkAddress(
+      isisConfiguration.value.ip_address,
+      isisConfiguration.value.mask_ip_address
     );
-    ospfConfiguration.value.mask_network_ip = calculateWildcardMask(
-      ospfConfiguration.value.mask_ip_address
+    isisConfiguration.value.mask_network_ip = calculateWildcardMask(
+      isisConfiguration.value.mask_ip_address
     );
   },
   { deep: true }
@@ -52,7 +54,7 @@ watch(
       <MyInput
         type="number"
         placeholder="1"
-        v-model="ospfConfiguration.number_ospf"
+        v-model="isisConfiguration.number_ospf"
       />
     </div>
     <div class="divContent">
@@ -60,10 +62,10 @@ watch(
       <MyInput
         type="text"
         placeholder="192.0.0.1"
-        v-model="ospfConfiguration.ip_address"
+        v-model="isisConfiguration.ip_address"
       />
     </div>
-    <p v-if="!validateIPv4(ospfConfiguration.ip_address)" class="validError">
+    <p v-if="!validateIPv4(isisConfiguration.ip_address)" class="validError">
       Введите корректный IP адрес
     </p>
     <div class="divContent">
@@ -71,11 +73,11 @@ watch(
       <MyInput
         type="text"
         placeholder="255.255.0.0"
-        v-model="ospfConfiguration.mask_ip_address"
+        v-model="isisConfiguration.mask_ip_address"
       />
     </div>
     <p
-      v-if="!isValidSubnetMask(ospfConfiguration.mask_ip_address)"
+      v-if="!isValidSubnetMask(isisConfiguration.mask_ip_address)"
       class="validError"
     >
       Введите корректную маску подсети
@@ -85,15 +87,15 @@ watch(
       <MyInput
         type="text"
         placeholder="192.0.0.0"
-        v-model="ospfConfiguration.network_ip"
+        v-model="isisConfiguration.network_ip"
       />
     </div>
     <p
       v-if="
         !isSameNetwork(
-          ospfConfiguration.ip_address,
-          ospfConfiguration.mask_ip_address,
-          ospfConfiguration.network_ip
+          isisConfiguration.ip_address,
+          isisConfiguration.mask_ip_address,
+          isisConfiguration.network_ip
         )
       "
       class="validError"
@@ -105,15 +107,15 @@ watch(
       <MyInput
         type="text"
         placeholder="255.255.0.0"
-        v-model="ospfConfiguration.mask_network_ip"
+        v-model="isisConfiguration.mask_network_ip"
       />
     </div>
     <div class="divContent">
       <p>Номер области (area) OSPF:</p>
-      <MyInput type="number" placeholder="0" v-model="ospfConfiguration.area" />
+      <MyInput type="number" placeholder="0" v-model="isisConfiguration.area" />
     </div>
-    <MyButton @click="setOspfConfigurationt"
-      >Сохранить конфигурацию OSPF</MyButton
+    <MyButton @click="setIsisConfigurationt"
+      >Сохранить конфигурацию IS-IS</MyButton
     >
   </div>
 </template>

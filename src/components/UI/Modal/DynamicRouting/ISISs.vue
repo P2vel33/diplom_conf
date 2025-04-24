@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import { ref, watch, type Ref } from "vue";
+import { ref, type Ref } from "vue";
 import MyInput from "../../MyInput.vue";
-import { validateIPv4 } from "../../../../helpers/IPandMask/validateIPv4";
-import { isValidSubnetMask } from "../../../../helpers/IPandMask/isValidSubnetMask";
 import MyButton from "../../MyButton.vue";
-import { createIsisNetworkAddress } from "../../../../helpers/IPandMask/createIsisNetworkAddress";
 
-// console.log(createIsisNetworkAddress(49, 1, "192.168.10.1"));
 interface IPortPassive {
   id: number;
   port: number | null;
@@ -29,20 +25,6 @@ const setIsisConfigurationt = () => {
   emit("setIsisConfiguration", isisConfiguration);
 };
 
-// watch(
-//   isisConfiguration,
-//   () => {
-//     if (validateIPv4(isisConfiguration.value.ip_address)) {
-//       isisConfiguration.value.net_ip = createIsisNetworkAddress(
-//         isisConfiguration.value.afi,
-//         isisConfiguration.value.area_id,
-//         isisConfiguration.value.ip_address
-//       );
-//     }
-//   },
-//   { deep: true }
-// );
-
 const addNeighbor = () => {
   isisConfiguration.value.array_ports_passive.push({
     id: Date.now(),
@@ -60,53 +42,6 @@ const deleteNeighbor = (id: number) => {
 
 <template>
   <div>
-    <!-- <div class="divContent">
-      <p>Уникальный номер процесса OSPF:</p>
-      <MyInput
-        type="number"
-        placeholder="1"
-        v-model="isisConfiguration.number_ospf"
-      />
-    </div> -->
-    <!-- <div class="divContent">
-      <p>IP адрес:</p>
-      <MyInput
-        type="text"
-        placeholder="192.0.0.1"
-        v-model="isisConfiguration.ip_address"
-      />
-    </div> -->
-    <!-- <p v-if="!validateIPv4(isisConfiguration.ip_address)" class="validError">
-      Введите корректный IP адрес
-    </p> -->
-    <!-- <div class="divContent">
-      <p>Маска подсети:</p>
-      <MyInput
-        type="text"
-        placeholder="255.255.0.0"
-        v-model="isisConfiguration.mask_ip_address"
-      />
-    </div>
-    <p
-      v-if="!isValidSubnetMask(isisConfiguration.mask_ip_address)"
-      class="validError"
-    >
-      Введите корректную маску подсети
-    </p> -->
-    <!-- <div class="divContent">
-      <p>AFI (для net адреса):</p>
-      <MyInput type="number" placeholder="49" v-model="isisConfiguration.afi" />
-    </div>
-    <div class="divContent">
-      <p>Area ID (для net адреса):</p>
-      <MyInput
-        min="0"
-        max="9999"
-        type="number"
-        placeholder="1"
-        v-model="isisConfiguration.area_id"
-        />
-      </div> -->
     <div class="divContent">
       <p>Номер процесса IS-IS:</p>
       <MyInput
@@ -132,20 +67,35 @@ const deleteNeighbor = (id: number) => {
         v-model="isisConfiguration.level"
       />
     </div>
-    <div class="list-ports-passive">
+
+    <div class="divContent">
       <p>Номера пассивных портов IS-IS:</p>
-      <MyButton @click="addNeighbor">Добавить порт</MyButton>
+      <MyButton style="margin-left: auto" @click="addNeighbor"
+        >Добавить порт</MyButton
+      >
+    </div>
+    <div class="list-ports-passive">
       <div
         class="divContent"
         v-for="port of isisConfiguration.array_ports_passive"
         :key="port.id"
       >
         <p>Номер порта:</p>
-        <MyInput min="0" type="number" placeholder="1" v-model="port.port" />
-        <MyButton @click="deleteNeighbor(port.id)">Удалить</MyButton>
+        <MyInput
+          style="width: 50px"
+          min="0"
+          type="number"
+          placeholder="1"
+          v-model="port.port"
+        />
+        <MyButton
+          style="margin-left: auto; width: 60px; height: 30px"
+          @click="deleteNeighbor(port.id)"
+          >Удалить</MyButton
+        >
       </div>
     </div>
-    <MyButton @click="setIsisConfigurationt"
+    <MyButton style="margin-left: auto" @click="setIsisConfigurationt"
       >Сохранить конфигурацию IS-IS</MyButton
     >
   </div>
@@ -156,11 +106,15 @@ const deleteNeighbor = (id: number) => {
   display: flex;
   flex-direction: row;
   gap: 5px;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
 }
 .validError {
   color: red;
   margin-left: auto;
+}
+.list-ports-passive {
+  max-height: 150px;
+  overflow-y: scroll;
 }
 </style>

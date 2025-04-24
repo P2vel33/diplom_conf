@@ -119,7 +119,7 @@ const updatePorts = (portConfiguration: object) => {
                   ]
                 ),
               },
-              (_, i) => i + 1
+              (_, i) => i
             )
           "
           v-model="selectedPort"

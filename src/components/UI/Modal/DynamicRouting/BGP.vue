@@ -12,40 +12,16 @@ interface IBgpNeighbor {
 interface IbgpConfiguration {
   number_bgp: number;
   array_neighbor: IBgpNeighbor[];
-  //   ip_address: string;
-  //   mask_ip_address: string;
-  //   network_ip: string;
-  //   mask_network_ip: string;
-  //   area: number;
 }
 const bgpConfiguration: Ref<IbgpConfiguration> = ref({
   number_bgp: 65001,
   array_neighbor: [{ id: Date.now(), neighbor: "", remote_as: null }],
-  //   ip_address: "",
-  //   network_ip: "",
-  //   mask_ip_address: "",
-  //   mask_network_ip: "",
-  //   area: 0,
 });
 
 const emit = defineEmits(["setBgpConfiguration"]);
 const setbgpConfiguration = () => {
   emit("setBgpConfiguration", bgpConfiguration);
 };
-
-// watch(
-//   bgpConfiguration,
-//   () => {
-//     bgpConfiguration.value.network_ip = calculateNetworkAddress(
-//       bgpConfiguration.value.ip_address,
-//       bgpConfiguration.value.mask_ip_address
-//     );
-//     bgpConfiguration.value.mask_network_ip = calculateWildcardMask(
-//       bgpConfiguration.value.mask_ip_address
-//     );
-//   },
-//   { deep: true }
-// );
 
 const addNeighbor = () => {
   bgpConfiguration.value.array_neighbor.push({
@@ -66,12 +42,15 @@ const deleteNeighbor = (id: number) => {
     <div class="divContent">
       <p>Номер автономной системы (АС):</p>
       <MyInput
+        style="width: 60px"
         type="number"
         placeholder="65001"
         v-model="bgpConfiguration.number_bgp"
       />
     </div>
-    <MyButton @click="addNeighbor">Добавить соседнюю сеть</MyButton>
+    <MyButton style="margin-left: auto" @click="addNeighbor"
+      >Добавить соседнюю сеть</MyButton
+    >
     <div class="list-neighbor">
       <div
         class="divContent"
@@ -80,83 +59,28 @@ const deleteNeighbor = (id: number) => {
       >
         <p>IP адрес:</p>
         <MyInput
+          style="width: 90px"
           type="text"
           placeholder="192.0.0.1"
           v-model="neighbor.neighbor"
         />
         <p>Номер АС:</p>
         <MyInput
+          style="width: 60px"
           type="number"
           placeholder="65002"
           v-model="neighbor.remote_as"
         />
-        <!-- <p
-          v-if="!isValidSubnetMask(convertWildcardToSubnetMask(neighbor.mask))"
-          class="validError"
+        <MyButton
+          style="margin-left: auto; width: 60px; height: 30px"
+          @click="deleteNeighbor(neighbor.id)"
+          >Удалить</MyButton
         >
-          Введите корректную маску подсети
-        </p> -->
-        <MyButton @click="deleteNeighbor(neighbor.id)">Delete</MyButton>
       </div>
     </div>
-    <!-- <div class="divContent">
-      <p>IP адрес:</p>
-      <MyInput
-        type="text"
-        placeholder="192.0.0.1"
-        v-model="bgpConfiguration.ip_address"
-      />
-    </div>
-    <p v-if="!validateIPv4(bgpConfiguration.ip_address)" class="validError">
-      Введите корректный IP адрес
-    </p> -->
-    <!-- <div class="divContent">
-      <p>Маска подсети:</p>
-      <MyInput
-        type="text"
-        placeholder="255.255.0.0"
-        v-model="bgpConfiguration.mask_ip_address"
-      />
-    </div>
-    <p
-      v-if="!isValidSubnetMask(bgpConfiguration.mask_ip_address)"
-      class="validError"
+    <MyButton style="margin-left: auto" @click="setbgpConfiguration"
+      >Сохранить конфигурацию BGP</MyButton
     >
-      Введите корректную маску подсети
-    </p> -->
-    <!-- <div class="divContent">
-      <p>IP адрес сети:</p>
-      <MyInput
-        type="text"
-        placeholder="192.0.0.0"
-        v-model="bgpConfiguration.network_ip"
-      />
-    </div>
-    <p
-      v-if="
-        !isSameNetwork(
-          bgpConfiguration.ip_address,
-          bgpConfiguration.mask_ip_address,
-          bgpConfiguration.network_ip
-        )
-      "
-      class="validError"
-    >
-      Введите корректный IP адрес
-    </p> -->
-    <!-- <div class="divContent">
-      <p>Обратная маска сети:</p>
-      <MyInput
-        type="text"
-        placeholder="255.255.0.0"
-        v-model="bgpConfiguration.array_neighbor"
-      />
-    </div> -->
-    <!-- <div class="divContent">
-      <p>Номер области (area) OSPF:</p>
-      <MyInput type="number" placeholder="0" v-model="bgpConfiguration.area" />
-    </div> -->
-    <MyButton @click="setbgpConfiguration">Сохранить конфигурацию BGP</MyButton>
   </div>
 </template>
 
@@ -165,7 +89,7 @@ const deleteNeighbor = (id: number) => {
   display: flex;
   flex-direction: row;
   gap: 5px;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
 }
 .validError {

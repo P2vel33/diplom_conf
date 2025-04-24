@@ -115,7 +115,7 @@ watch(pickedDynamicRouting, (e) => console.log(e));
     >
       <!-- <DynamicRouting /> -->
       <div class="divContent">
-        <p>Local IP address:</p>
+        <p>IP адрес:</p>
         <MyInput
           type="text"
           placeholder="192.0.0.0"
@@ -126,10 +126,10 @@ watch(pickedDynamicRouting, (e) => console.log(e));
         v-if="!validateIPv4(portConfiguration.local_ip_address) || checkIP()"
         class="validError"
       >
-        Enter correct IP address
+        Введите корректный IP адрес
       </p>
       <div class="divContent">
-        <p>Mask:</p>
+        <p>Маска подсети:</p>
         <MyInput
           type="text"
           placeholder="255.255.0.0"
@@ -140,9 +140,9 @@ watch(pickedDynamicRouting, (e) => console.log(e));
         v-if="!isValidSubnetMask(portConfiguration.mask_local_ip)"
         class="validError"
       >
-        Enter correct Mask
+        Введите корректную маску подсети
       </p>
-      <div class="divContent">
+      <!-- <div class="divContent">
         <p>External IP address:</p>
         <MyInput
           type="text"
@@ -155,8 +155,8 @@ watch(pickedDynamicRouting, (e) => console.log(e));
         class="validError"
       >
         Enter correct IP address
-      </p>
-      <div class="divContent">
+      </p> -->
+      <!-- <div class="divContent">
         <p>Mask:</p>
         <MyInput
           type="text"
@@ -169,7 +169,7 @@ watch(pickedDynamicRouting, (e) => console.log(e));
         class="validError"
       >
         Enter correct Mask
-      </p>
+      </p> -->
     </div>
     <MyButton
       :disabled="

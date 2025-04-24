@@ -5,9 +5,9 @@ import MyButton from "./UI/MyButton.vue";
 
 <template>
   <div class="navbar">
-    <MyButton @click="router.push('/')">Home</MyButton>
-    <MyButton @click="router.push('/yaml')">Yaml</MyButton>
-    <MyButton @click="router.push('/interactive')">Interactive</MyButton>
+    <!-- <MyButton @click="router.push('/')">Home</MyButton> -->
+    <MyButton @click="router.push('/yaml')">YAML</MyButton>
+    <MyButton @click="router.push('/interactive')">Интерактив</MyButton>
   </div>
 </template>
 

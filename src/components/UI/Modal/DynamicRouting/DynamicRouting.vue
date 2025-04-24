@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, type Ref } from "vue";
 import OSPF from "./OSPF.vue";
-import ISIS from "./ISIS.vue";
 import BGP from "./BGP.vue";
 import ISISs from "./ISISs.vue";
 
@@ -15,7 +14,7 @@ const getConfigure = (value: object): void => {
 <template>
   <div>
     <div class="divContent">
-      <p>Dynamic routing:</p>
+      <p>Динамические протоколы маршрутизации:</p>
       <div class="change-dynamic-routing">
         <input
           type="radio"

@@ -2,8 +2,8 @@
 import { ref, watch, type Ref } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
-import DynamicRouting from "./DynamicRouting/DynamicRouting.vue";
-
+import { validateIPv4 } from "../../../helpers/IPandMask/validateIPv4";
+import { isValidSubnetMask } from "../../../helpers/IPandMask/isValidSubnetMask";
 interface IPortConfiguration {
   vlan: null | number;
   local_ip_address: string;
@@ -31,49 +31,6 @@ const portConfiguration: Ref<IPortConfiguration> = ref({
   mask_external_ip: "",
 });
 const pickedDynamicRouting: Ref<string> = ref("");
-
-function validateIPv4(ip: string) {
-  // Регулярное выражение для проверки формата IP-адреса
-  const ipPattern =
-    /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$/;
-  // Проверка соответствия формату
-  if (!ipPattern.test(ip)) {
-    return false;
-  }
-  // Разделение IP-адреса на октеты
-  const octets = ip.split(".").map(Number);
-  // Проверка условий для первого и последнего октетов
-  if (
-    octets[0] === 0 ||
-    octets[0] === 255 ||
-    octets[3] === 0 ||
-    octets[3] === 255
-  ) {
-    return false;
-  }
-
-  return true;
-}
-
-function isValidSubnetMask(mask: string) {
-  // Регулярное выражение для проверки формата IP-адреса (маски)
-  const maskRegex =
-    /^(25[0-5]|(2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9]))(\.(25[0-5]|(2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9]))){3}$/;
-
-  // Проверить, соответствует ли маска формату IP-адреса
-  if (!maskRegex.test(mask)) {
-    return false; // Неверный формат маски
-  }
-
-  // Преобразование маски в двоичный формат
-  const maskParts = mask.split(".").map(Number);
-  let binary = maskParts
-    .map((num) => num.toString(2).padStart(8, "0"))
-    .join("");
-
-  // Проверка, чтобы после первой '0' не было '1'
-  return !binary.includes("01");
-}
 
 const checkIP = (): Boolean => {
   return (
@@ -113,7 +70,6 @@ watch(pickedDynamicRouting, (e) => console.log(e));
       style="display: flex; flex-direction: column; gap: 10px"
       v-if="selectedType === 'Router'"
     >
-      <!-- <DynamicRouting /> -->
       <div class="divContent">
         <p>IP адрес:</p>
         <MyInput
@@ -142,34 +98,6 @@ watch(pickedDynamicRouting, (e) => console.log(e));
       >
         Введите корректную маску подсети
       </p>
-      <!-- <div class="divContent">
-        <p>External IP address:</p>
-        <MyInput
-          type="text"
-          placeholder="192.0.0.0"
-          v-model="portConfiguration.external_ip_address"
-        />
-      </div>
-      <p
-        v-if="!validateIPv4(portConfiguration.external_ip_address) || checkIP()"
-        class="validError"
-      >
-        Enter correct IP address
-      </p> -->
-      <!-- <div class="divContent">
-        <p>Mask:</p>
-        <MyInput
-          type="text"
-          placeholder="255.255.0.0"
-          v-model="portConfiguration.mask_external_ip"
-        />
-      </div>
-      <p
-        v-if="!isValidSubnetMask(portConfiguration.mask_external_ip)"
-        class="validError"
-      >
-        Enter correct Mask
-      </p> -->
     </div>
     <MyButton
       :disabled="
@@ -180,16 +108,11 @@ watch(pickedDynamicRouting, (e) => console.log(e));
       "
       style="margin-left: auto"
       @click="saveConfigure"
-      >Save configure</MyButton
+      >Сохранить конфигурацию</MyButton
     >
   </div>
 </template>
 
-<!-- 
-          selectedType === 'Router'
-            ? !validateIPv4(newNode.external_ip_address) &&
-              !validateIPv4(newNode.local_ip_address)
-            : false -->
 <style scoped>
 .divContent {
   display: flex;
@@ -215,27 +138,4 @@ watch(pickedDynamicRouting, (e) => console.log(e));
   align-items: center;
   gap: 5px;
 }
-/* .dialog {
-  top: 0%;
-  bottom: 0%;
-  right: 0%;
-  left: 0%;
-  background: rgba(0, 0, 0, 0.5);
-  position: fixed;
-  display: flex;
-  gap: 10px;
-  z-index: 1;
-}
-
-.dialog__content {
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  background: white;
-  border-radius: 12px;
-  min-height: 100px;
-  min-width: 500px;
-  padding: 20px;
-  gap: 10px;
-} */
 </style>

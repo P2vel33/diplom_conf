@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as vNG from "v-network-graph";
-import type { Nodes, Edges, Node } from "v-network-graph";
+import type { Nodes, Edges } from "v-network-graph";
 import { provide, ref, type Ref } from "vue";
 import MyButton from "./UI/MyButton.vue";
 import ModalNodeAdded from "./UI/Modal/ModalNodeAdded.vue";
@@ -10,18 +10,21 @@ import { useInteractiveVisiable } from "../store/InteractiveVisiable";
 import ModalNodeDeleted from "./UI/Modal/ModalNodeDeleted.vue";
 import View from "./View.vue";
 
+interface myNode {
+  name: string;
+  [x: string]: any;
+}
 const interactiveVisiable = useInteractiveVisiable();
-
 const objectNodes: Ref<Nodes> = ref({});
 const objectEdges: Ref<Edges> = ref({});
 
-const addObjectNodes = (object: Node) => {
+const addObjectNodes = (object: myNode) => {
   objectNodes.value[object.name] = {
     ...object,
     face: object.typeOfNetworkHardware === "Switch" ? "Comm.png" : "Router.png",
   };
 };
-const deleteObjectNodes = (object: Node) => {
+const deleteObjectNodes = (object: myNode) => {
   delete objectNodes.value[object.name];
 };
 
@@ -46,23 +49,7 @@ provide("objectEdges", { addObjectEdges, deleteObjectEdges });
           interactiveVisiable.isVisiableModalNodeAdded = true;
         }
       "
-      >Add Node</MyButton
-    >
-    <MyButton
-      @click="
-        () => {
-          interactiveVisiable.isVisiableModalLinkAdded = true;
-        }
-      "
-      >Add link</MyButton
-    >
-    <MyButton
-      @click="
-        () => {
-          interactiveVisiable.isVisiableModalLinkDeleted = true;
-        }
-      "
-      >Delete Link</MyButton
+      >Добавить узел сети</MyButton
     >
     <MyButton
       @click="
@@ -70,7 +57,23 @@ provide("objectEdges", { addObjectEdges, deleteObjectEdges });
           interactiveVisiable.isVisiableModalNodeDeleted = true;
         }
       "
-      >Delete Node</MyButton
+      >Удалить узел сети</MyButton
+    >
+    <MyButton
+      @click="
+        () => {
+          interactiveVisiable.isVisiableModalLinkAdded = true;
+        }
+      "
+      >Добавить связь</MyButton
+    >
+    <MyButton
+      @click="
+        () => {
+          interactiveVisiable.isVisiableModalLinkDeleted = true;
+        }
+      "
+      >Удалить связь</MyButton
     >
   </div>
   <ModalNodeAdded />

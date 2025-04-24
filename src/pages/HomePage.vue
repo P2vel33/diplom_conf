@@ -27,7 +27,7 @@ const selectChangeInteractive = (): void => {
           selectChangeYaml();
           router.push('/yaml');
         "
-        >Yaml</MyButton
+        >Создание сети с помощью YAML-файла</MyButton
       >
       <MyButton
         style="width: 45%; height: 80%; font-size: 50px"
@@ -35,7 +35,7 @@ const selectChangeInteractive = (): void => {
           selectChangeInteractive();
           router.push('/interactive');
         "
-        >Interactive</MyButton
+        >Интерактивное создание сети</MyButton
       >
     </div>
   </div>

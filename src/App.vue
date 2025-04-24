@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar.vue";
 <template>
   <div class="app">
     <div class="nav">
-      <h1 style="border: none">Network`s Model</h1>
+      <h1 style="border: none">Модель сети</h1>
       <Navbar />
     </div>
     <router-view></router-view>

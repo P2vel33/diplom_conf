@@ -62,27 +62,27 @@ const updatePorts = (portConfiguration: object) => {
     @click="interactiveVisiable.toggleIsVisiableModalNodeAdded"
   >
     <div @click.stop class="dialog__content">
-      <h1>Add node</h1>
+      <h1>Добавление узла сети</h1>
       <div class="divContent">
-        <p>Type:</p>
+        <p>Тип:</p>
         <MySelect :options="Object.keys(networkRouters)" v-model="selectedType"
-          >Select the network equipment</MySelect
+          >Выберите тип сетевого оборудования</MySelect
         >
       </div>
       <div class="divContent" v-if="selectedType">
-        <p>Vendor:</p>
+        <p>Производитель:</p>
         <MySelect
           :options="Object.keys(networkRouters[selectedType])"
           v-model="selectedVendor"
-          >Select the vendor</MySelect
+          >Выберите производителя</MySelect
         >
       </div>
       <div class="divContent" v-if="selectedVendor && selectedType">
-        <p>{{ selectedType }}:</p>
+        <p>{{ selectedType === "Switch" ? "Коммутатор" : "Маршрутизатор" }}:</p>
         <MySelect
           :options="Object.keys(networkRouters[selectedType][selectedVendor])"
           v-model="selectedEquipment"
-          >Select the equipment</MySelect
+          >Веберите сетевое оборудование</MySelect
         >
       </div>
       <!-- <div class="divContent" v-if="selectedEquipment">
@@ -97,7 +97,7 @@ const updatePorts = (portConfiguration: object) => {
       </div> -->
 
       <div class="divContent">
-        <p>Name:</p>
+        <p>Наименование узла сети:</p>
         <MyInput
           v-focus
           type="text"
@@ -108,7 +108,7 @@ const updatePorts = (portConfiguration: object) => {
 
       <DynamicRouting v-if="selectedType === 'Router'" />
       <div class="divContent" v-if="selectedEquipment">
-        <p>Port:</p>
+        <p>Порт:</p>
         <MySelect
           :options="
             Array.from(
@@ -124,7 +124,7 @@ const updatePorts = (portConfiguration: object) => {
           "
           v-model="selectedPort"
           @change="changePort(selectedPort)"
-          >Select of port</MySelect
+          >Выберите порт</MySelect
         >
       </div>
       <PortConfiguration
@@ -151,7 +151,7 @@ const updatePorts = (portConfiguration: object) => {
           });
           useClearObject(newNode);
         "
-        >Add</MyButton
+        >Добавить</MyButton
       >
     </div>
   </div>

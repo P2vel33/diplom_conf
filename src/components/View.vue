@@ -8,7 +8,7 @@ import {
 } from "v-network-graph/lib/force-layout";
 import { useNodeStore } from "../store/NodeStore";
 import type { Nodes, Position, Node } from "v-network-graph";
-import { ref, watch, type Ref } from "vue";
+import { onMounted, ref, watch, type Ref } from "vue";
 import ModalNode from "./UI/Modal/ModalNode.vue";
 // import useEventHadlers from "../hooks/useEventHadlers";
 
@@ -116,6 +116,23 @@ const viewNetwork = () => {
 //   nodeStore
 // );
 // const nodeModal: Ref<Node> = ref({});
+
+onMounted(() => {
+  debounce(
+    () => {
+      viewNetwork();
+      // console.log(objectNodes);
+      // const { nodeModal1 } = useEventHadlers(
+      //   objectNodes,
+      //   nodeStore,
+      //   nodeModal
+      // );
+      // console.log(nodeModal1);
+    },
+    timeDebounce,
+    { leading: false, maxWait: 3500, trailing: true }
+  )();
+});
 
 watch(
   () => watchObject,

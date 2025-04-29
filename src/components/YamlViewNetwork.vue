@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import type { Nodes, Edges } from "v-network-graph";
+// import type { Nodes, Edges } from "v-network-graph";
 import { computed, ref, watch, type Ref } from "vue";
 import useYamlToJson from "../hooks/useYamlToJson";
 import useNodesAndEdges from "../hooks/useNodesAndEdges";
 import View from "./View.vue";
+import { useNodesAndLinks } from "../store/NodesAndLinks";
+
+const nodesAndLinks = useNodesAndLinks();
 
 const { textFromTextArea } = defineProps({
   textFromTextArea: {
@@ -18,16 +21,20 @@ const jsonFromTextArea = computed(() => {
 });
 console.log(jsonFromTextArea.value);
 
-const objectNodes: Ref<Nodes> = ref({});
-const objectEdges: Ref<Edges> = ref({});
 watch(jsonFromTextArea, (newjsonFromTextArea) => {
-  objectEdges.value = useNodesAndEdges(newjsonFromTextArea).objectEdges.value;
-  objectNodes.value = useNodesAndEdges(newjsonFromTextArea).objectNodes.value;
+  nodesAndLinks.objectEdges =
+    useNodesAndEdges(newjsonFromTextArea).objectEdges.value;
+  nodesAndLinks.objectNodes =
+    useNodesAndEdges(newjsonFromTextArea).objectNodes.value;
 });
 </script>
 
 <template>
-  <View :objectEdges :objectNodes :watchObject="jsonFromTextArea" />
+  <View
+    :objectEdges="nodesAndLinks.objectEdges"
+    :objectNodes="nodesAndLinks.objectNodes"
+    :watchObject="jsonFromTextArea"
+  />
 </template>
 
 <style scoped></style>

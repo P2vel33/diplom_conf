@@ -9,32 +9,48 @@ import ModalLinkDeleted from "./UI/Modal/ModalLinkDeleted.vue";
 import { useInteractiveVisiable } from "../store/InteractiveVisiable";
 import ModalNodeDeleted from "./UI/Modal/ModalNodeDeleted.vue";
 import View from "./View.vue";
+import { useNodesAndLinks } from "../store/NodesAndLinks";
 
 interface myNode {
   name: string;
   [x: string]: any;
 }
-const interactiveVisiable = useInteractiveVisiable();
-const objectNodes: Ref<Nodes> = ref({});
-const objectEdges: Ref<Edges> = ref({});
 
+const nodesAndLinks = useNodesAndLinks();
+
+const interactiveVisiable = useInteractiveVisiable();
+// const objectNodes: Ref<Nodes> = ref({});
+// const objectEdges: Ref<Edges> = ref({});
+
+// const addObjectNodes = (object: myNode) => {
+//   objectNodes.value[object.name] = {
+//     ...object,
+//     face: object.typeOfNetworkHardware === "Switch" ? "Comm.png" : "Router.png",
+//   };
+// };
 const addObjectNodes = (object: myNode) => {
-  objectNodes.value[object.name] = {
+  nodesAndLinks.objectNodes[object.name] = {
     ...object,
     face: object.typeOfNetworkHardware === "Switch" ? "Comm.png" : "Router.png",
   };
 };
 const deleteObjectNodes = (object: myNode) => {
-  delete objectNodes.value[object.name];
+  // console.log(Object.keys(nodesAndLinks.objectEdges).forEach(elem => elem.split('-')));
+  const arr = Object.keys(nodesAndLinks.objectEdges).filter((elem) => {
+    const item = elem.split("-");
+    return item.some((obj) => obj === object.name);
+  });
+  arr.forEach((elem) => delete nodesAndLinks.objectEdges[elem]);
+  delete nodesAndLinks.objectNodes[object.name];
 };
 
 const addObjectEdges = (object: vNG.Edge) => {
   const { target, source } = object;
-  objectEdges.value[`${source}-${target}`] = { target, source };
+  nodesAndLinks.objectEdges[`${source}-${target}`] = { target, source };
 };
 const deleteObjectEdges = (object: vNG.Edge) => {
   const { target, source } = object;
-  delete objectEdges.value[`${source}-${target}`];
+  delete nodesAndLinks.objectEdges[`${source}-${target}`];
 };
 
 provide("objectNodes", { addObjectNodes, deleteObjectNodes });
@@ -80,7 +96,11 @@ provide("objectEdges", { addObjectEdges, deleteObjectEdges });
   <ModalLinkAdded />
   <ModalLinkDeleted />
   <ModalNodeDeleted />
-  <View :objectEdges :objectNodes :watchObject="objectEdges" />
+  <View
+    :objectEdges="nodesAndLinks.objectEdges"
+    :objectNodes="nodesAndLinks.objectNodes"
+    :watchObject="nodesAndLinks.objectEdges"
+  />
 </template>
 
 <style scoped>

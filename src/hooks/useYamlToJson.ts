@@ -24,7 +24,6 @@ export default function useYamlToJson(text: string | null) {
   }
 
   yamlTransfomToJson.value = jsonToObject(yamlToJson(text));
-  console.log(yamlTransfomToJson.value);
 
   return { yamlTransfomToJson };
 }

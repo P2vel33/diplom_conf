@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, ref, type Ref } from "vue";
+import { ref, type Ref } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import MySelect from "../MySelect.vue";
@@ -8,9 +8,11 @@ import useClearObject from "../../../hooks/useClearObject";
 import { networkRouters } from "../../../data/NetworkRouters";
 import PortConfiguration from "./PortConfiguration.vue";
 import DynamicRouting from "./DynamicRouting/DynamicRouting.vue";
+import { useNodesAndLinks } from "../../../store/NodesAndLinks";
+
+const nodesAndLinks = useNodesAndLinks();
 
 const interactiveVisiable = useInteractiveVisiable();
-const { addObjectNodes } = inject("objectNodes");
 
 const selectedType = ref("");
 const selectedPort = ref(0);
@@ -85,17 +87,6 @@ const updatePorts = (portConfiguration: object) => {
           >Веберите сетевое оборудование</MySelect
         >
       </div>
-      <!-- <div class="divContent" v-if="selectedEquipment">
-        <p>Ports:</p>
-        <p class="ports">
-          {{
-            Number(
-              networkRouters[selectedType][selectedVendor][selectedEquipment]
-            )
-          }}
-        </p>
-      </div> -->
-
       <div class="divContent">
         <p>Наименование узла сети:</p>
         <MyInput
@@ -133,15 +124,13 @@ const updatePorts = (portConfiguration: object) => {
         @updatePorts="(e) => updatePorts(e)"
         :selectedType
       />
-      <!-- <IP /> -->
-      <!-- <MyButton @click="saveConfigure">Save configure</MyButton> -->
 
       <MyButton
         style="margin-left: auto"
         :disabled="!newNode.name"
         @click="
           interactiveVisiable.toggleIsVisiableModalNodeAdded();
-          addObjectNodes({
+          nodesAndLinks.addObjectNodes({
             ...Object.fromEntries(
               Object.entries(newNode).filter((elem) => elem[1])
             ),
@@ -161,7 +150,6 @@ const updatePorts = (portConfiguration: object) => {
 .divContent {
   display: flex;
   flex-direction: row;
-  /* gap: 5px; */
   justify-content: space-between;
   align-items: center;
 }

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { inject } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
 import type { Edge } from "v-network-graph";
 import useClearObject from "../../../hooks/useClearObject";
+import { useNodesAndLinks } from "../../../store/NodesAndLinks";
+
+const nodesAndLinks = useNodesAndLinks();
 
 const interactiveVisiable = useInteractiveVisiable();
-const { deleteObjectEdges } = inject("objectEdges");
 
 const deletedLink: Edge = {
   target: "",
@@ -45,7 +46,7 @@ const deletedLink: Edge = {
         style="margin-left: auto"
         @click="
           interactiveVisiable.toggleIsVisiableModalLinkDeleted();
-          deleteObjectEdges(deletedLink);
+          nodesAndLinks.deleteObjectEdges(deletedLink);
           useClearObject(deletedLink);
         "
         >Delete</MyButton

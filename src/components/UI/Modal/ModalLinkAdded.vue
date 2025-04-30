@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { inject } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
 import type { Edge } from "v-network-graph";
 import useClearObject from "../../../hooks/useClearObject";
+import { useNodesAndLinks } from "../../../store/NodesAndLinks";
+
+const nodesAndLinks = useNodesAndLinks();
 
 const interactiveVisiable = useInteractiveVisiable();
-const { addObjectEdges } = inject("objectEdges");
+// const { addObjectEdges } = inject("objectEdges");
 
 const newLink: Edge = {
   target: "",
@@ -41,7 +43,7 @@ const newLink: Edge = {
         style="margin-left: auto"
         @click="
           interactiveVisiable.toggleIsVisiableModalLinkAdded();
-          addObjectEdges(newLink);
+          nodesAndLinks.addObjectEdges(newLink);
           useClearObject(newLink);
         "
         >Add</MyButton

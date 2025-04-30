@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import type { Nodes, Edges } from "v-network-graph";
-import { computed, ref, watch, type Ref } from "vue";
+import { computed, watch } from "vue";
 import useYamlToJson from "../hooks/useYamlToJson";
 import useNodesAndEdges from "../hooks/useNodesAndEdges";
 import View from "./View.vue";
@@ -16,10 +16,10 @@ const { textFromTextArea } = defineProps({
 });
 
 const jsonFromTextArea = computed(() => {
-  console.log(useYamlToJson(textFromTextArea).yamlTransfomToJson.value);
+  // console.log(useYamlToJson(textFromTextArea).yamlTransfomToJson.value);
   return useYamlToJson(textFromTextArea).yamlTransfomToJson.value;
 });
-console.log(jsonFromTextArea.value);
+// console.log(jsonFromTextArea.value);
 
 watch(jsonFromTextArea, (newjsonFromTextArea) => {
   nodesAndLinks.objectEdges =

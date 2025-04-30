@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { inject } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
-import type { Node } from "v-network-graph";
 import useClearObject from "../../../hooks/useClearObject";
+import { useNodesAndLinks } from "../../../store/NodesAndLinks";
+interface myNode {
+  name: string;
+  [x: string]: any;
+}
 
 const interactiveVisiable = useInteractiveVisiable();
-const { deleteObjectNodes } = inject("objectNodes");
+const nodesAndLinks = useNodesAndLinks();
 
-const deletedNode: Node = {
+const deletedNode: myNode = {
   name: "",
 };
 </script>
@@ -36,7 +39,7 @@ const deletedNode: Node = {
         style="margin-left: auto"
         @click="
           interactiveVisiable.toggleIsVisiableModalNodeDeleted();
-          deleteObjectNodes(deletedNode);
+          nodesAndLinks.deleteObjectNodes(deletedNode);
           useClearObject(deletedNode);
         "
         >Delete</MyButton
@@ -63,7 +66,6 @@ const deletedNode: Node = {
   display: flex;
   gap: 10px;
   z-index: 1;
-  /* padding: 20px; */
 }
 
 .dialog__content {

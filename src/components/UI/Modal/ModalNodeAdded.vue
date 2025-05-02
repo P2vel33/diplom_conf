@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, type Ref } from "vue";
+import { ref, watch, type Ref } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import MySelect from "../MySelect.vue";
@@ -9,11 +9,15 @@ import { networkRouters } from "../../../data/NetworkRouters";
 import PortConfiguration from "./PortConfiguration.vue";
 import DynamicRouting from "./DynamicRouting/DynamicRouting.vue";
 import { useNodesAndLinks } from "../../../store/NodesAndLinks";
+import MPLS from "./Settings/MPLS.vue";
+import L3VPN from "./Settings/L3VPN.vue";
 
 const nodesAndLinks = useNodesAndLinks();
 
 const interactiveVisiable = useInteractiveVisiable();
 
+const selectedMpls = ref(false);
+const selectedL3vpn = ref(false);
 const selectedType = ref("");
 const selectedPort = ref(0);
 const selectedVendor = ref("");
@@ -55,6 +59,10 @@ const updatePorts = (portConfiguration: object) => {
   newNode.value.ports[selectedPort.value] = { ...obj };
   selectedPort.value = 0;
 };
+
+watch(selectedMpls, () => {
+  console.log(typeof selectedMpls.value);
+});
 </script>
 
 <template>
@@ -98,6 +106,20 @@ const updatePorts = (portConfiguration: object) => {
       </div>
 
       <DynamicRouting v-if="selectedType === 'Router'" />
+      <div class="divContent" v-if="selectedType === 'Router'">
+        <p>MPLS:</p>
+        <input type="checkbox" v-model="selectedMpls" value="true" />
+      </div>
+      <MPLS
+        v-if="selectedEquipment && selectedMpls && selectedType === 'Router'"
+      />
+      <div class="divContent" v-if="selectedType === 'Router'">
+        <p>L3VPN:</p>
+        <input type="checkbox" v-model="selectedL3vpn" value="true" />
+      </div>
+      <L3VPN
+        v-if="selectedEquipment && selectedL3vpn && selectedType === 'Router'"
+      />
       <div class="divContent" v-if="selectedEquipment">
         <p>Порт:</p>
         <MySelect
@@ -159,6 +181,7 @@ const updatePorts = (portConfiguration: object) => {
   right: 0%;
   left: 0%;
   background: rgba(0, 0, 0, 0.5);
+  overflow-y: scroll;
   position: fixed;
   display: flex;
   gap: 10px;

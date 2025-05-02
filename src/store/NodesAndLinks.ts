@@ -12,7 +12,7 @@ export const useNodesAndLinks = defineStore("nodesAndLinks", () => {
   const objectNodes: Ref<Nodes> = ref({});
   const objectEdges: Ref<Edges> = ref({});
 
-  const addObjectNodes = (object: myNode) => {
+  const addObjectNodes = (object: Required<vNG.Node>) => {
     objectNodes.value[object.name] = {
       ...object,
       face:

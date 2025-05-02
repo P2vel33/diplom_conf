@@ -2,6 +2,7 @@
 import { ref, watch } from "vue";
 import MyButton from "../../MyButton.vue";
 import MyInput from "../../MyInput.vue";
+import { useSettingRouter } from "../../../../store/SettingRouter";
 
 // const { ports } = defineProps({
 //   ports: {
@@ -9,6 +10,8 @@ import MyInput from "../../MyInput.vue";
 //     required: true,
 //   },
 // });
+
+const settingRouter = useSettingRouter();
 const ports_mpls = ref([
   {
     id: Date.now(),
@@ -44,6 +47,11 @@ const checkPort = (port: { id: number; port: number | null }): boolean => {
 //   },
 //   { deep: true }
 // );
+
+const saveConfiguration = () => {
+  settingRouter.mpls = ports_mpls.value;
+  console.log(settingRouter.mpls);
+};
 </script>
 
 <template>
@@ -75,6 +83,7 @@ const checkPort = (port: { id: number; port: number | null }): boolean => {
         </div>
       </div>
     </div>
+    <MyButton @click="saveConfiguration">Сохранить конфигурацию</MyButton>
   </div>
 </template>
 

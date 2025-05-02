@@ -2,6 +2,8 @@
 import { ref, type Ref } from "vue";
 import MyInput from "../../MyInput.vue";
 import MyButton from "../../MyButton.vue";
+import { useSettingRouter } from "../../../../store/SettingRouter";
+const settingRouter = useSettingRouter();
 
 interface IPortPassive {
   id: number;
@@ -21,7 +23,8 @@ const isisConfiguration: Ref<IisisConfiguration> = ref({
 });
 
 const emit = defineEmits(["setIsisConfiguration"]);
-const setIsisConfigurationt = () => {
+const setIsisConfiguration = () => {
+  settingRouter.isis = isisConfiguration.value;
   emit("setIsisConfiguration", isisConfiguration);
 };
 
@@ -95,7 +98,7 @@ const deleteNeighbor = (id: number) => {
         >
       </div>
     </div>
-    <MyButton style="margin-left: auto" @click="setIsisConfigurationt"
+    <MyButton style="margin-left: auto" @click="setIsisConfiguration"
       >Сохранить конфигурацию IS-IS</MyButton
     >
   </div>

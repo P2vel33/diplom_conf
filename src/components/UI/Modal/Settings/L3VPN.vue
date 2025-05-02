@@ -2,6 +2,9 @@
 import { ref } from "vue";
 import MyInput from "../../MyInput.vue";
 import MyButton from "../../MyButton.vue";
+import { useSettingRouter } from "../../../../store/SettingRouter";
+
+const settingRouter = useSettingRouter();
 
 const l3vpn = ref([
   {
@@ -52,6 +55,11 @@ const deleteL3vpn = (id: number) => {
 //       : false;
 //   return res;
 // };
+
+const saveConfiguration = () => {
+  settingRouter.l3vpn = l3vpn.value;
+  console.log(settingRouter.l3vpn);
+};
 </script>
 
 <template>
@@ -112,12 +120,13 @@ const deleteL3vpn = (id: number) => {
         </div>
       </div>
     </div>
+    <MyButton @click="saveConfiguration">Сохранить конфигурацию</MyButton>
   </div>
 </template>
 
 <style scoped>
 .port-list {
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: 100px;
 }
 .l3vpn {

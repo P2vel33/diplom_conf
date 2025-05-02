@@ -11,8 +11,10 @@ import DynamicRouting from "./DynamicRouting/DynamicRouting.vue";
 import { useNodesAndLinks } from "../../../store/NodesAndLinks";
 import MPLS from "./Settings/MPLS.vue";
 import L3VPN from "./Settings/L3VPN.vue";
+import { useSettingRouter } from "../../../store/SettingRouter";
 
 const nodesAndLinks = useNodesAndLinks();
+const settingRouter = useSettingRouter();
 
 const interactiveVisiable = useInteractiveVisiable();
 
@@ -58,6 +60,10 @@ const updatePorts = (portConfiguration: object) => {
   );
   newNode.value.ports[selectedPort.value] = { ...obj };
   selectedPort.value = 0;
+};
+
+const saveConfiguration = () => {
+  console.log(settingRouter);
 };
 
 watch(selectedMpls, () => {
@@ -152,14 +158,31 @@ watch(selectedMpls, () => {
         :disabled="!newNode.name"
         @click="
           interactiveVisiable.toggleIsVisiableModalNodeAdded();
-          nodesAndLinks.addObjectNodes({
-            ...Object.fromEntries(
-              Object.entries(newNode).filter((elem) => elem[1])
-            ),
-            typeOfNetworkHardware: selectedType,
-            model: selectedEquipment,
-            active: true,
-          });
+          saveConfiguration();
+          selectedType === 'Router'
+            ? nodesAndLinks.addObjectNodes({
+                ...Object.fromEntries(
+                  Object.entries(newNode).filter((elem) => elem[1])
+                ),
+                typeOfNetworkHardware: selectedType,
+                model: selectedEquipment,
+                active: true,
+                mpls: settingRouter.mpls
+                  .map((elem) => elem.port)
+                  .sort((a, b) => a - b),
+                ospf: settingRouter.ospf,
+                isis: settingRouter.isis,
+                bgp: settingRouter.bgp,
+                l3vpn: settingRouter.l3vpn,
+              })
+            : nodesAndLinks.addObjectNodes({
+                ...Object.fromEntries(
+                  Object.entries(newNode).filter((elem) => elem[1])
+                ),
+                typeOfNetworkHardware: selectedType,
+                model: selectedEquipment,
+                active: true,
+              });
           useClearObject(newNode);
         "
         >Добавить</MyButton

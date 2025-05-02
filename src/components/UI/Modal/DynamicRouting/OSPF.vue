@@ -2,7 +2,8 @@
 import { ref, type Ref } from "vue";
 import MyInput from "../../MyInput.vue";
 import MyButton from "../../MyButton.vue";
-
+import { useSettingRouter } from "../../../../store/SettingRouter";
+const settingRouter = useSettingRouter();
 interface IOspfNeighbor {
   id: number;
   network: string;
@@ -22,6 +23,7 @@ const ospfConfiguration: Ref<IOspfConfiguration> = ref({
 const emit = defineEmits(["setOspfConfiguration"]);
 const setOspfConfiguration = () => {
   emit("setOspfConfiguration", ospfConfiguration);
+  settingRouter.ospf = ospfConfiguration.value;
 };
 
 const addNeighbor = () => {

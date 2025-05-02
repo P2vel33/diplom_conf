@@ -2,7 +2,8 @@
 import { ref, type Ref } from "vue";
 import MyInput from "../../MyInput.vue";
 import MyButton from "../../MyButton.vue";
-
+import { useSettingRouter } from "../../../../store/SettingRouter";
+const settingRouter = useSettingRouter();
 interface IBgpNeighbor {
   id: number;
   neighbor: string;
@@ -21,6 +22,7 @@ const bgpConfiguration: Ref<IbgpConfiguration> = ref({
 const emit = defineEmits(["setBgpConfiguration"]);
 const setbgpConfiguration = () => {
   emit("setBgpConfiguration", bgpConfiguration);
+  settingRouter.bgp = bgpConfiguration.value;
 };
 
 const addNeighbor = () => {

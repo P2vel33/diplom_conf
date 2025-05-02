@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import router from "../router/router";
+import { useNodesAndLinks } from "../store/NodesAndLinks";
 import MyButton from "./UI/MyButton.vue";
+const nodesAndLinks = useNodesAndLinks();
+const sendConfiguration = () => {
+  console.log(nodesAndLinks);
+};
 </script>
 
 <template>
@@ -8,6 +13,7 @@ import MyButton from "./UI/MyButton.vue";
     <!-- <MyButton @click="router.push('/')">Home</MyButton> -->
     <MyButton @click="router.push('/yaml')">YAML</MyButton>
     <MyButton @click="router.push('/interactive')">Интерактив</MyButton>
+    <MyButton @click="sendConfiguration">Отправить конфигурацию</MyButton>
   </div>
 </template>
 

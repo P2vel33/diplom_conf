@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { ref, type Ref } from "vue";
+import { computed, ref, watch, type Ref } from "vue";
 import MyInput from "../../MyInput.vue";
 import MyButton from "../../MyButton.vue";
 import { useSettingRouter } from "../../../../store/SettingRouter";
+import { isNetworkIpValid } from "../../../../helpers/IPandMask/isNetworkIPValid";
+import { isValidWildcardMask } from "../../../../helpers/IPandMask/isValidWildcardMask";
+import { isValidSubnetMask } from "../../../../helpers/IPandMask/isValidSubnetMask";
+import { isNonNegativeInteger } from "../../../../helpers/IPandMask/isNonNegativeInteger";
 const settingRouter = useSettingRouter();
+
 interface IOspfNeighbor {
   id: number;
   network: string;
@@ -39,6 +44,29 @@ const deleteNeighbor = (id: number) => {
   ospfConfiguration.value.array_neighbor =
     ospfConfiguration.value.array_neighbor.filter((elem) => elem.id !== id);
 };
+
+const errorOspf = computed(() => {
+  let res = false;
+  ospfConfiguration.value.array_neighbor.forEach((elem) => {
+    if (
+      isNetworkIpValid(elem.network, elem.mask) &&
+      isNonNegativeInteger(elem.area) &&
+      isValidSubnetMask(elem.mask)
+    )
+      return (res = true);
+    else return (res = false);
+  });
+  return res;
+});
+
+// watch(ospfConfiguration, () => {
+//   try {
+//     if()
+//     errorOspf.value = true
+//   } catch (error) {
+//     errorOspf.value = false
+//   }
+// },{deep:true})
 </script>
 
 <template>
@@ -63,21 +91,24 @@ const deleteNeighbor = (id: number) => {
       >
         <p>IP адрес сети:</p>
         <MyInput
+          :class="{ error: !isNetworkIpValid(neighbor.network, neighbor.mask) }"
           style="width: 90px"
           type="text"
           placeholder="192.0.0.0"
           v-model="neighbor.network"
         />
-        <p>Обратная маска сети:</p>
+        <p>Маска сети:</p>
         <MyInput
+          :class="{ error: !isValidSubnetMask(neighbor.mask) }"
           style="width: 90px"
           type="text"
-          placeholder="0.0.0.255"
+          placeholder="255.255.255.0"
           v-model="neighbor.mask"
         />
         <p>Номер области (area) OSPF:</p>
         <MyInput
           style="width: 50px"
+          :class="{ error: !isNonNegativeInteger(neighbor.area) || neighbor.area as number > 999}"
           type="number"
           placeholder="0"
           v-model="neighbor.area"
@@ -90,13 +121,22 @@ const deleteNeighbor = (id: number) => {
         >
       </div>
     </div>
-    <MyButton style="margin-left: auto" @click="setOspfConfiguration"
+    <MyButton
+      :disabled="!errorOspf"
+      :class="{ error: !errorOspf }"
+      style="margin-left: auto"
+      @click="setOspfConfiguration"
       >Сохранить конфигурацию OSPF</MyButton
     >
   </div>
 </template>
 
 <style scoped>
+.error {
+  color: red;
+  border: 3px solid red;
+}
+
 .divContent {
   display: flex;
   flex-direction: row;

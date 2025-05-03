@@ -15,7 +15,6 @@ import { useSettingRouter } from "../../../store/SettingRouter";
 
 const nodesAndLinks = useNodesAndLinks();
 const settingRouter = useSettingRouter();
-
 const interactiveVisiable = useInteractiveVisiable();
 
 const selectedMpls = ref(false);

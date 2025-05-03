@@ -117,6 +117,8 @@ watch(selectedMpls, () => {
       </div>
       <MPLS
         v-if="selectedEquipment && selectedMpls && selectedType === 'Router'"
+        :selectedEquipment="selectedEquipment"
+        :selectedVendor="selectedVendor"
       />
       <div class="divContent" v-if="selectedType === 'Router'">
         <p>L3VPN:</p>

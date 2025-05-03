@@ -1,16 +1,26 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref } from "vue";
 import MyButton from "../../MyButton.vue";
 import MyInput from "../../MyInput.vue";
 import { useSettingRouter } from "../../../../store/SettingRouter";
+import { networkRouters } from "../../../../data/NetworkRouters";
 
-// const { ports } = defineProps({
-//   ports: {
-//     type: Array,
-//     required: true,
-//   },
-// });
+const { selectedEquipment, selectedVendor } = defineProps({
+  selectedEquipment: {
+    type: String,
+    required: true,
+  },
+  selectedVendor: {
+    type: String,
+    required: true,
+  },
+});
+console.log(selectedEquipment, selectedVendor);
+const ports = computed(() => {
+  return networkRouters["Router"][selectedVendor][selectedEquipment];
+});
 
+console.log(ports.value);
 const settingRouter = useSettingRouter();
 const ports_mpls = ref([
   {
@@ -28,8 +38,11 @@ const addPort = () => {
 const deletePort = (id: number) => {
   ports_mpls.value = ports_mpls.value.filter((elem) => elem.id !== id);
 };
-const checkPort = (port: { id: number; port: number | null }): boolean => {
-  const res =
+const checkPort = (port: {
+  id: number;
+  port: number | null | string;
+}): boolean => {
+  let resOne =
     ports_mpls.value.filter((elem) => {
       if (port.port !== null) {
         return elem.port === port.port;
@@ -37,21 +50,35 @@ const checkPort = (port: { id: number; port: number | null }): boolean => {
     }).length > 1
       ? true
       : false;
-  return res;
+  let resTwo =
+    ports_mpls.value.filter((elem) => {
+      if (elem.port === null || elem.port === "") {
+        return true;
+      }
+    }).length > 0
+      ? true
+      : false;
+  let resThree = !ports_mpls.value.every((elem) => {
+    return elem.port >= 0 && elem.port < ports.value;
+  });
+  console.log(resOne, resTwo, resThree);
+  return resOne || resTwo || resThree;
 };
-
-// watch(
-//   ports_mpls,
-//   () => {
-//     console.log(ports_mpls.value);
-//   },
-//   { deep: true }
-// );
 
 const saveConfiguration = () => {
   settingRouter.mpls = ports_mpls.value;
   console.log(settingRouter.mpls);
 };
+
+const errorMpls = computed(() => {
+  let resOne = false;
+  ports_mpls.value.forEach((elem) => {
+    if (!checkPort(elem)) return (resOne = true);
+    else return (resOne = false);
+  });
+
+  return resOne;
+});
 </script>
 
 <template>
@@ -83,7 +110,12 @@ const saveConfiguration = () => {
         </div>
       </div>
     </div>
-    <MyButton @click="saveConfiguration">Сохранить конфигурацию</MyButton>
+    <MyButton
+      :class="{ error: !errorMpls }"
+      style="margin-left: auto"
+      @click="saveConfiguration"
+      >Сохранить конфигурацию</MyButton
+    >
   </div>
 </template>
 
@@ -99,6 +131,7 @@ const saveConfiguration = () => {
 }
 
 .error {
+  color: red;
   border: 3px solid red;
 }
 .divContent {

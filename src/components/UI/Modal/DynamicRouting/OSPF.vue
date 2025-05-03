@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, watch, type Ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 import MyInput from "../../MyInput.vue";
 import MyButton from "../../MyButton.vue";
 import { useSettingRouter } from "../../../../store/SettingRouter";
 import { isNetworkIpValid } from "../../../../helpers/IPandMask/isNetworkIPValid";
-import { isValidWildcardMask } from "../../../../helpers/IPandMask/isValidWildcardMask";
 import { isValidSubnetMask } from "../../../../helpers/IPandMask/isValidSubnetMask";
 import { isNonNegativeInteger } from "../../../../helpers/IPandMask/isNonNegativeInteger";
 const settingRouter = useSettingRouter();
@@ -12,6 +11,7 @@ const settingRouter = useSettingRouter();
 interface IOspfNeighbor {
   id: number;
   network: string;
+  reverse_mask: string;
   mask: string;
   area: number | null;
 }
@@ -22,7 +22,9 @@ interface IOspfConfiguration {
 }
 const ospfConfiguration: Ref<IOspfConfiguration> = ref({
   number_ospf: 1,
-  array_neighbor: [{ id: Date.now(), network: "", mask: "", area: null }],
+  array_neighbor: [
+    { id: Date.now(), network: "", mask: "", reverse_mask: "", area: null },
+  ],
 });
 
 const emit = defineEmits(["setOspfConfiguration"]);
@@ -35,6 +37,7 @@ const addNeighbor = () => {
   ospfConfiguration.value.array_neighbor.push({
     id: Date.now(),
     network: "",
+    reverse_mask: "",
     mask: "",
     area: null,
   });

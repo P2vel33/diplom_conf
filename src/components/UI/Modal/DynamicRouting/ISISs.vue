@@ -48,7 +48,7 @@ const checkPort = (port: {
   id: number;
   port: number | null | string;
 }): boolean => {
-  let res =
+  let resOne =
     isisConfiguration.value.array_ports_passive.filter((elem) => {
       if (port.port !== null) {
         return elem.port === port.port;
@@ -56,7 +56,7 @@ const checkPort = (port: {
     }).length > 1
       ? true
       : false;
-  res =
+  let resTwo =
     isisConfiguration.value.array_ports_passive.filter((elem) => {
       if (elem.port === null) {
         return true;
@@ -64,7 +64,7 @@ const checkPort = (port: {
     }).length > 0
       ? true
       : false;
-  return res;
+  return resOne || resTwo;
 };
 
 const errorIsis = computed(() => {

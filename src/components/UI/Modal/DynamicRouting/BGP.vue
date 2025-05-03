@@ -53,18 +53,25 @@ const errorBgp = computed(() => {
   let resOne = false;
   let resTwo = false;
   if (
-    isInRange(bgpConfiguration.value.number_bgp) ||
+    isInRange(bgpConfiguration.value.number_bgp) &&
     !bgpConfiguration.value.array_neighbor.some(
       (el) => el.remote_as === bgpConfiguration.value.number_bgp
     )
-  )
+  ) {
     resOne = true;
+  }
+
   const arrayIP = bgpConfiguration.value.array_neighbor.map(
     (elem) => elem.neighbor
   );
-  console.log(arrayIP);
-  resTwo = hasNoDuplicates(arrayIP);
-  console.log(resTwo);
+  resTwo =
+    hasNoDuplicates(arrayIP) &&
+    bgpConfiguration.value.array_neighbor.every(
+      (elem) => elem.neighbor && elem.remote_as
+    ) &&
+    bgpConfiguration.value.array_neighbor.every((elem) =>
+      validateIPv4(elem.neighbor)
+    );
   return resOne && resTwo;
 });
 </script>
@@ -105,7 +112,11 @@ const errorBgp = computed(() => {
         />
         <p>Номер АС:</p>
         <MyInput
-          :class="{ error: !isInRange(neighbor.remote_as) }"
+          :class="{
+            error:
+              !isInRange(neighbor.remote_as) ||
+              neighbor.remote_as === bgpConfiguration.number_bgp,
+          }"
           style="width: 100px"
           type="number"
           placeholder="64512-65534"

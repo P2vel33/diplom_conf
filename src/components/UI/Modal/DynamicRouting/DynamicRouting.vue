@@ -4,8 +4,10 @@ import OSPF from "./OSPF.vue";
 import BGP from "./BGP.vue";
 import ISISs from "./ISISs.vue";
 
+const checkDynamicRouting = ref(false);
 const pickedDynamicRouting: Ref<string> = ref("");
 watch(pickedDynamicRouting, (e) => console.log(e));
+watch(checkDynamicRouting, (e) => console.log(e));
 const getConfigure = (value: object): void => {
   console.log(value);
 };
@@ -15,49 +17,58 @@ const getConfigure = (value: object): void => {
   <div>
     <div class="divContent">
       <p>Динамические протоколы маршрутизации:</p>
-      <div class="change-dynamic-routing">
-        <input
-          type="radio"
-          id="is-is"
-          value="IS-IS"
-          v-model="pickedDynamicRouting"
-        />
-        <label for="is-is">IS-IS</label>
-      </div>
-      <div class="change-dynamic-routing">
-        <input
-          type="radio"
-          id="ospf"
-          value="OSPF"
-          v-model="pickedDynamicRouting"
-        />
-        <label for="ospf">OSPF</label>
-      </div>
-      <div class="change-dynamic-routing">
-        <input
-          type="radio"
-          id="bgp"
-          value="BGP"
-          v-model="pickedDynamicRouting"
-        />
-        <label for="bgp">BGP</label>
+      <input
+        type="checkbox"
+        id="dynamic-protocol"
+        v-model="checkDynamicRouting"
+      />
+      <div v-if="checkDynamicRouting">
+        <div class="change-dynamic-routing">
+          <input
+            type="radio"
+            id="is-is"
+            value="IS-IS"
+            v-model="pickedDynamicRouting"
+          />
+          <label for="is-is">IS-IS</label>
+        </div>
+        <div class="change-dynamic-routing">
+          <input
+            type="radio"
+            id="ospf"
+            value="OSPF"
+            v-model="pickedDynamicRouting"
+          />
+          <label for="ospf">OSPF</label>
+        </div>
+        <div class="change-dynamic-routing">
+          <input
+            type="radio"
+            id="bgp"
+            value="BGP"
+            v-model="pickedDynamicRouting"
+          />
+          <label for="bgp">BGP</label>
+        </div>
       </div>
     </div>
-    <OSPF
-      v-if="pickedDynamicRouting === 'OSPF'"
-      class="port-configure"
-      @setOspfConfiguration="(value) => getConfigure(value)"
-    />
-    <ISISs
-      v-if="pickedDynamicRouting === 'IS-IS'"
-      class="port-configure"
-      @setIsisConfiguration="(value) => getConfigure(value)"
-    />
-    <BGP
-      v-if="pickedDynamicRouting === 'BGP'"
-      class="port-configure"
-      @setBgpConfiguration="(value) => getConfigure(value)"
-    />
+    <div v-if="checkDynamicRouting">
+      <OSPF
+        v-if="pickedDynamicRouting === 'OSPF'"
+        class="port-configure"
+        @setOspfConfiguration="(value) => getConfigure(value)"
+      />
+      <ISISs
+        v-if="pickedDynamicRouting === 'IS-IS'"
+        class="port-configure"
+        @setIsisConfiguration="(value) => getConfigure(value)"
+      />
+      <BGP
+        v-if="pickedDynamicRouting === 'BGP'"
+        class="port-configure"
+        @setBgpConfiguration="(value) => getConfigure(value)"
+      />
+    </div>
   </div>
 </template>
 

@@ -103,6 +103,7 @@ const errorMpls = computed(() => {
           />
 
           <MyButton
+            :disabled="ports_mpls.length === 1"
             @click="deletePort(port.id)"
             style="width: 60px; height: 30px"
             >Удалить</MyButton
@@ -111,6 +112,7 @@ const errorMpls = computed(() => {
       </div>
     </div>
     <MyButton
+      :disabled="!errorMpls"
       :class="{ error: !errorMpls }"
       style="margin-left: auto"
       @click="saveConfiguration"

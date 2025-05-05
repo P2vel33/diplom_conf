@@ -125,6 +125,7 @@ const errorBgp = computed(() => {
           max="65534"
         />
         <MyButton
+          :disabled="bgpConfiguration.array_neighbor.length === 1"
           style="margin-left: auto; width: 60px; height: 30px"
           @click="deleteNeighbor(neighbor.id)"
           >Удалить</MyButton

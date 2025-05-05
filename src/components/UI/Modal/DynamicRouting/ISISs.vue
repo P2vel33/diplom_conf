@@ -146,6 +146,7 @@ const errorIsis = computed(() => {
           v-model="port.port"
         />
         <MyButton
+          :disabled="isisConfiguration.array_ports_passive.length === 1"
           style="margin-left: auto; width: 60px; height: 30px"
           @click="deleteNeighbor(port.id)"
           >Удалить</MyButton

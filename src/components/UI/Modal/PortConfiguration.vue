@@ -100,9 +100,16 @@ watch(pickedDynamicRouting, (e) => console.log(e));
       </p>
     </div>
     <MyButton
+      :class="{
+        error:
+          selectedType === 'Router'
+            ? !isValidSubnetMask(portConfiguration.mask_local_ip) ||
+              !validateIPv4(portConfiguration.local_ip_address)
+            : false,
+      }"
       :disabled="
         selectedType === 'Router'
-          ? !validateIPv4(portConfiguration.external_ip_address) &&
+          ? !isValidSubnetMask(portConfiguration.mask_local_ip) ||
             !validateIPv4(portConfiguration.local_ip_address)
           : false
       "
@@ -114,6 +121,10 @@ watch(pickedDynamicRouting, (e) => console.log(e));
 </template>
 
 <style scoped>
+.error {
+  color: red;
+  border: 3px solid red;
+}
 .divContent {
   display: flex;
   flex-direction: row;

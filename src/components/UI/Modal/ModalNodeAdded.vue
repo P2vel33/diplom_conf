@@ -104,6 +104,7 @@ watch(selectedMpls, () => {
         <p>Наименование узла сети:</p>
         <MyInput
           v-focus
+          :class="{ error: !newNode.name }"
           type="text"
           placeholder="Node 0"
           v-model="newNode.name as string"
@@ -126,6 +127,8 @@ watch(selectedMpls, () => {
       </div>
       <L3VPN
         v-if="selectedEquipment && selectedL3vpn && selectedType === 'Router'"
+        :selectedEquipment="selectedEquipment"
+        :selectedVendor="selectedVendor"
       />
       <div class="divContent" v-if="selectedEquipment">
         <p>Порт:</p>
@@ -155,6 +158,7 @@ watch(selectedMpls, () => {
       />
 
       <MyButton
+        :class="{ error: !newNode.name }"
         style="margin-left: auto"
         :disabled="!newNode.name"
         @click="
@@ -193,6 +197,10 @@ watch(selectedMpls, () => {
 </template>
 
 <style scoped>
+.error {
+  color: red;
+  border: 3px solid red;
+}
 .divContent {
   display: flex;
   flex-direction: row;

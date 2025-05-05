@@ -16,6 +16,15 @@ import Navbar from "./components/Navbar.vue";
 * {
   padding: 0%;
   margin: 0%;
+  box-sizing: border-box;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.6;
 }
 
 h1 {

@@ -118,6 +118,7 @@ const errorOspf = computed(() => {
           min="0"
         />
         <MyButton
+          :disabled="ospfConfiguration.array_neighbor.length === 1"
           style="width: 60px; height: 30px"
           @click="deleteNeighbor(neighbor.id)"
           >Удалить</MyButton

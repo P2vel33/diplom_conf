@@ -57,7 +57,10 @@ const updatePorts = (portConfiguration: object) => {
   const obj = Object.fromEntries(
     Object.entries(portConfiguration).filter((elem) => elem[1])
   );
+  console.log(portConfiguration);
+  console.log(obj);
   newNode.value.ports[selectedPort.value] = { ...obj };
+  console.log(newNode.value.ports);
   selectedPort.value = 0;
 };
 
@@ -187,7 +190,6 @@ watch(selectedMpls, () => {
         :disabled="!newNode.name"
         @click="
           interactiveVisiable.toggleIsVisiableModalNodeAdded();
-          saveConfiguration();
           selectedType === 'Router'
             ? nodesAndLinks.addObjectNodes({
                 ...Object.fromEntries(
@@ -196,9 +198,7 @@ watch(selectedMpls, () => {
                 typeOfNetworkHardware: selectedType,
                 model: selectedEquipment,
                 active: true,
-                mpls: settingRouter.mpls
-                  .map((elem) => elem.port)
-                  .sort((a, b) => a - b),
+                mpls: settingRouter.mpls,
                 ospf: settingRouter.ospf,
                 isis: settingRouter.isis,
                 bgp: settingRouter.bgp,
@@ -212,6 +212,7 @@ watch(selectedMpls, () => {
                 model: selectedEquipment,
                 active: true,
               });
+          saveConfiguration();
           useClearObject(newNode);
         "
         >Добавить</MyButton

@@ -4,7 +4,7 @@ import { useNodesAndLinks } from "../store/NodesAndLinks";
 import MyButton from "./UI/MyButton.vue";
 const nodesAndLinks = useNodesAndLinks();
 const sendConfiguration = () => {
-  console.log(nodesAndLinks);
+  console.log(nodesAndLinks.objectNodes);
 };
 </script>
 

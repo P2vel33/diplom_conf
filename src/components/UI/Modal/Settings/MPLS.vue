@@ -111,13 +111,15 @@ const errorMpls = computed(() => {
         </div>
       </div>
     </div>
-    <MyButton
-      :disabled="!errorMpls"
-      :class="{ error: !errorMpls }"
-      style="margin-left: auto"
-      @click="saveConfiguration"
-      >Сохранить конфигурацию</MyButton
-    >
+    <div class="divContent">
+      <MyButton
+        :disabled="!errorMpls"
+        :class="{ error: !errorMpls }"
+        style="margin-left: auto"
+        @click="saveConfiguration"
+        >Сохранить конфигурацию</MyButton
+      >
+    </div>
   </div>
 </template>
 

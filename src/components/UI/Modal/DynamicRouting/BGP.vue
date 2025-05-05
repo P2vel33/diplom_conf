@@ -105,7 +105,7 @@ const errorBgp = computed(() => {
           :class="{
             error: !validateIPv4(neighbor.neighbor),
           }"
-          style="width: 90px"
+          style="width: 115px"
           type="text"
           placeholder="192.0.0.1"
           v-model="neighbor.neighbor"
@@ -163,6 +163,6 @@ const errorBgp = computed(() => {
   flex-direction: column;
   gap: 10px;
   overflow-y: scroll;
-  max-height: 200px;
+  max-height: 100px;
 }
 </style>

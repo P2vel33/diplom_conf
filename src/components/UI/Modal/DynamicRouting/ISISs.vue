@@ -93,6 +93,7 @@ const errorIsis = computed(() => {
       <p>Номер процесса IS-IS:</p>
       <MyInput
         :class="{ error: !isNonNegativeInteger(isisConfiguration.process_isis) || isisConfiguration.process_isis as number > 999}"
+        style="width: 50px; margin-left: auto"
         min="0"
         type="number"
         placeholder="1"
@@ -103,6 +104,7 @@ const errorIsis = computed(() => {
       <p>Net адрес:</p>
       <MyInput
         :class="{ error: !isValidNetAddress(isisConfiguration.net_ip) }"
+        style="margin-left: auto"
         type="text"
         placeholder="49.0001.0000.0000.0001.00"
         v-model="isisConfiguration.net_ip"
@@ -111,6 +113,7 @@ const errorIsis = computed(() => {
     <div class="divContent">
       <p>Уровень:</p>
       <MyInput
+        style="margin-left: auto"
         :class="{
           error: !(
             isisConfiguration.level === '1' ||

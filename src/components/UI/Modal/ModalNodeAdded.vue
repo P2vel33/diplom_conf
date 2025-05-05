@@ -62,6 +62,13 @@ const updatePorts = (portConfiguration: object) => {
 };
 
 const saveConfiguration = () => {
+  selectedMpls.value = false;
+  selectedL3vpn.value = false;
+  selectedType.value = "";
+  selectedPort.value = 0;
+  selectedVendor.value = "";
+  selectedEquipment.value = "";
+  settingRouter.clearSettingRouter();
   console.log(settingRouter);
 };
 
@@ -78,84 +85,101 @@ watch(selectedMpls, () => {
   >
     <div @click.stop class="dialog__content">
       <h1>Добавление узла сети</h1>
-      <div class="divContent">
-        <p>Тип:</p>
-        <MySelect :options="Object.keys(networkRouters)" v-model="selectedType"
-          >Выберите тип сетевого оборудования</MySelect
-        >
-      </div>
-      <div class="divContent" v-if="selectedType">
-        <p>Производитель:</p>
-        <MySelect
-          :options="Object.keys(networkRouters[selectedType])"
-          v-model="selectedVendor"
-          >Выберите производителя</MySelect
-        >
-      </div>
-      <div class="divContent" v-if="selectedVendor && selectedType">
-        <p>{{ selectedType === "Switch" ? "Коммутатор" : "Маршрутизатор" }}:</p>
-        <MySelect
-          :options="Object.keys(networkRouters[selectedType][selectedVendor])"
-          v-model="selectedEquipment"
-          >Веберите сетевое оборудование</MySelect
-        >
-      </div>
-      <div class="divContent">
-        <p>Наименование узла сети:</p>
-        <MyInput
-          v-focus
-          :class="{ error: !newNode.name }"
-          type="text"
-          placeholder="Node 0"
-          v-model="newNode.name as string"
-        />
-      </div>
+      <div class="panel">
+        <div class="left-panel">
+          <div class="divContent">
+            <p>Тип:</p>
+            <MySelect
+              :options="Object.keys(networkRouters)"
+              v-model="selectedType"
+              >Выберите тип сетевого оборудования</MySelect
+            >
+          </div>
+          <div class="divContent" v-if="selectedType">
+            <p>Производитель:</p>
+            <MySelect
+              :options="Object.keys(networkRouters[selectedType])"
+              v-model="selectedVendor"
+              >Выберите производителя</MySelect
+            >
+          </div>
+          <div class="divContent" v-if="selectedVendor && selectedType">
+            <p>
+              {{ selectedType === "Switch" ? "Коммутатор" : "Маршрутизатор" }}:
+            </p>
+            <MySelect
+              :options="
+                Object.keys(networkRouters[selectedType][selectedVendor])
+              "
+              v-model="selectedEquipment"
+              >Веберите сетевое оборудование</MySelect
+            >
+          </div>
+          <div class="divContent">
+            <p>Наименование узла сети:</p>
+            <MyInput
+              v-focus
+              :class="{ error: !newNode.name }"
+              type="text"
+              placeholder="Node 0"
+              v-model="newNode.name as string"
+            />
+          </div>
 
-      <DynamicRouting v-if="selectedType === 'Router'" />
-      <div class="divContent" v-if="selectedType === 'Router'">
-        <p>MPLS:</p>
-        <input type="checkbox" v-model="selectedMpls" value="true" />
+          <DynamicRouting v-if="selectedType === 'Router'" />
+          <div class="divContent" v-if="selectedEquipment">
+            <p>Порт:</p>
+            <MySelect
+              :options="
+                Array.from(
+                  {
+                    length: Number(
+                      networkRouters[selectedType][selectedVendor][
+                        selectedEquipment
+                      ]
+                    ),
+                  },
+                  (_, i) => i
+                )
+              "
+              v-model="selectedPort"
+              @change="changePort(selectedPort)"
+              >Выберите порт</MySelect
+            >
+          </div>
+          <PortConfiguration
+            v-if="selectedPort"
+            v-model="selectedPort"
+            @updatePorts="(e) => updatePorts(e)"
+            :selectedType
+          />
+        </div>
+
+        <div class="rigth-panel" v-if="selectedType === 'Router'">
+          <div class="divContent" v-if="selectedType === 'Router'">
+            <p>MPLS:</p>
+            <input type="checkbox" v-model="selectedMpls" value="true" />
+          </div>
+          <MPLS
+            v-if="
+              selectedEquipment && selectedMpls && selectedType === 'Router'
+            "
+            :selectedEquipment="selectedEquipment"
+            :selectedVendor="selectedVendor"
+          />
+          <div class="divContent" v-if="selectedType === 'Router'">
+            <p>L3VPN:</p>
+            <input type="checkbox" v-model="selectedL3vpn" value="true" />
+          </div>
+          <L3VPN
+            v-if="
+              selectedEquipment && selectedL3vpn && selectedType === 'Router'
+            "
+            :selectedEquipment="selectedEquipment"
+            :selectedVendor="selectedVendor"
+          />
+        </div>
       </div>
-      <MPLS
-        v-if="selectedEquipment && selectedMpls && selectedType === 'Router'"
-        :selectedEquipment="selectedEquipment"
-        :selectedVendor="selectedVendor"
-      />
-      <div class="divContent" v-if="selectedType === 'Router'">
-        <p>L3VPN:</p>
-        <input type="checkbox" v-model="selectedL3vpn" value="true" />
-      </div>
-      <L3VPN
-        v-if="selectedEquipment && selectedL3vpn && selectedType === 'Router'"
-        :selectedEquipment="selectedEquipment"
-        :selectedVendor="selectedVendor"
-      />
-      <div class="divContent" v-if="selectedEquipment">
-        <p>Порт:</p>
-        <MySelect
-          :options="
-            Array.from(
-              {
-                length: Number(
-                  networkRouters[selectedType][selectedVendor][
-                    selectedEquipment
-                  ]
-                ),
-              },
-              (_, i) => i
-            )
-          "
-          v-model="selectedPort"
-          @change="changePort(selectedPort)"
-          >Выберите порт</MySelect
-        >
-      </div>
-      <PortConfiguration
-        v-if="selectedPort"
-        v-model="selectedPort"
-        @updatePorts="(e) => updatePorts(e)"
-        :selectedType
-      />
 
       <MyButton
         :class="{ error: !newNode.name }"
@@ -234,5 +258,23 @@ watch(selectedMpls, () => {
 
 .ports {
   color: teal;
+}
+
+.panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  min-height: 100px;
+  min-width: 500px;
+  padding: 20px;
+  gap: 10px;
+}
+
+.left-panel,
+.rigth-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 20px;
 }
 </style>

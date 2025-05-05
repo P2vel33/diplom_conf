@@ -159,88 +159,90 @@ const errorL3VPN = computed(() => {
         <p>Список VRF:</p>
         <MyButton @click="addL3vpn">Добавить VRF</MyButton>
       </div>
-      <div
-        v-for="(item_l3vpn, index) of l3vpn"
-        :key="item_l3vpn.id"
-        class="vrf-item-content"
-      >
-        <div class="divContent">
-          <p>Название VRF:</p>
-          <MyInput
-            :class="{
-              error: item_l3vpn.vrf_name === '',
-            }"
-            style="width: 115px"
-            type="text"
-            placeholder="0"
-            min="0"
-            v-model="item_l3vpn.vrf_name"
-          />
-          <MyButton
-            :disabled="l3vpn.length === 1"
-            style="margin-left: auto"
-            @click="deleteL3vpn(item_l3vpn.id)"
-            >Удалить VRF</MyButton
-          >
-        </div>
-        <div class="divContent">
-          <p>Номер АС BGP:</p>
-          <MyInput
-            :class="{
-              error: !isInRange(item_l3vpn.bgp_id),
-            }"
-            style="width: 115px"
-            type="number"
-            placeholder="64512-65534"
-            min="64512"
-            max="65534"
-            v-model="item_l3vpn.bgp_id"
-          />
-          <p>Номер rd:</p>
-          <MyInput
-            :class="{
-              error:
-                !isNonNegativeInteger(item_l3vpn.rd) || item_l3vpn.rd > 1000,
-            }"
-            style="width: 60px"
-            type="number"
-            placeholder="100"
-            min="0"
-            v-model="item_l3vpn.rd"
-          />
-          <!-- <MyButton style="margin-left: auto" @click="addPort(index)"
-            >Добавить порт</MyButton
-          > -->
-        </div>
-        <div class="header-port-list">
-          <p>Список портов VRF:</p>
-          <MyButton style="margin-left: auto" @click="addPort(index)"
-            >Добавить порт</MyButton
-          >
-        </div>
-        <div class="port-list">
-          <div
-            class="divContent"
-            v-for="port of item_l3vpn.ports_vrf"
-            :key="port.id"
-          >
-            <p>Номер порта VRF: {{ item_l3vpn.vrf_name }}</p>
+      <div class="vrf-list">
+        <div
+          v-for="(item_l3vpn, index) of l3vpn"
+          :key="item_l3vpn.id"
+          class="vrf-item-content"
+        >
+          <div class="divContent">
+            <p>Название VRF:</p>
             <MyInput
-              :class="{ error: checkPort(index, port) }"
-              style="width: 50px"
-              type="number"
+              :class="{
+                error: item_l3vpn.vrf_name === '',
+              }"
+              style="width: 115px"
+              type="text"
               placeholder="0"
               min="0"
-              v-model="port.port"
+              v-model="item_l3vpn.vrf_name"
             />
             <MyButton
-              :disabled="item_l3vpn.ports_vrf.length === 1"
-              style="width: 60px; height: 30px"
-              @click="deletePort(index, port.id)"
-              >Удалить</MyButton
+              :disabled="l3vpn.length === 1"
+              style="margin-left: auto"
+              @click="deleteL3vpn(item_l3vpn.id)"
+              >Удалить VRF</MyButton
             >
+          </div>
+          <div class="divContent">
+            <p>Номер АС BGP:</p>
+            <MyInput
+              :class="{
+                error: !isInRange(item_l3vpn.bgp_id),
+              }"
+              style="width: 115px"
+              type="number"
+              placeholder="64512-65534"
+              min="64512"
+              max="65534"
+              v-model="item_l3vpn.bgp_id"
+            />
+            <p>Номер rd:</p>
+            <MyInput
+              :class="{
+                error:
+                  !isNonNegativeInteger(item_l3vpn.rd) || item_l3vpn.rd > 1000,
+              }"
+              style="width: 60px"
+              type="number"
+              placeholder="100"
+              min="0"
+              v-model="item_l3vpn.rd"
+            />
+            <!-- <MyButton style="margin-left: auto" @click="addPort(index)"
+            >Добавить порт</MyButton
+          > -->
+          </div>
+          <div class="header-port-list">
+            <p>Список портов VRF:</p>
+            <MyButton style="margin-left: auto" @click="addPort(index)"
+              >Добавить порт</MyButton
+            >
+          </div>
+          <div class="port-list">
+            <div
+              class="divContent"
+              v-for="port of item_l3vpn.ports_vrf"
+              :key="port.id"
+            >
+              <p>Номер порта VRF: {{ item_l3vpn.vrf_name }}</p>
+              <MyInput
+                :class="{ error: checkPort(index, port) }"
+                style="width: 50px"
+                type="number"
+                placeholder="0"
+                min="0"
+                v-model="port.port"
+              />
+              <MyButton
+                :disabled="item_l3vpn.ports_vrf.length === 1"
+                style="width: 60px; height: 30px"
+                @click="deletePort(index, port.id)"
+                >Удалить</MyButton
+              >
 
-            <!-- :class="{ error: checkPort(item_l3vpn.id, port) }" -->
+              <!-- :class="{ error: checkPort(item_l3vpn.id, port) }" -->
+            </div>
           </div>
         </div>
       </div>
@@ -262,6 +264,14 @@ const errorL3VPN = computed(() => {
   box-sizing: border-box;
 }
 
+.vrf-list {
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .error {
   color: red;
   border: 3px solid red;
@@ -270,6 +280,7 @@ const errorL3VPN = computed(() => {
   border: 3px solid teal;
   border-radius: 15px;
   padding: 5px;
+  /* max-height: 200px; */
 }
 
 .header-list-vrf {

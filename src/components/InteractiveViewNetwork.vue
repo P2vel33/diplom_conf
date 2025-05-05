@@ -55,6 +55,7 @@ const interactiveVisiable = useInteractiveVisiable();
     :objectEdges="nodesAndLinks.objectEdges"
     :objectNodes="nodesAndLinks.objectNodes"
     :watchObject="nodesAndLinks.objectEdges"
+    :watchObjectTwo="nodesAndLinks.objectNodes"
   />
 </template>
 

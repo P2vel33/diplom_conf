@@ -95,7 +95,7 @@ const errorOspf = computed(() => {
         <p>IP адрес сети:</p>
         <MyInput
           :class="{ error: !isNetworkIpValid(neighbor.network, neighbor.mask) }"
-          style="width: 90px"
+          style="width: 115px"
           type="text"
           placeholder="192.0.0.0"
           v-model="neighbor.network"
@@ -103,12 +103,12 @@ const errorOspf = computed(() => {
         <p>Маска сети:</p>
         <MyInput
           :class="{ error: !isValidSubnetMask(neighbor.mask) }"
-          style="width: 90px"
+          style="width: 115px"
           type="text"
           placeholder="255.255.255.0"
           v-model="neighbor.mask"
         />
-        <p>Номер области (area) OSPF:</p>
+        <p>Номер области (area):</p>
         <MyInput
           style="width: 50px"
           :class="{ error: !isNonNegativeInteger(neighbor.area) || neighbor.area as number > 999}"
@@ -157,6 +157,6 @@ const errorOspf = computed(() => {
   flex-direction: column;
   gap: 10px;
   overflow-y: scroll;
-  max-height: 200px;
+  max-height: 100px;
 }
 </style>

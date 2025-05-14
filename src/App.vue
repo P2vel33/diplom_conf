@@ -49,4 +49,9 @@ h1 {
   border-radius: 10px;
   align-items: center;
 }
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: teal;
+}
 </style>

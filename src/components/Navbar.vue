@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { createConfig } from "../helpers/Config/createConfig";
 import router from "../router/router";
-import { useNodesAndLinks } from "../store/NodesAndLinks";
+// import { useNodesAndLinks } from "../store/NodesAndLinks";
 import MyButton from "./UI/MyButton.vue";
-const nodesAndLinks = useNodesAndLinks();
+// const nodesAndLinks = useNodesAndLinks();
 const sendConfiguration = () => {
-  console.log(nodesAndLinks.objectNodes);
+  // console.log(nodesAndLinks.objectNodes);
+  createConfig();
 };
 </script>
 

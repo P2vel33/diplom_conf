@@ -14,7 +14,7 @@ const changeType = (event: Event): void => {
 
 <template>
   <select id="my-select" @change="(e) => changeType(e)">
-    <option disabled selected value="">
+    <option selected value="">
       <slot></slot>
     </option>
     <option v-for="option of options" :value="option">

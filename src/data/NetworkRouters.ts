@@ -1,4 +1,19 @@
-export const networkRouters = {
+interface IVendorList {
+  [item: string]: string;
+}
+
+interface IVendor {
+  Cisco: IVendorList;
+  Alcatel: IVendorList;
+  Eltex: IVendorList;
+}
+
+interface IType {
+  Switch: IVendor;
+  Router: IVendor;
+}
+
+export const networkRouters: IType = {
   Switch: {
     Cisco: {
       "Cisco Catalyst 2960-X | 48": "48",

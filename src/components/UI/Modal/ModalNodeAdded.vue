@@ -17,50 +17,50 @@ const nodesAndLinks = useNodesAndLinks();
 const settingRouter = useSettingRouter();
 const interactiveVisiable = useInteractiveVisiable();
 
-const selectedMpls = ref(false);
-const selectedL3vpn = ref(false);
-const selectedType = ref("");
-const selectedPort = ref(0);
-const selectedVendor = ref("");
-const selectedEquipment = ref("");
+const selectedMpls: Ref<boolean> = ref(false);
+const selectedL3vpn: Ref<boolean> = ref(false);
+const selectedType: Ref<string> = ref("");
+const selectedPort: Ref<number | undefined> = ref(0);
+const selectedVendor: Ref<string> = ref("");
+const selectedEquipment: Ref<string> = ref("");
 
 interface Port {
   [num: number]: object;
 }
 interface NewNode {
   name: string;
+  vendor: string;
   typeOfNetworkHardware: string;
   local_ip_address: string;
   external_ip_address: string;
   model: string;
   ports: Port;
   face: string;
-  vlan: Number | null;
+  // vlan: number | null;
 }
 
 const newNode: Ref<NewNode> = ref({
   name: "",
+  vendor: "",
   typeOfNetworkHardware: "",
   local_ip_address: "",
   external_ip_address: "",
   model: "",
   ports: {},
   face: "",
-  vlan: null,
+  // vlan: null,
 });
 
-const changePort = (num: number) => {
-  console.log(num);
-};
+const changePort = (num: number) => {};
 
 const updatePorts = (portConfiguration: object) => {
   const obj = Object.fromEntries(
     Object.entries(portConfiguration).filter((elem) => elem[1])
   );
-  console.log(portConfiguration);
-  console.log(obj);
+  // console.log(portConfiguration);
+  // console.log(obj);
   newNode.value.ports[selectedPort.value] = { ...obj };
-  console.log(newNode.value.ports);
+  // console.log(newNode.value.ports);
   selectedPort.value = 0;
 };
 
@@ -75,9 +75,12 @@ const saveConfiguration = () => {
   console.log(settingRouter);
 };
 
-watch(selectedMpls, () => {
-  console.log(typeof selectedMpls.value);
+watch(selectedVendor, (elem) => {
+  newNode.value.vendor = elem;
 });
+// watch(selectedMpls, () => {
+//   console.log(typeof selectedMpls.value);
+// });
 </script>
 
 <template>
@@ -133,6 +136,7 @@ watch(selectedMpls, () => {
           <div class="divContent" v-if="selectedEquipment">
             <p>Порт:</p>
             <MySelect
+              v-if="selectedType === 'Router'"
               :options="
                 Array.from(
                   {
@@ -143,6 +147,24 @@ watch(selectedMpls, () => {
                     ),
                   },
                   (_, i) => i
+                )
+              "
+              v-model="selectedPort"
+              @change="changePort(selectedPort)"
+              >Выберите порт</MySelect
+            >
+            <MySelect
+              v-if="selectedType === 'Switch'"
+              :options="
+                Array.from(
+                  {
+                    length: Number(
+                      networkRouters[selectedType][selectedVendor][
+                        selectedEquipment
+                      ]
+                    ),
+                  },
+                  (_, i) => i + 1
                 )
               "
               v-model="selectedPort"

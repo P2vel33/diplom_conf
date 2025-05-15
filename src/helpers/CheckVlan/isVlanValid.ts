@@ -9,7 +9,7 @@ export function isVlanValid(input: string): boolean {
     if (vlanPattern.test(trimmedInput)) {
       // Проверяем, что все VLAN > 0
       const vlans = trimmedInput.split(",").map((v) => parseInt(v, 10));
-      return vlans.every((vlan) => vlan > 0);
+      return vlans.every((vlan) => vlan > 0 && vlan < 1000);
     } else {
       return false;
     }

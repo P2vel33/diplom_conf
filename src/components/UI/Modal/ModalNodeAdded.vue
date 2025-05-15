@@ -300,4 +300,8 @@ watch(selectedVendor, (elem) => {
   gap: 5px;
   padding: 20px;
 }
+
+.left-panel {
+  min-width: 500px;
+}
 </style>

@@ -1,6 +1,6 @@
 import type { IRouter } from "./interfaceNetworkEquipment";
 
-export const createConfigISIS = (objectRouter: IRouter) => {
+export const createConfigISIS = (objectRouter: IRouter): string => {
   let response = "";
   response += `\nrouter isis ${objectRouter.isis.process_isis}
 net ${objectRouter.isis.net_ip}
@@ -19,4 +19,5 @@ exit
 !`;
   }
   console.log(response);
+  return response;
 };

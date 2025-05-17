@@ -1,9 +1,9 @@
 import type { IRouter } from "./interfaceNetworkEquipment";
 
-export const createConfigPort = (objectRouter: IRouter) => {
+export const createConfigPort = (objectRouter: IRouter): string => {
   let response = "";
   for (const port of Object.keys(objectRouter.ports)) {
-    console.log(objectRouter.ports[port]);
+    // console.log(objectRouter.ports[port]);
     response += `\ninterface GigabitEthernet0/${port} ${
       objectRouter.ports[port].local_ip_address &&
       objectRouter.ports[port].mask_local_ip
@@ -22,5 +22,6 @@ exit
 !`;
     }
   }
-  console.log(response);
+  // console.log(response);
+  return response;
 };

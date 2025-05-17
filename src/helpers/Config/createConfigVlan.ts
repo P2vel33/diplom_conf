@@ -1,18 +1,6 @@
-interface ISwitchPort {
-  [x: string]: {
-    vlan_mode_port: string;
-    vlan_access: string;
-    vlan_trunk: string;
-  };
-}
+import type { ISwitch } from "./interfaceNetworkEquipment";
 
-interface ISwitch {
-  name: string;
-  typeOfNetworkHardware: "Switch";
-  ports: ISwitchPort;
-}
-
-export const createConfigVlan = (objectSwitch: ISwitch) => {
+export const createConfigVlan = (objectSwitch: ISwitch): string => {
   // const access_array: number[] = [];
   // Object.values(objectSwitch.ports).forEach((elem) => {
   //   if (elem.vlan_access) {
@@ -50,5 +38,6 @@ hostname ${objectSwitch.name}
     }
   }
 
-  console.log(response + end);
+  // console.log(response + end);
+  return response + end;
 };

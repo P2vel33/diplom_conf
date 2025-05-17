@@ -2,7 +2,7 @@
 import { getInverseMask } from "../IPandMask/getInverseMask";
 import type { IRouter } from "./interfaceNetworkEquipment";
 
-export const createConfigOSPF = (objectRouter: IRouter) => {
+export const createConfigOSPF = (objectRouter: IRouter): string => {
   // const nodeAndLinks = useNodesAndLinks();
   // console.log(objectRouter.ospf);
   let response = "";
@@ -15,4 +15,5 @@ export const createConfigOSPF = (objectRouter: IRouter) => {
   }
   response += `\nexit\n!`;
   console.log(response);
+  return response;
 };

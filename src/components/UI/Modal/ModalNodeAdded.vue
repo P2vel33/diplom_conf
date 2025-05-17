@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, type Ref } from "vue";
+import { computed, ref, watch, type ComputedRef, type Ref } from "vue";
 import MyButton from "../MyButton.vue";
 import MyInput from "../MyInput.vue";
 import MySelect from "../MySelect.vue";
@@ -12,6 +12,9 @@ import { useNodesAndLinks } from "../../../store/NodesAndLinks";
 import MPLS from "./Settings/MPLS.vue";
 import L3VPN from "./Settings/L3VPN.vue";
 import { useSettingRouter } from "../../../store/SettingRouter";
+import { validateIPv4 } from "../../../helpers/IPandMask/validateIPv4";
+import { isValidSubnetMask } from "../../../helpers/IPandMask/isValidSubnetMask";
+import { isValidNumberInRange } from "../../../helpers/IPandMask/ss";
 
 const nodesAndLinks = useNodesAndLinks();
 const settingRouter = useSettingRouter();
@@ -81,6 +84,78 @@ watch(selectedVendor, (elem) => {
 // watch(selectedMpls, () => {
 //   console.log(typeof selectedMpls.value);
 // });
+
+const checkLoopbackNumber = (num_loop: number | null | string) => {
+  let resOne =
+    settingRouter.loopbackArray.filter((elem) => {
+      if (elem.number_loopback !== null) {
+        return elem.number_loopback === num_loop;
+      }
+    }).length > 1
+      ? true
+      : false;
+  let resTwo =
+    settingRouter.loopbackArray.filter((elem) => {
+      if (elem.number_loopback === null || elem.number_loopback === "") {
+        return true;
+      }
+    }).length > 0
+      ? true
+      : false;
+  let resThree = !settingRouter.loopbackArray.every((elem) => {
+    return elem.number_loopback >= 0 && elem.number_loopback < 100;
+  });
+  // console.log(resOne, resTwo, resThree);
+  return resOne || resTwo || resThree;
+};
+
+const checkLoopbackIP = (ip_address: string) => {
+  let resOne =
+    settingRouter.loopbackArray.filter((elem) => {
+      if (elem.ip_address_loopback !== null) {
+        return elem.ip_address_loopback === ip_address;
+      }
+    }).length > 1
+      ? true
+      : false;
+  let resTwo =
+    settingRouter.loopbackArray.filter((elem) => {
+      if (
+        elem.ip_address_loopback === null ||
+        elem.ip_address_loopback === ""
+      ) {
+        return true;
+      }
+    }).length > 0
+      ? true
+      : false;
+  let resThree = !settingRouter.loopbackArray.every((elem) => {
+    return validateIPv4(elem.ip_address_loopback);
+  });
+  // console.log(resOne, resTwo, resThree);
+  return resOne || resTwo || resThree;
+};
+
+const errorAdd: ComputedRef<boolean> = computed(() => {
+  let resOne = !newNode.value.name;
+  let resTwo = false;
+  let resThree = false;
+  let resFour = false;
+  if (selectedType.value === "Router") {
+    settingRouter.loopbackArray.forEach((elem) => {
+      if (checkLoopbackNumber(elem.number_loopback)) {
+        resTwo = true;
+      }
+      if (checkLoopbackIP(elem.ip_address_loopback)) {
+        resThree = true;
+      }
+    });
+  }
+  resFour =
+    !selectedType.value || !selectedVendor.value || !selectedEquipment.value;
+  // console.log(resOne, resTwo, resThree);
+  return resOne || resTwo || resThree || resFour;
+});
 </script>
 
 <template>
@@ -132,6 +207,71 @@ watch(selectedVendor, (elem) => {
             />
           </div>
 
+          <div v-if="selectedType === 'Router'" class="setting-loopback">
+            <div class="divContent">
+              <p>Список loopback:</p>
+              <MyButton @click="settingRouter.addLoopback"
+                >Добавить loopback</MyButton
+              >
+            </div>
+            <div class="list-loopback">
+              <div
+                v-for="loopback of settingRouter.loopbackArray"
+                :key="loopback.id"
+                class="list-loopback__item"
+              >
+                <div
+                  class="divContent"
+                  style="justify-content: flex-start; gap: 10px"
+                >
+                  <p>Loopback:</p>
+                  <!-- checkLoopbackNumber -->
+                  <!--                     :class="{
+                      error: !isValidNumberInRange(loopback.number_loopback),
+                    }" -->
+                  <MyInput
+                    :class="{
+                      error: checkLoopbackNumber(loopback.number_loopback),
+                    }"
+                    style="width: 60px"
+                    type="number"
+                    min="0"
+                    max="99"
+                    placeholder="0-99"
+                    v-model="loopback.number_loopback"
+                  />
+                </div>
+                <div class="divContent">
+                  <p>IP-адрес:</p>
+                  <MyInput
+                    :class="{
+                      error: checkLoopbackIP(loopback.ip_address_loopback),
+                    }"
+                    type="text"
+                    style="width: 115px"
+                    placeholder="1.1.1.1"
+                    v-model="loopback.ip_address_loopback"
+                  />
+                  <p>Маска:</p>
+                  <MyInput
+                    :class="{
+                      error: !isValidSubnetMask(loopback.mask_loopback),
+                    }"
+                    type="text"
+                    style="width: 115px"
+                    placeholder="255.255.255.255"
+                    v-model="loopback.mask_loopback"
+                  />
+                  <MyButton
+                    :disabled="settingRouter.loopbackArray.length === 1"
+                    style="width: 60px; height: 30px"
+                    @click="settingRouter.deleteLoopback(loopback.id)"
+                    >Удалить</MyButton
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
           <DynamicRouting v-if="selectedType === 'Router'" />
           <div class="divContent" v-if="selectedEquipment">
             <p>Порт:</p>
@@ -207,9 +347,9 @@ watch(selectedVendor, (elem) => {
       </div>
 
       <MyButton
-        :class="{ error: !newNode.name }"
+        :class="{ error: errorAdd }"
         style="margin-left: auto"
-        :disabled="!newNode.name"
+        :disabled="errorAdd"
         @click="
           interactiveVisiable.toggleIsVisiableModalNodeAdded();
           selectedType === 'Router'
@@ -218,6 +358,7 @@ watch(selectedVendor, (elem) => {
                   Object.entries(newNode).filter((elem) => elem[1])
                 ),
                 typeOfNetworkHardware: selectedType,
+                loopbackArray: settingRouter.loopbackArray,
                 model: selectedEquipment,
                 active: true,
                 mpls: settingRouter.mpls,
@@ -244,6 +385,33 @@ watch(selectedVendor, (elem) => {
 </template>
 
 <style scoped>
+.setting-loopback {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 15px;
+  border: 3px solid teal;
+  /* overflow-y: auto; */
+  /* max-height: 100px; */
+}
+.list-loopback {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* padding: 10px; */
+  /* border-radius: 15px; */
+  /* border: 3px solid teal; */
+  overflow-y: auto;
+  max-height: 180px;
+}
+
+.list-loopback__item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .error {
   color: red;
   border: 3px solid red;

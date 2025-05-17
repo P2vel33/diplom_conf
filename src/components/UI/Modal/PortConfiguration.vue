@@ -179,6 +179,31 @@ const saveConfigure = () => {
   portConfiguration.value.mask_external_ip = "";
   portConfiguration.value.mask_local_ip = "";
 };
+
+const errorPortConfiguration = computed(() => {
+  let res = false;
+  if (selectedType === "Router") {
+    if (!selectedENC8021Q.value) {
+      res =
+        !isValidSubnetMask(portConfiguration.value.mask_local_ip) ||
+        !validateIPv4(portConfiguration.value.local_ip_address);
+      // console.log(res);
+    } else if (
+      selectedENC8021Q.value &&
+      portConfiguration.value.mask_external_ip === "" &&
+      portConfiguration.value.local_ip_address === ""
+    ) {
+      res = !error8021Q.value;
+    } else {
+      res =
+        !error8021Q.value ||
+        !isValidSubnetMask(portConfiguration.value.mask_local_ip) ||
+        !validateIPv4(portConfiguration.value.local_ip_address);
+    }
+  }
+  // console.log(res);
+  return res;
+});
 </script>
 
 <template>
@@ -352,22 +377,9 @@ const saveConfigure = () => {
     </div>
     <MyButton
       :class="{
-        error:
-          selectedType === 'Router'
-            ? ((!isValidSubnetMask(portConfiguration.mask_local_ip) ||
-                !validateIPv4(portConfiguration.local_ip_address)) &&
-                !selectedENC8021Q) ||
-              !error8021Q
-            : false,
+        error: errorPortConfiguration,
       }"
-      :disabled="
-        selectedType === 'Router'
-          ? ((!isValidSubnetMask(portConfiguration.mask_local_ip) ||
-              !validateIPv4(portConfiguration.local_ip_address)) &&
-              !selectedENC8021Q) ||
-            !error8021Q
-          : false
-      "
+      :disabled="errorPortConfiguration"
       style="margin-left: auto"
       @click="saveConfigure"
       >Сохранить конфигурацию</MyButton

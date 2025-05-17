@@ -1,3 +1,9 @@
+interface ILoopback {
+  id: number;
+  number_loopback: number | null | string;
+  ip_address_loopback: string;
+  mask_loopback: string;
+}
 interface IBGPNeighborItem {
   id: number;
   neighbor: string;
@@ -76,4 +82,19 @@ export interface IRouter {
   mpls: IMPLSPort[];
   ospf: IOSPF;
   ports: IPorts;
+  loopbackArray: ILoopback[];
+}
+
+interface ISwitchPort {
+  [x: string]: {
+    vlan_mode_port: string;
+    vlan_access: string;
+    vlan_trunk: string;
+  };
+}
+
+export interface ISwitch {
+  name: string;
+  typeOfNetworkHardware: "Switch";
+  ports: ISwitchPort;
 }

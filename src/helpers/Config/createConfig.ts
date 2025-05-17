@@ -52,7 +52,7 @@ export const createConfig = () => {
         }
       }
     }
+    console.log(response + "\nend\nshow running-config");
   }
-  console.log(response + "\nend\nshow running-config");
   // createConfigVlan(nodeAndLinks.objectNodes);
 };

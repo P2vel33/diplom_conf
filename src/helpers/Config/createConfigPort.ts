@@ -13,15 +13,21 @@ export const createConfigPort = (objectRouter: IRouter): string => {
 no shutdown 
 exit
 !`;
-    for (const item of objectRouter.ports[port].enc_802_1q) {
-      response += `\ninterface GigabitEthernet0/${port}.${item.vlan}
+    if (
+      Object.keys(objectRouter.ports[port].enc_802_1q).length > 0 &&
+      objectRouter.ports[port].enc_802_1q.every((elem) => elem.vlan !== null)
+    ) {
+      for (const item of objectRouter.ports[port].enc_802_1q) {
+        response += `\ninterface GigabitEthernet0/${port}.${item.vlan}
 encapsulation dot1Q ${item.vlan}
 ip address ${item.ip_address_vlan} ${item.mask_vlan}
 no shutdown 
 exit
 !`;
+      }
     }
   }
+
   // console.log(response);
   return response;
 };

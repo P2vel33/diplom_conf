@@ -19,9 +19,9 @@ const jsonFromTextArea = computed(() => {
   // console.log(useYamlToJson(textFromTextArea).yamlTransfomToJson.value);
   return useYamlToJson(textFromTextArea).yamlTransfomToJson.value;
 });
-// console.log(jsonFromTextArea.value);
 
 watch(jsonFromTextArea, (newjsonFromTextArea) => {
+  console.log(jsonFromTextArea.value);
   nodesAndLinks.objectEdges =
     useNodesAndEdges(newjsonFromTextArea).objectEdges.value;
   nodesAndLinks.objectNodes =

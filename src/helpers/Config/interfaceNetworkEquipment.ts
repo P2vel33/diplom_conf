@@ -4,14 +4,23 @@ interface ILoopback {
   ip_address_loopback: string;
   mask_loopback: string;
 }
-interface IBGPNeighborItem {
+
+interface IBgpNeighbor {
   id: number;
   neighbor: string;
   remote_as: number;
+  network: string;
+  mask: string;
+}
+interface IBgpNetwork {
+  id: number;
+  network: string;
+  mask: string;
 }
 
 interface IBGP {
-  array_neighbor: IBGPNeighborItem[];
+  array_neighbor: IBgpNeighbor[];
+  array_network: IBgpNetwork[];
   number_bgp: number;
 }
 

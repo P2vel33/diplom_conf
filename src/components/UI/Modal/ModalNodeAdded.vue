@@ -14,7 +14,7 @@ import L3VPN from "./Settings/L3VPN.vue";
 import { useSettingRouter } from "../../../store/SettingRouter";
 import { validateIPv4 } from "../../../helpers/IPandMask/validateIPv4";
 import { isValidSubnetMask } from "../../../helpers/IPandMask/isValidSubnetMask";
-import { isValidNumberInRange } from "../../../helpers/IPandMask/ss";
+// import { isValidNumberInRange } from "../../../helpers/IPandMask/isValidNumberInRange";
 
 const nodesAndLinks = useNodesAndLinks();
 const settingRouter = useSettingRouter();
@@ -272,7 +272,6 @@ const errorAdd: ComputedRef<boolean> = computed(() => {
               </div>
             </div>
           </div>
-          <DynamicRouting v-if="selectedType === 'Router'" />
           <div class="divContent" v-if="selectedEquipment">
             <p>Порт:</p>
             <MySelect
@@ -319,6 +318,7 @@ const errorAdd: ComputedRef<boolean> = computed(() => {
             :selectedType
           />
         </div>
+        <DynamicRouting class="center-panel" v-if="selectedType === 'Router'" />
 
         <div class="rigth-panel" v-if="selectedType === 'Router'">
           <div class="divContent" v-if="selectedType === 'Router'">
@@ -460,7 +460,7 @@ const errorAdd: ComputedRef<boolean> = computed(() => {
   padding: 20px;
   gap: 10px;
 }
-
+.center-panel,
 .left-panel,
 .rigth-panel {
   display: flex;

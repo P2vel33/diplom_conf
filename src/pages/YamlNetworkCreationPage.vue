@@ -3,8 +3,23 @@ import { ref, type Ref } from "vue";
 // import ViewNetwork from "../components/YamlViewNetwork.vue";
 import str from "../data/textareaPlaceholder";
 import YamlViewNetwork from "../components/YamlViewNetwork.vue";
+import useJsonToYaml from "../hooks/useJsonToYaml";
+import { useNodesAndLinks } from "../store/NodesAndLinks";
+import { transformLinks } from "../helpers/transformLinks";
+import { formatYamlWithFilename } from "../helpers/formatYaml";
 
+const nodesAndLinks = useNodesAndLinks();
 const textFromTextArea: Ref<string> = ref("");
+
+if (Object.keys(nodesAndLinks.objectNodes).length > 0) {
+  textFromTextArea.value = `${formatYamlWithFilename(
+    "nodes",
+    useJsonToYaml(nodesAndLinks.objectNodes)
+  )}${formatYamlWithFilename(
+    "links",
+    useJsonToYaml(transformLinks(nodesAndLinks.objectEdges))
+  )}`;
+}
 </script>
 
 <template>

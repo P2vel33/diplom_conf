@@ -4,6 +4,8 @@ import MyInput from "../MyInput.vue";
 import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
 import useClearObject from "../../../hooks/useClearObject";
 import { useNodesAndLinks } from "../../../store/NodesAndLinks";
+import { computed, ref, watch, type Ref } from "vue";
+import { hasPropertyByName } from "../../../helpers/hasPropertyByName";
 interface myNode {
   name: string;
   [x: string]: any;
@@ -12,9 +14,22 @@ interface myNode {
 const interactiveVisiable = useInteractiveVisiable();
 const nodesAndLinks = useNodesAndLinks();
 
-const deletedNode: myNode = {
+const deletedNode: Ref<myNode> = ref({
   name: "",
-};
+});
+
+const correctDeleted = computed(() => {
+  return !hasPropertyByName(deletedNode.value.name);
+});
+
+watch(
+  () => interactiveVisiable.isVisiableModalNodeDeleted,
+  () => {
+    if (!interactiveVisiable.isVisiableModalNodeDeleted) {
+      deletedNode.value.name = "";
+    }
+  }
+);
 </script>
 
 <template>
@@ -29,6 +44,7 @@ const deletedNode: myNode = {
         <p>Name:</p>
         <MyInput
           v-focus
+          :class="{ error: !hasPropertyByName(deletedNode.name) }"
           type="text"
           placeholder="Node 0"
           v-model="deletedNode.name as string"
@@ -37,6 +53,8 @@ const deletedNode: myNode = {
 
       <MyButton
         style="margin-left: auto"
+        :class="{ error: correctDeleted }"
+        :disabled="correctDeleted"
         @click="
           interactiveVisiable.toggleIsVisiableModalNodeDeleted();
           nodesAndLinks.deleteObjectNodes(deletedNode);
@@ -49,6 +67,10 @@ const deletedNode: myNode = {
 </template>
 
 <style scoped>
+.error {
+  color: red;
+  border: 3px solid red;
+}
 .divContent {
   display: flex;
   flex-direction: row;

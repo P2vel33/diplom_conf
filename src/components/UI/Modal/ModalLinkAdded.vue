@@ -5,16 +5,35 @@ import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
 import type { Edge } from "v-network-graph";
 import useClearObject from "../../../hooks/useClearObject";
 import { useNodesAndLinks } from "../../../store/NodesAndLinks";
+import { computed, ref, watch, type Ref } from "vue";
+import { hasPropertyByName } from "../../../helpers/hasPropertyByName";
 
 const nodesAndLinks = useNodesAndLinks();
 
 const interactiveVisiable = useInteractiveVisiable();
 // const { addObjectEdges } = inject("objectEdges");
 
-const newLink: Edge = {
+const newLink: Ref<Edge> = ref({
   target: "",
   source: "",
-};
+});
+
+const correctDeleted = computed(() => {
+  return (
+    !hasPropertyByName(newLink.value.source) ||
+    !hasPropertyByName(newLink.value.target)
+  );
+});
+
+watch(
+  () => interactiveVisiable.isVisiableModalLinkAdded,
+  () => {
+    if (!interactiveVisiable.isVisiableModalLinkAdded) {
+      newLink.value.target = "";
+      newLink.value.source = "";
+    }
+  }
+);
 </script>
 
 <template>
@@ -29,6 +48,7 @@ const newLink: Edge = {
         <p>Source:</p>
         <MyInput
           v-focus
+          :class="{ error: !hasPropertyByName(newLink.source) }"
           type="text"
           placeholder="Node 1"
           v-model="newLink.source"
@@ -36,11 +56,18 @@ const newLink: Edge = {
       </div>
       <div class="divContent">
         <p>Target:</p>
-        <MyInput type="text" placeholder="Node 2" v-model="newLink.target" />
+        <MyInput
+          :class="{ error: !hasPropertyByName(newLink.target) }"
+          type="text"
+          placeholder="Node 2"
+          v-model="newLink.target"
+        />
       </div>
 
       <MyButton
         style="margin-left: auto"
+        :class="{ error: correctDeleted }"
+        :disabled="correctDeleted"
         @click="
           interactiveVisiable.toggleIsVisiableModalLinkAdded();
           nodesAndLinks.addObjectEdges(newLink);
@@ -53,6 +80,10 @@ const newLink: Edge = {
 </template>
 
 <style scoped>
+.error {
+  color: red;
+  border: 3px solid red;
+}
 .divContent {
   display: flex;
   flex-direction: row;

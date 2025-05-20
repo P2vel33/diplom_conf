@@ -5,15 +5,34 @@ import { useInteractiveVisiable } from "../../../store/InteractiveVisiable";
 import type { Edge } from "v-network-graph";
 import useClearObject from "../../../hooks/useClearObject";
 import { useNodesAndLinks } from "../../../store/NodesAndLinks";
+import { computed, ref, watch, type Ref } from "vue";
+import { hasPropertyByName } from "../../../helpers/hasPropertyByName";
 
 const nodesAndLinks = useNodesAndLinks();
 
 const interactiveVisiable = useInteractiveVisiable();
 
-const deletedLink: Edge = {
+const deletedLink: Ref<Edge> = ref({
   target: "",
   source: "",
-};
+});
+
+const correctDeleted = computed(() => {
+  return (
+    !hasPropertyByName(deletedLink.value.source) ||
+    !hasPropertyByName(deletedLink.value.target)
+  );
+});
+
+watch(
+  () => interactiveVisiable.isVisiableModalLinkDeleted,
+  () => {
+    if (!interactiveVisiable.isVisiableModalLinkDeleted) {
+      deletedLink.value.target = "";
+      deletedLink.value.source = "";
+    }
+  }
+);
 </script>
 
 <template>
@@ -28,6 +47,7 @@ const deletedLink: Edge = {
         <p>Source:</p>
         <MyInput
           v-focus
+          :class="{ error: !hasPropertyByName(deletedLink.source) }"
           type="text"
           placeholder="Node 1"
           v-model="deletedLink.source"
@@ -37,6 +57,7 @@ const deletedLink: Edge = {
         <p>Target:</p>
         <MyInput
           type="text"
+          :class="{ error: !hasPropertyByName(deletedLink.target) }"
           placeholder="Node 2"
           v-model="deletedLink.target"
         />
@@ -44,6 +65,8 @@ const deletedLink: Edge = {
 
       <MyButton
         style="margin-left: auto"
+        :class="{ error: correctDeleted }"
+        :disabled="correctDeleted"
         @click="
           interactiveVisiable.toggleIsVisiableModalLinkDeleted();
           nodesAndLinks.deleteObjectEdges(deletedLink);
@@ -56,6 +79,10 @@ const deletedLink: Edge = {
 </template>
 
 <style scoped>
+.error {
+  color: red;
+  border: 3px solid red;
+}
 .divContent {
   display: flex;
   flex-direction: row;

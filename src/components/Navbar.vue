@@ -1,16 +1,10 @@
 <script setup lang="ts">
 import { createConfig } from "../helpers/Config/createConfig";
 import router from "../router/router";
-import { useNodesAndLinks } from "../store/NodesAndLinks";
 import MyButton from "./UI/MyButton.vue";
-import useJsonToYaml from "../hooks/useJsonToYaml";
-import { transformLinks } from "../helpers/transformLinks";
-const nodesAndLinks = useNodesAndLinks();
+
 const sendConfiguration = () => {
-  // console.log(nodesAndLinks.objectNodes);
-  // createConfig();
-  // useJsonToYaml(nodesAndLinks.objectNodes);
-  console.log(useJsonToYaml(transformLinks(nodesAndLinks.objectEdges)));
+  createConfig();
 };
 </script>
 

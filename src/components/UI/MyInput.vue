@@ -24,5 +24,6 @@ const model = defineModel();
   border-radius: 5px;
   width: 70%;
   padding: 5px;
+  transition: all 0.5s;
 }
 </style>

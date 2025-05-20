@@ -5,6 +5,9 @@ export function formatYamlWithFilename(
   content: string
 ): string {
   // Оборачиваем содержимое файла в объект
+  if (content === "") {
+    return fileName + ":\n";
+  }
   const obj = {
     [fileName]: yaml.load(content),
   };

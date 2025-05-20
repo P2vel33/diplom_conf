@@ -10,17 +10,3 @@ export default function jsonToYaml(jsonObject: any): string {
     return "";
   }
 }
-
-// // Пример использования
-// const jsonData = {
-//   name: "Иван",
-//   age: 30,
-//   skills: ["TypeScript", "JavaScript", "Node.js"],
-//   address: {
-//     city: "Москва",
-//     street: "Тверская",
-//   },
-// };
-
-// const yamlResult = jsonToYaml(jsonData);
-// console.log(yamlResult);

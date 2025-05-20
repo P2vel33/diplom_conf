@@ -85,12 +85,12 @@ export interface IRouter {
   name: string;
   typeOfNetworkHardware: string;
   vendor: string;
-  bgp: IBGP;
-  isis: IISIS;
-  l3vpn: IL3VPN[];
-  mpls: IMPLSPort[];
-  ospf: IOSPF;
-  ports: IPorts;
+  bgp?: IBGP;
+  isis?: IISIS;
+  l3vpn?: IL3VPN[];
+  mpls?: IMPLSPort[];
+  ospf?: IOSPF;
+  ports?: IPorts;
   loopbackArray: ILoopback[];
 }
 

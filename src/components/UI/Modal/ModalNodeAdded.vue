@@ -75,7 +75,7 @@ const saveConfiguration = () => {
   selectedVendor.value = "";
   selectedEquipment.value = "";
   settingRouter.clearSettingRouter();
-  console.log(settingRouter);
+  // console.log(settingRouter);
 };
 
 watch(selectedVendor, (elem) => {

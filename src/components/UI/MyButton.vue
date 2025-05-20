@@ -21,11 +21,23 @@ defineOptions({
   cursor: pointer;
   margin: 10px;
   position: relative;
+  transition: all 0.5s;
+
   /* margin-left: auto; */
 }
 
 .btn:hover {
   transform: scale(1.1);
-  transition: transform 0.1s;
+  background-color: teal;
+  color: white;
+  transition: all 0.1s;
+}
+
+.btn:disabled {
+  border: 3px solid red;
+
+  background-color: red;
+  color: white;
+  transition: all 0.1s;
 }
 </style>

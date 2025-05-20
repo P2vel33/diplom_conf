@@ -16,12 +16,11 @@ const { textFromTextArea } = defineProps({
 });
 
 const jsonFromTextArea = computed(() => {
-  // console.log(useYamlToJson(textFromTextArea).yamlTransfomToJson.value);
   return useYamlToJson(textFromTextArea).yamlTransfomToJson.value;
 });
 
 watch(jsonFromTextArea, (newjsonFromTextArea) => {
-  console.log(jsonFromTextArea.value);
+  // console.log(jsonFromTextArea.value);
   nodesAndLinks.objectEdges =
     useNodesAndEdges(newjsonFromTextArea).objectEdges.value;
   nodesAndLinks.objectNodes =

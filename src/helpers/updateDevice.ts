@@ -1,4 +1,4 @@
-import type { IRouter } from "./Config/interfaceNetworkEquipment";
+import type { IRouter, ISwitch } from "./Config/interfaceNetworkEquipment";
 
 // interface Loopback {
 //   id: number;
@@ -59,6 +59,23 @@ export function updateDevice(device: IRouter): Partial<IRouter> {
   } else {
     delete updatedDevice.loopbackArray;
   }
+
+  // Обработка порта ports (если нужно)
+  if (updatedDevice.ports && Object.keys(updatedDevice.ports).length === 0) {
+    delete updatedDevice.ports;
+  }
+  // console.log(updatedDevice);
+  return updatedDevice;
+}
+
+export function updateDeviceSwicth(device: ISwitch): Partial<ISwitch> {
+  // Создаем копию объекта, чтобы не мутировать оригинал
+  const updatedDevice: Partial<ISwitch> = { ...device };
+
+  // Удаляем свойства "face" и "active"
+  delete updatedDevice.face;
+  delete updatedDevice.active;
+  // Обрабатываем свойства с массивами
 
   // Обработка порта ports (если нужно)
   if (updatedDevice.ports && Object.keys(updatedDevice.ports).length === 0) {

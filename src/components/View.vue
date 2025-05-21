@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { debounce } from "lodash-es";
+import { debounce, template } from "lodash-es";
 import * as vNG from "v-network-graph";
 import {
   ForceLayout,
@@ -121,6 +121,8 @@ const viewNetwork = () => {
 //   nodeStore
 // );
 // const nodeModal: Ref<Node> = ref({});
+
+const timer: Ref<number | null | undefined> = ref(null);
 
 onMounted(() => {
   debounce(

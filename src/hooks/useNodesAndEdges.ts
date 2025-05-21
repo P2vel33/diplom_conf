@@ -34,7 +34,9 @@ export default function useNodesAndEdges(newjsonFromTextArea: Object) {
       if (elementsOfJson === "nodes") {
         processNodes(newjsonFromTextArea[elementsOfJson], obj1);
       } else if (elementsOfJson === "links") {
-        processLinks(newjsonFromTextArea[elementsOfJson], obj2);
+        if (newjsonFromTextArea[elementsOfJson]) {
+          processLinks(newjsonFromTextArea[elementsOfJson], obj2);
+        }
       }
     });
   }

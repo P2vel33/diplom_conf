@@ -7,10 +7,10 @@ export const createConfigPort = (objectRouter: IRouter): string => {
     response += `\ninterface GigabitEthernet0/${port} ${
       objectRouter.ports[port].local_ip_address &&
       objectRouter.ports[port].mask_local_ip
-        ? `\nip address ${objectRouter.ports[port].local_ip_address} ${objectRouter.ports[port].mask_local_ip}`
+        ? `\n ip address ${objectRouter.ports[port].local_ip_address} ${objectRouter.ports[port].mask_local_ip}`
         : ""
     }
-no shutdown 
+ no shutdown 
 exit
 !`;
     if (
@@ -19,9 +19,9 @@ exit
     ) {
       for (const item of objectRouter.ports[port].enc_802_1q) {
         response += `\ninterface GigabitEthernet0/${port}.${item.vlan}
-encapsulation dot1Q ${item.vlan}
-ip address ${item.ip_address_vlan} ${item.mask_vlan}
-no shutdown 
+ encapsulation dot1Q ${item.vlan}
+ ip address ${item.ip_address_vlan} ${item.mask_vlan}
+ no shutdown 
 exit
 !`;
       }

@@ -53,20 +53,21 @@ export const createConfig = () => {
             );
           }
         }
-
         if (hasPropertyByName1(item, "isis")) {
           if (Object.keys(nodeAndLinks.objectNodes[item].isis).length > 0) {
             response += createConfigISIS(
               nodeAndLinks.objectNodes[item] as IRouter
             );
           }
-        } else if (hasPropertyByName1(item, "bgp")) {
+        }
+        if (hasPropertyByName1(item, "bgp")) {
           if (Object.keys(nodeAndLinks.objectNodes[item].bgp).length > 0) {
             response += createConfigBGP(
               nodeAndLinks.objectNodes[item] as IRouter
             );
           }
-        } else if (hasPropertyByName1(item, "ospf")) {
+        }
+        if (hasPropertyByName1(item, "ospf")) {
           if (Object.keys(nodeAndLinks.objectNodes[item].ospf).length > 0) {
             response += createConfigOSPF(
               nodeAndLinks.objectNodes[item] as IRouter

@@ -170,7 +170,24 @@ const error8021Q = computed(() => {
 });
 
 const saveConfigure = () => {
-  updatePorts(portConfiguration.value);
+  console.log(portConfiguration.value);
+  if (selectedType === "Switch") {
+    if (portConfiguration.value.vlan_mode_port === "trunk") {
+      updatePorts({
+        vlan_mode_port: portConfiguration.value.vlan_mode_port,
+        vlan_trunk: portConfiguration.value.vlan_trunk,
+      });
+    }
+    if (portConfiguration.value.vlan_mode_port === "access") {
+      updatePorts({
+        vlan_mode_port: portConfiguration.value.vlan_mode_port,
+        vlan_access: portConfiguration.value.vlan_access,
+      });
+    }
+  } else {
+    updatePorts(portConfiguration.value);
+  }
+
   portConfiguration.value.vlan_access = null;
   portConfiguration.value.vlan_trunk = "";
   portConfiguration.value.local_ip_address = "";
@@ -178,6 +195,14 @@ const saveConfigure = () => {
   portConfiguration.value.external_ip_address = "";
   portConfiguration.value.mask_external_ip = "";
   portConfiguration.value.mask_local_ip = "";
+  portConfiguration.value.enc_802_1q = [
+    {
+      id: Date.now(),
+      vlan: null,
+      ip_address_vlan: "",
+      mask_vlan: "",
+    },
+  ];
 };
 
 const errorPortConfiguration = computed(() => {

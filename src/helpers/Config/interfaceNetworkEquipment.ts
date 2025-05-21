@@ -78,12 +78,16 @@ interface IPorts {
   };
 }
 
+export interface INodes {
+  [x: string]: IRouter | ISwitch;
+}
+
 export interface IRouter {
   active: boolean;
   face: string;
   model: string;
   name: string;
-  typeOfNetworkHardware: string;
+  typeOfNetworkHardware: "Router";
   vendor: string;
   bgp?: IBGP;
   isis?: IISIS;
@@ -97,13 +101,17 @@ export interface IRouter {
 interface ISwitchPort {
   [x: string]: {
     vlan_mode_port: string;
-    vlan_access: string;
-    vlan_trunk: string;
+    vlan_access?: string;
+    vlan_trunk?: string;
   };
 }
 
 export interface ISwitch {
   name: string;
+  active: boolean;
+  face: string;
+  model: string;
   typeOfNetworkHardware: "Switch";
+  vendor: string;
   ports: ISwitchPort;
 }

@@ -35,7 +35,13 @@ defineOptions({
 
 .btn:disabled {
   border: 3px solid red;
-
+  background-color: red;
+  color: white;
+  transition: all 0.1s;
+}
+.btn:disabled:hover {
+  transform: scale(1);
+  border: 3px solid red;
   background-color: red;
   color: white;
   transition: all 0.1s;

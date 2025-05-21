@@ -7,21 +7,28 @@ import useJsonToYaml from "../hooks/useJsonToYaml";
 import { useNodesAndLinks } from "../store/NodesAndLinks";
 import { transformLinks } from "../helpers/transformLinks";
 import { formatYamlWithFilename } from "../helpers/formatYaml";
-import { updateDevice } from "../helpers/updateDevice";
-import type { IRouter } from "../helpers/Config/interfaceNetworkEquipment";
+import { updateDevice, updateDeviceSwicth } from "../helpers/updateDevice";
+import type {
+  IRouter,
+  ISwitch,
+} from "../helpers/Config/interfaceNetworkEquipment";
 
 const nodesAndLinks = useNodesAndLinks();
 const textFromTextArea: Ref<string> = ref("");
 
 const obj = ref({});
 if (Object.keys(nodesAndLinks.objectNodes).length > 0) {
-  // for (const key of Object.keys(nodesAndLinks.objectNodes)) {
-  //   if (nodesAndLinks.objectNodes[key].typeOfNetworkHardware === "Router") {
-  //     obj.value[key] = updateDevice(nodesAndLinks.objectNodes[key] as IRouter);
-  //   } else {
-  //     obj.value[key] = nodesAndLinks.objectNodes[key];
-  //   }
-  // }
+  for (const key of Object.keys(nodesAndLinks.objectNodes)) {
+    if (nodesAndLinks.objectNodes[key].typeOfNetworkHardware === "Router") {
+      obj.value[key] = updateDevice(nodesAndLinks.objectNodes[key] as IRouter);
+    } else if (
+      nodesAndLinks.objectNodes[key].typeOfNetworkHardware === "Switch"
+    ) {
+      obj.value[key] = updateDeviceSwicth(
+        nodesAndLinks.objectNodes[key] as ISwitch
+      );
+    }
+  }
   // console.log(Object.keys(nodesAndLinks.objectEdges).length !== 0);
   // textFromTextArea.value = `${formatYamlWithFilename(
   //   "nodes",

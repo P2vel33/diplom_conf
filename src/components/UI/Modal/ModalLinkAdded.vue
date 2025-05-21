@@ -7,6 +7,8 @@ import useClearObject from "../../../hooks/useClearObject";
 import { useNodesAndLinks } from "../../../store/NodesAndLinks";
 import { computed, ref, watch, type Ref } from "vue";
 import { hasPropertyByName } from "../../../helpers/hasPropertyByName";
+import MySelect from "../MySelect.vue";
+import { networkRouters } from "../../../data/NetworkRouters";
 
 const nodesAndLinks = useNodesAndLinks();
 
@@ -19,9 +21,15 @@ const newLink: Ref<Edge> = ref({
 });
 
 const correctDeleted = computed(() => {
+  // return (
+  //   !hasPropertyByName(newLink.value.source) ||
+  //   !hasPropertyByName(newLink.value.target)
+  // );
   return (
     !hasPropertyByName(newLink.value.source) ||
-    !hasPropertyByName(newLink.value.target)
+    !hasPropertyByName(newLink.value.target) ||
+    !selectedPortSource.value ||
+    !selectedPortTarget.value
   );
 });
 
@@ -31,9 +39,94 @@ watch(
     if (!interactiveVisiable.isVisiableModalLinkAdded) {
       newLink.value.target = "";
       newLink.value.source = "";
+      selectedNodeSource.value = "";
+      selectedNodeTarget.value = "";
+      selectedPortSource.value = null;
+      selectedPortTarget.value = null;
     }
   }
 );
+
+const selectedNodeSource: Ref<null | string> = ref(null);
+const selectedNodeTarget: Ref<null | string> = ref(null);
+const selectedPortSource: Ref<null | number> = ref(null);
+const selectedPortTarget: Ref<null | number> = ref(null);
+const nameNodesSource = computed(() => {
+  return Object.keys(nodesAndLinks.objectNodes)
+    .map((node) => nodesAndLinks.objectNodes[node].name)
+    .filter((node) => selectedNodeTarget.value !== node);
+});
+const nameNodesTarget = computed(() => {
+  return Object.keys(nodesAndLinks.objectNodes)
+    .map((node) => nodesAndLinks.objectNodes[node].name)
+    .filter((node) => selectedNodeSource.value !== node);
+});
+// const nameNodes = computed(() => {
+//   return Object.keys(nodesAndLinks.objectNodes).map(
+//     (node) => nodesAndLinks.objectNodes[node].name
+//   );
+// });
+
+// const setSelectedNode = (selectedNode:string | null,node: string): void => {
+//   selectedNode = node;
+// };
+const setSelectedNodeSource = (node: string): void => {
+  selectedNodeSource.value = node;
+  newLink.value.source = selectedNodeSource.value;
+};
+const setSelectedNodeTarget = (node: string): void => {
+  selectedNodeTarget.value = node;
+  newLink.value.target = selectedNodeTarget.value;
+};
+const setSelectedPortSource = (port: number): void => {
+  selectedPortSource.value = port;
+};
+const setSelectedPortTarget = (port: number): void => {
+  selectedPortTarget.value = port;
+};
+// const setSelectedPort = (port: number): void => {
+//   selectedPort.value = port;
+// };
+
+const getNodePortsSource = computed(() => {
+  const type =
+    nodesAndLinks.objectNodes[selectedNodeSource.value].typeOfNetworkHardware;
+  const vendor = nodesAndLinks.objectNodes[selectedNodeSource.value].vendor;
+  const model = nodesAndLinks.objectNodes[selectedNodeSource.value].model;
+
+  return Array.from(
+    {
+      length: Number(networkRouters[type][vendor][model]),
+    },
+    (_, i) => i + 1
+  );
+});
+const getNodePortsTarget = computed(() => {
+  const type =
+    nodesAndLinks.objectNodes[selectedNodeTarget.value].typeOfNetworkHardware;
+  const vendor = nodesAndLinks.objectNodes[selectedNodeTarget.value].vendor;
+  const model = nodesAndLinks.objectNodes[selectedNodeTarget.value].model;
+
+  return Array.from(
+    {
+      length: Number(networkRouters[type][vendor][model]),
+    },
+    (_, i) => i + 1
+  );
+});
+// const getNodePorts = computed(() => {
+//   const type =
+//     nodesAndLinks.objectNodes[selectedNode.value].typeOfNetworkHardware;
+//   const vendor = nodesAndLinks.objectNodes[selectedNode.value].vendor;
+//   const model = nodesAndLinks.objectNodes[selectedNode.value].model;
+
+//   return Array.from(
+//     {
+//       length: Number(networkRouters[type][vendor][model]),
+//     },
+//     (_, i) => i + 1
+//   );
+// });
 </script>
 
 <template>
@@ -42,7 +135,7 @@ watch(
     v-if="interactiveVisiable.isVisiableModalLinkAdded"
     @click="interactiveVisiable.toggleIsVisiableModalLinkAdded()"
   >
-    <div @click.stop class="dialog__content">
+    <!-- <div @click.stop class="dialog__content">
       <h1>Add Link</h1>
       <div class="divContent">
         <p>Source:</p>
@@ -74,6 +167,50 @@ watch(
           useClearObject(newLink);
         "
         >Add</MyButton
+      >
+    </div> -->
+
+    <div @click.stop class="dialog__content">
+      <h1>Add Link</h1>
+      <div class="divContent">
+        <p>Source:</p>
+        <MySelect
+          :options="nameNodesSource"
+          @update:modelValue="(node) => setSelectedNodeSource(node)"
+          >Выберите устройство</MySelect
+        >
+        <MySelect
+          v-if="selectedNodeSource"
+          :options="getNodePortsSource"
+          @update:modelValue="(port) => setSelectedPortSource(port)"
+          >Выберите порт</MySelect
+        >
+      </div>
+      <div class="divContent">
+        <p>Target:</p>
+        <MySelect
+          :options="nameNodesTarget"
+          @update:modelValue="(node) => setSelectedNodeTarget(node)"
+          >Выберите устройство</MySelect
+        >
+        <MySelect
+          v-if="selectedNodeTarget"
+          :options="getNodePortsTarget"
+          @update:modelValue="(port) => setSelectedPortTarget(port)"
+          >Выберите порт</MySelect
+        >
+      </div>
+
+      <MyButton
+        style="margin-left: auto"
+        :class="{ error: correctDeleted }"
+        :disabled="correctDeleted"
+        @click="
+          interactiveVisiable.toggleIsVisiableModalLinkAdded();
+          nodesAndLinks.addObjectEdges(newLink);
+          useClearObject(newLink);
+        "
+        >Добавить</MyButton
       >
     </div>
   </div>

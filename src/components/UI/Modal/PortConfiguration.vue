@@ -8,6 +8,7 @@ import { isVlanValid } from "../../../helpers/CheckVlan/isVlanValid";
 import { isVlan8021Q } from "../../../helpers/CheckVlan/isVlan8021Q";
 import { calculateNetworkAddress } from "../../../helpers/IPandMask/calculateNetworkAddress";
 import { getPoolIP } from "../../../helpers/IPandMask/getPoolIP";
+import { isValidVlanAccess } from "../../../helpers/CheckVlan/isVlanValidAccess";
 
 interface Ienc8021Q {
   id: number;
@@ -170,7 +171,7 @@ const error8021Q = computed(() => {
 });
 
 const saveConfigure = () => {
-  console.log(portConfiguration.value);
+  // console.log(portConfiguration.value);
   if (selectedType === "Switch") {
     if (portConfiguration.value.vlan_mode_port === "trunk") {
       updatePorts({
@@ -184,8 +185,23 @@ const saveConfigure = () => {
         vlan_access: portConfiguration.value.vlan_access,
       });
     }
+  }
+  // else {
+  //   updatePorts(portConfiguration.value);
+  // }
+  // console.log(portConfiguration.value.enc_802_1q);
+  if (portConfiguration.value.enc_802_1q[0].vlan === null) {
+    console.log("NO WORK");
+    updatePorts({
+      local_ip_address: portConfiguration.value.local_ip_address,
+      mask_local_ip: portConfiguration.value.mask_local_ip,
+    });
   } else {
-    updatePorts(portConfiguration.value);
+    updatePorts({
+      enc_802_1q: portConfiguration.value.enc_802_1q,
+      local_ip_address: portConfiguration.value.local_ip_address,
+      mask_local_ip: portConfiguration.value.mask_local_ip,
+    });
   }
 
   portConfiguration.value.vlan_access = null;
@@ -226,6 +242,14 @@ const errorPortConfiguration = computed(() => {
         !validateIPv4(portConfiguration.value.local_ip_address);
     }
   }
+  if (selectedType === "Switch") {
+    if (portConfiguration.value.vlan_mode_port === "access") {
+      res = !isValidVlanAccess(portConfiguration.value.vlan_access);
+    }
+    if (portConfiguration.value.vlan_mode_port === "trunk") {
+      res = !isVlanValid(portConfiguration.value.vlan_trunk);
+    }
+  }
   // console.log(res);
   return res;
 });
@@ -261,7 +285,10 @@ const errorPortConfiguration = computed(() => {
       >
         <p>Vlan:</p>
         <MyInput
+          :class="{ error: !isValidVlanAccess(portConfiguration.vlan_access) }"
           type="number"
+          min="2"
+          max="999"
           placeholder="2-999"
           v-model="portConfiguration.vlan_access"
         />
@@ -274,7 +301,7 @@ const errorPortConfiguration = computed(() => {
         <MyInput
           :class="{ error: !isVlanValid(portConfiguration.vlan_trunk) }"
           type="text"
-          placeholder="2-999"
+          placeholder="2,3,4 или all"
           v-model="portConfiguration.vlan_trunk"
         />
       </div>

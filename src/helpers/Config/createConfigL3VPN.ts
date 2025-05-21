@@ -1,5 +1,6 @@
-import { useNodesAndLinks } from "../../store/NodesAndLinks";
+import type { IRouter } from "./interfaceNetworkEquipment";
 
-export const createConfigL3VPN = () => {
-  const nodeAndLinks = useNodesAndLinks();
+export const createConfigL3VPN = (objectRouter: IRouter): string => {
+  let response = "";
+  return response;
 };

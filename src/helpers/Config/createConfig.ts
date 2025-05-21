@@ -1,6 +1,7 @@
 import { useNodesAndLinks } from "../../store/NodesAndLinks";
 import { createConfigBGP } from "./createConfigBGP";
 import { createConfigISIS } from "./createConfigISIS";
+import { createConfigL3VPN } from "./createConfigL3VPN";
 import { createConfigLoopback } from "./createConfigLoopback";
 import { createConfigMPLS } from "./createConfigMPLS";
 import { createConfigOSPF } from "./createConfigOSPF";
@@ -12,7 +13,7 @@ import type { IRouter, ISwitch } from "./interfaceNetworkEquipment";
 
 // Проверка имени файла на недопустимые символы
 
-function isValidFileName(name) {
+function isValidFileName(name: string) {
   const invalidChars = /[<>:"/\\|?*]/;
   return (
     typeof name === "string" && name.trim() !== "" && !invalidChars.test(name)
@@ -24,8 +25,8 @@ async function saveFile(
   filename: string,
   content: string
 ) {
-  console.log(directoryHandle);
-  console.log(directoryHandle);
+  // console.log(directoryHandle);
+  // console.log(directoryHandle);
   if (!directoryHandle) {
     alert("Пожалуйста, сначала выберите папку.");
     return;
@@ -46,9 +47,9 @@ async function saveFile(
     const writable = await fileHandle.createWritable();
     await writable.write(content);
     await writable.close();
-    alert("Файл успешно сохранен!");
+    // alert("Файл успешно сохранен!");
   } catch (err) {
-    console.error("Ошибка при сохранении файла:", err);
+    // console.error("Ошибка при сохранении файла:", err);
     alert("Произошла ошибка при сохранении файла: " + err.message);
   }
 }
@@ -91,9 +92,9 @@ export const createConfig = (directoryHandle): string => {
           }
         }
 
-        if (hasPropertyByName1(item, "mpls")) {
-          if (nodeAndLinks.objectNodes[item].mpls.length > 0) {
-            response += createConfigMPLS(
+        if (hasPropertyByName1(item, "l3vpn")) {
+          if (nodeAndLinks.objectNodes[item].l3vpn.length > 0) {
+            response += createConfigL3VPN(
               nodeAndLinks.objectNodes[item] as IRouter
             );
           }

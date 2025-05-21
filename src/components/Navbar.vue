@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { createConfig } from "../helpers/Config/createConfig";
 import router from "../router/router";
-import SSSSSSSSS from "./SSSSSSSSS.vue";
+import GetConfig from "./GetConfig.vue";
 import MyButton from "./UI/MyButton.vue";
 
 const sendConfiguration = () => {
-  createConfig();
+  // createConfig();
 };
 </script>
 
@@ -15,7 +14,7 @@ const sendConfiguration = () => {
     <MyButton @click="router.push('/yaml')">YAML</MyButton>
     <MyButton @click="router.push('/interactive')">Интерактив</MyButton>
     <MyButton @click="sendConfiguration">Отправить конфигурацию</MyButton>
-    <SSSSSSSSS />
+    <GetConfig />
   </div>
 </template>
 

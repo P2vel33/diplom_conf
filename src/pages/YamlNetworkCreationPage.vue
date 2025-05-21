@@ -12,6 +12,7 @@ import type {
   IRouter,
   ISwitch,
 } from "../helpers/Config/interfaceNetworkEquipment";
+import AppTextArea from "../components/AppTextArea.vue";
 
 const nodesAndLinks = useNodesAndLinks();
 const textFromTextArea: Ref<string> = ref("");
@@ -53,12 +54,13 @@ if (Object.keys(nodesAndLinks.objectNodes).length > 0) {
   <div>
     <div class="container">
       <div class="left">
-        <textarea
+        <!-- <textarea
           v-focus
           v-model="textFromTextArea"
           class="textarea"
           :placeholder="str"
-        ></textarea>
+        ></textarea> -->
+        <AppTextArea v-focus v-model="textFromTextArea" :placeholder="str" />
       </div>
       <div class="right">
         <YamlViewNetwork :textFromTextArea />

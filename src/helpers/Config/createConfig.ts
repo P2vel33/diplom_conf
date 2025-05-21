@@ -8,12 +8,57 @@ import { createConfigPort } from "./createConfigPort";
 import { createConfigVlan } from "./createConfigVlan";
 import type { IRouter, ISwitch } from "./interfaceNetworkEquipment";
 
+// const filename = "settings.txt"; // имя файла
+
+// Проверка имени файла на недопустимые символы
+
+function isValidFileName(name) {
+  const invalidChars = /[<>:"/\\|?*]/;
+  return (
+    typeof name === "string" && name.trim() !== "" && !invalidChars.test(name)
+  );
+}
+
+async function saveFile(
+  directoryHandle: object,
+  filename: string,
+  content: string
+) {
+  console.log(directoryHandle);
+  console.log(directoryHandle);
+  if (!directoryHandle) {
+    alert("Пожалуйста, сначала выберите папку.");
+    return;
+  }
+
+  // Проверка имени файла
+  if (!isValidFileName(filename)) {
+    alert(
+      'Недопустимое имя файла. Оно не должно содержать символы <>:"/\\|?* и не должно быть пустым.'
+    );
+    return;
+  }
+
+  try {
+    const fileHandle = await directoryHandle.getFileHandle(`${filename}.txt`, {
+      create: true,
+    });
+    const writable = await fileHandle.createWritable();
+    await writable.write(content);
+    await writable.close();
+    alert("Файл успешно сохранен!");
+  } catch (err) {
+    console.error("Ошибка при сохранении файла:", err);
+    alert("Произошла ошибка при сохранении файла: " + err.message);
+  }
+}
+
 function hasPropertyByName1(item: string, propertyName: string): boolean {
   const nodesAndLinks = useNodesAndLinks();
   return nodesAndLinks.objectNodes[item].hasOwnProperty(propertyName);
 }
 
-export const createConfig = () => {
+export const createConfig = (directoryHandle): string => {
   const nodeAndLinks = useNodesAndLinks();
   let response = "";
   for (let item of Object.keys(nodeAndLinks.objectNodes)) {
@@ -76,8 +121,9 @@ export const createConfig = () => {
         }
       }
       console.log(response + "\nend\nshow running-config");
+      saveFile(directoryHandle, nodeAndLinks.objectNodes[item].name, response);
       response = "";
     }
   }
-  // createConfigVlan(nodeAndLinks.objectNodes);
+  return response;
 };

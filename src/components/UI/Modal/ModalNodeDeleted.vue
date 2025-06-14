@@ -39,9 +39,9 @@ watch(
     @click="interactiveVisiable.toggleIsVisiableModalNodeDeleted"
   >
     <div @click.stop class="dialog__content">
-      <h1>Delete node</h1>
+      <h1>Удаление узла сети</h1>
       <div class="divContent">
-        <p>Name:</p>
+        <p>Название узла:</p>
         <MyInput
           v-focus
           :class="{ error: !hasPropertyByName(deletedNode.name) }"
@@ -60,7 +60,7 @@ watch(
           nodesAndLinks.deleteObjectNodes(deletedNode);
           useClearObject(deletedNode);
         "
-        >Delete</MyButton
+        >Удалить</MyButton
       >
     </div>
   </div>

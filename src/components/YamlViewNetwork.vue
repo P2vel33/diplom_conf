@@ -5,7 +5,6 @@ import useYamlToJson from "../hooks/useYamlToJson";
 import useNodesAndEdges from "../hooks/useNodesAndEdges";
 import View from "./View.vue";
 import { useNodesAndLinks } from "../store/NodesAndLinks";
-import { isINodes } from "../helpers/isINodes";
 
 const nodesAndLinks = useNodesAndLinks();
 

@@ -187,7 +187,7 @@ const getNodePortsTarget = computed(() => {
     </div> -->
 
     <div @click.stop class="dialog__content">
-      <h1>Добавить связь</h1>
+      <h1>Добавление связи</h1>
       <div class="divContent">
         <p>Source:</p>
         <MySelect

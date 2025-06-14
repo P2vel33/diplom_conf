@@ -42,7 +42,7 @@ watch(
     @click="interactiveVisiable.toggleIsVisiableModalLinkDeleted"
   >
     <div @click.stop class="dialog__content">
-      <h1>Delete link</h1>
+      <h1>Удаление связи</h1>
       <div class="divContent">
         <p>Source:</p>
         <MyInput
@@ -72,7 +72,7 @@ watch(
           nodesAndLinks.deleteObjectEdges(deletedLink);
           useClearObject(deletedLink);
         "
-        >Delete</MyButton
+        >Удалить</MyButton
       >
     </div>
   </div>

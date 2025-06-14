@@ -14,6 +14,6 @@ export const createConfigOSPF = (objectRouter: IRouter): string => {
     )} area ${neighbor.area}`;
   }
   response += `\nexit\n!`;
-  console.log(response);
+  // console.log(response);
   return response;
 };

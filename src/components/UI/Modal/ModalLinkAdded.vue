@@ -94,6 +94,14 @@ const getNodePortsSource = computed(() => {
   const vendor = nodesAndLinks.objectNodes[selectedNodeSource.value].vendor;
   const model = nodesAndLinks.objectNodes[selectedNodeSource.value].model;
 
+  if (type === "Router") {
+    return Array.from(
+      {
+        length: Number(networkRouters[type][vendor][model]),
+      },
+      (_, i) => i
+    );
+  }
   return Array.from(
     {
       length: Number(networkRouters[type][vendor][model]),
@@ -107,6 +115,14 @@ const getNodePortsTarget = computed(() => {
   const vendor = nodesAndLinks.objectNodes[selectedNodeTarget.value].vendor;
   const model = nodesAndLinks.objectNodes[selectedNodeTarget.value].model;
 
+  if (type === "Router") {
+    return Array.from(
+      {
+        length: Number(networkRouters[type][vendor][model]),
+      },
+      (_, i) => i
+    );
+  }
   return Array.from(
     {
       length: Number(networkRouters[type][vendor][model]),
@@ -171,7 +187,7 @@ const getNodePortsTarget = computed(() => {
     </div> -->
 
     <div @click.stop class="dialog__content">
-      <h1>Add Link</h1>
+      <h1>Добавить связь</h1>
       <div class="divContent">
         <p>Source:</p>
         <MySelect

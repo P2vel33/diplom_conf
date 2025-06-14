@@ -14,7 +14,7 @@ export const createConfigPort = (objectRouter: IRouter): string => {
 exit
 !`;
     if (
-      Object.keys(objectRouter.ports[port].enc_802_1q).length > 0 &&
+      objectRouter.ports[port].enc_802_1q &&
       objectRouter.ports[port].enc_802_1q.every((elem) => elem.vlan !== null)
     ) {
       for (const item of objectRouter.ports[port].enc_802_1q) {

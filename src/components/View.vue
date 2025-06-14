@@ -200,10 +200,10 @@ const eventHandlers: vNG.EventHandlers = {
     const nodes: Nodes = objectNodes;
     nodes[node].active = !nodes[node].active;
   },
-  "edge:click": ({ edge }): void => {
-    const arr: string[] | undefined = edge?.split("-");
-    arr?.forEach((elem) => console.log(objectNodes[elem]));
-  },
+  // "edge:click": ({ edge }): void => {
+  //   const arr: string[] | undefined = edge?.split("-");
+  //   arr?.forEach((elem) => console.log(objectNodes[elem]));
+  // },
 };
 </script>
 

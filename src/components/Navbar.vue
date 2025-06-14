@@ -13,7 +13,7 @@ const sendConfiguration = () => {
     <!-- <MyButton @click="router.push('/')">Home</MyButton> -->
     <MyButton @click="router.push('/yaml')">YAML</MyButton>
     <MyButton @click="router.push('/interactive')">Интерактив</MyButton>
-    <MyButton @click="sendConfiguration">Отправить конфигурацию</MyButton>
+    <!-- <MyButton @click="sendConfiguration">Отправить конфигурацию</MyButton> -->
     <GetConfig />
   </div>
 </template>

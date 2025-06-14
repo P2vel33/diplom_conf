@@ -4,7 +4,7 @@ interface IVendorList {
 
 interface IVendor {
   Cisco: IVendorList;
-  Alcatel: IVendorList;
+  // Alcatel: IVendorList;
   Eltex: IVendorList;
 }
 
@@ -27,16 +27,16 @@ export const networkRouters: IType = {
       "Cisco Nexus 9000 Series | 48": "48",
       "Cisco Nexus 9000 Series | 24": "24",
     },
-    Alcatel: {
-      "Alcatel-Lucent OmniSwitch 6900 | 48": "48",
-      "Alcatel-Lucent OmniSwitch 6900 | 24": "24",
-      "Alcatel-Lucent OmniSwitch 9000 | 48": "48",
-      "Alcatel-Lucent OmniSwitch 9000 | 24": "24",
-      "Alcatel-Lucent 6850-P48 | 48": "48",
-      //   "Alcatel-Lucent 6850-P48": "48 + PoE",
-      "Alcatel-Lucent 5620 LAN | 48": "48",
-      "Alcatel-Lucent 5620 LAN | 24": "24",
-    },
+    // Alcatel: {
+    //   "Alcatel-Lucent OmniSwitch 6900 | 48": "48",
+    //   "Alcatel-Lucent OmniSwitch 6900 | 24": "24",
+    //   "Alcatel-Lucent OmniSwitch 9000 | 48": "48",
+    //   "Alcatel-Lucent OmniSwitch 9000 | 24": "24",
+    //   "Alcatel-Lucent 6850-P48 | 48": "48",
+    //   //   "Alcatel-Lucent 6850-P48": "48 + PoE",
+    //   "Alcatel-Lucent 5620 LAN | 48": "48",
+    //   "Alcatel-Lucent 5620 LAN | 24": "24",
+    // },
     Eltex: {
       "Eltex S5800-48F | 48": "48",
       "Eltex S5810-24P | 24": "24",
@@ -62,14 +62,14 @@ export const networkRouters: IType = {
       "Cisco ASR 1000 Series | 4": "4",
       "Cisco ASR 1000 Series | 2": "2",
     },
-    Alcatel: {
-      "Alcatel-Lucent 7750 SR | 48": "48",
-      "Alcatel-Lucent 7750 SR | 24": "24",
-      "Alcatel-Lucent 7705 SAR | 8": "8",
-      "Alcatel-Lucent 7705 SAR | 4": "4",
-      "Alcatel-Lucent 6210 | 4": "4",
-      "Alcatel-Lucent 7705 SAR HLS | 4": "4",
-    },
+    // Alcatel: {
+    //   "Alcatel-Lucent 7750 SR | 48": "48",
+    //   "Alcatel-Lucent 7750 SR | 24": "24",
+    //   "Alcatel-Lucent 7705 SAR | 8": "8",
+    //   "Alcatel-Lucent 7705 SAR | 4": "4",
+    //   "Alcatel-Lucent 6210 | 4": "4",
+    //   "Alcatel-Lucent 7705 SAR HLS | 4": "4",
+    // },
     Eltex: {
       "Eltex ER-4840 | 8": "8",
       "Eltex R10 | 8": "8",
